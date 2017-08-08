@@ -2,10 +2,18 @@ package eu.drus.jpa.unit.neo4j;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+<<<<<<< HEAD
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
 
+=======
+import java.util.Collections;
+import java.util.List;
+
+import org.neo4j.driver.v1.Session;
+
+>>>>>>> initial commit for #13 (Neo4j support)
 import eu.drus.jpa.unit.api.CleanupStrategy;
 import eu.drus.jpa.unit.api.DataSeedStrategy;
 import eu.drus.jpa.unit.api.ExpectedDataSets;
