@@ -6,19 +6,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @Entity
 @Table(name = "ADDRESS")
-@SequenceGenerator(name = "ADDRESS_SEQ")
 public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "ADDRESS_SEQ")
+    @TableGenerator(name = "ADDRESS_SEQ")
     private Long id;
 
     @Column(name = "STREET", length = 50, updatable = false)

@@ -8,19 +8,19 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @Entity
 @Table(name = "CONTACT_DETAIL")
-@SequenceGenerator(name = "CONTACT_DETAIL_SEQ")
 public class ContactDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "CONTACT_DETAIL_SEQ")
+    @TableGenerator(name = "CONTACT_DETAIL_SEQ")
     private Long id;
 
     @Column(name = "TYPE", length = 50, updatable = false)
