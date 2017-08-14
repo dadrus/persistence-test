@@ -15,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.TableGenerator;
 import javax.persistence.Version;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -27,8 +26,7 @@ public class Depositor {
     // persistence specific attributes
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "DEPOSITOR_SEQ")
-    @TableGenerator(name = "DEPOSITOR_SEQ")
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @Version

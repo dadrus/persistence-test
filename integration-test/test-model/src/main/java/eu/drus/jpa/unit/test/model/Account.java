@@ -18,7 +18,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.TableGenerator;
 import javax.persistence.Version;
 
 @Entity
@@ -28,8 +27,7 @@ import javax.persistence.Version;
 public abstract class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "ACCOUNT_SEQ")
-    @TableGenerator(name = "ACCOUNT_SEQ")
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @Version

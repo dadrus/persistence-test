@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -23,8 +22,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class AccountEntry {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "ACCOUNT_ENTRY_SEQ")
-    @TableGenerator(name = "ACCOUNT_ENTRY_SEQ")
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @Column(name = "DATE", updatable = false)

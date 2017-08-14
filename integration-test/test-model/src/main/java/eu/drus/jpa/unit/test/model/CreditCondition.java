@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.TableGenerator;
 import javax.persistence.Version;
 
 @Entity
@@ -15,8 +14,7 @@ import javax.persistence.Version;
 public class CreditCondition {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "CREDIT_CONDITION_SEQ")
-    @TableGenerator(name = "CREDIT_CONDITION_SEQ")
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @Version
