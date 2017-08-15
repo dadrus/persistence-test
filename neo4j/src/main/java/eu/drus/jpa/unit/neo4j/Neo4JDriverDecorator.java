@@ -1,6 +1,6 @@
 package eu.drus.jpa.unit.neo4j;
 
-import org.neo4j.driver.v1.Driver;
+import java.sql.Connection;
 
 import eu.drus.jpa.unit.neo4j.ext.Configuration;
 import eu.drus.jpa.unit.neo4j.ext.ConfigurationRegistry;
@@ -24,13 +24,13 @@ public class Neo4JDriverDecorator implements TestClassDecorator {
     @Override
     public void beforeAll(final ExecutionContext ctx, final Class<?> testClass) throws Exception {
         final Configuration configuration = configurationRegistry.getConfiguration(ctx.getDescriptor());
-        ctx.storeData("gds", configuration.getDriver());
+        ctx.storeData("gds", configuration.getConnection());
     }
 
     @Override
     public void afterAll(final ExecutionContext ctx, final Class<?> testClass) throws Exception {
-        final Driver driver = (Driver) ctx.getData("gds");
-        driver.close();
+        final Connection connection = (Connection) ctx.getData("gds");
+        connection.close();
         ctx.storeData("gds", null);
     }
 

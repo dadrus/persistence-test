@@ -1,10 +1,9 @@
 package eu.drus.jpa.unit.neo4j.ext;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Map;
-
-import org.neo4j.driver.v1.AuthTokens;
-import org.neo4j.driver.v1.Driver;
-import org.neo4j.driver.v1.GraphDatabase;
 
 import eu.drus.jpa.unit.spi.PersistenceUnitDescriptor;
 
@@ -25,8 +24,9 @@ public class HibernateOgmConfiguration implements Configuration {
         public boolean isSupported(final PersistenceUnitDescriptor descriptor) {
             final Map<String, Object> dbConfig = descriptor.getProperties();
 
-            return dbConfig.containsKey(HIBERNATE_OGM_DATASTORE_PROVIDER)
-                    && ((String) dbConfig.get(HIBERNATE_OGM_DATASTORE_PROVIDER)).contains("neo4j_bolt");
+            final String key = (String) dbConfig.get(HIBERNATE_OGM_DATASTORE_PROVIDER);
+
+            return key != null && (key == "neo4j_bolt" || key == "neo4j_http");
         }
 
         @Override
@@ -35,25 +35,28 @@ public class HibernateOgmConfiguration implements Configuration {
         }
     }
 
-    private Driver driver;
+    private String url;
+    private String user;
+    private String password;
 
     private HibernateOgmConfiguration(final PersistenceUnitDescriptor descriptor) {
         final Map<String, Object> properties = descriptor.getProperties();
 
         final String host = (String) properties.get(HIBERNATE_OGM_DATASTORE_HOST);
-        final String user = (String) properties.get(HIBERNATE_OGM_DATASTORE_USERNAME);
-        final String password = (String) properties.get(HIBERNATE_OGM_DATASTORE_PASSWORD);
+        user = (String) properties.get(HIBERNATE_OGM_DATASTORE_USERNAME);
+        password = (String) properties.get(HIBERNATE_OGM_DATASTORE_PASSWORD);
 
-        if (user != null && password != null) {
-            driver = GraphDatabase.driver("bolt://" + host, AuthTokens.basic(user, password));
+        final String key = (String) properties.get(HIBERNATE_OGM_DATASTORE_PROVIDER);
+        if (key == "neo4j_bolt") {
+            url = "jdbc:neo4j:bolt://" + host;
         } else {
-            driver = GraphDatabase.driver(host);
+            url = "jdbc:neo4j:http://" + host;
         }
     }
 
     @Override
-    public Driver getDriver() {
-        return driver;
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(url, user, password);
     }
 
 }

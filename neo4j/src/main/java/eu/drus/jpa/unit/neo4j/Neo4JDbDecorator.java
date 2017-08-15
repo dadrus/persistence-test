@@ -1,7 +1,6 @@
 package eu.drus.jpa.unit.neo4j;
 
-import org.neo4j.driver.v1.Driver;
-import org.neo4j.driver.v1.Session;
+import java.sql.Connection;
 
 import eu.drus.jpa.unit.neo4j.ext.ConfigurationRegistry;
 import eu.drus.jpa.unit.spi.ExecutionContext;
@@ -27,10 +26,8 @@ public class Neo4JDbDecorator implements TestMethodDecorator {
         final ExecutionContext context = invocation.getContext();
 
         final Neo4JDbFeatureExecutor dbFeatureExecutor = new Neo4JDbFeatureExecutor(invocation.getFeatureResolver());
-        final Driver driver = (Driver) context.getData("gds");
-        final Session session = driver.session();
-        context.storeData("session", session);
-        dbFeatureExecutor.executeBeforeTest(session);
+        final Connection connection = (Connection) context.getData("gds");
+        dbFeatureExecutor.executeBeforeTest(connection);
     }
 
     @Override
@@ -38,12 +35,8 @@ public class Neo4JDbDecorator implements TestMethodDecorator {
         final ExecutionContext context = invocation.getContext();
 
         final Neo4JDbFeatureExecutor dbFeatureExecutor = new Neo4JDbFeatureExecutor(invocation.getFeatureResolver());
-        final Session session = (Session) context.getData("session");
-        try {
-            dbFeatureExecutor.executeAfterTest(session, invocation.hasErrors());
-        } finally {
-            session.close();
-        }
+        final Connection connection = (Connection) context.getData("gds");
+        dbFeatureExecutor.executeAfterTest(connection, invocation.hasErrors());
     }
 
 }

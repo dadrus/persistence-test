@@ -1,7 +1,8 @@
 package eu.drus.jpa.unit.neo4j.operation;
 
-import org.neo4j.driver.v1.Session;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public interface Neo4JOperation {
-    void execute(Session session, String data);
+    void execute(Connection connection, String data) throws SQLException;
 }
