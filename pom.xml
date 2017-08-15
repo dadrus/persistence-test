@@ -126,7 +126,7 @@
     <module>junit5-extension</module>
     <module>cucumber</module>
     <module>cdi</module>
-    <module>sql</module>
+    <module>rdbms</module>
     <module>mongodb</module>
     <module>neo4j</module>
     <module>integration-test</module>
