@@ -5,6 +5,6 @@ import org.junit.runner.RunWith;
 import eu.drus.jpa.unit.concordion.JpaUnitConcordionRunner;
 
 @RunWith(JpaUnitConcordionRunner.class)
-public class NewDepositorFixture extends AbstractNewDepositorFixture {
+public class NewAccountFixture extends AbstractNewAccountFixture {
 
 }

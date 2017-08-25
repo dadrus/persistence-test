@@ -6,8 +6,8 @@ have to be created.
 
 ### [Example](- "Onboard a new customer")
 
-Given a new customer *[Max Payne](- "createNewCustomer(#TEXT)")*, applying for an instant access account
+Given a new customer *[Max Payne](- "#customer = createNewCustomer(#TEXT)")*, applying for an instant access account
 
-When the [onboarding process completes](- "finalizeOnboarding()")
+When the [onboarding process completes](- "finalizeOnboarding(#customer)")
 
 Then [a new depositor object and a new instant access account object are present in the system](- "verifyExistenceOfExpectedObjects()").
