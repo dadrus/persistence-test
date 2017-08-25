@@ -93,4 +93,8 @@ public class ConcordionInterceptor implements MethodInterceptor {
         }
     }
 
+    public Object getDelegate() {
+        return delegate;
+    }
+
 }
