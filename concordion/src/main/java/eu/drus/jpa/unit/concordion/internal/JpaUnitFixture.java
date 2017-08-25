@@ -20,23 +20,23 @@ public class JpaUnitFixture extends FixtureInstance {
     }
 
     @Override
-    public void beforeSuite() {
+    public void beforeSpecification() {
         try {
             executor.processBeforeAll(JpaUnitContext.getInstance(originalFixture.getClass()), originalFixture.getClass());
         } catch (final Exception e) {
             throw new JpaUnitException(e);
         }
-        super.beforeSuite();
+        super.beforeSpecification();
     }
 
     @Override
-    public void afterSuite() {
+    public void afterSpecification() {
         try {
             executor.processAfterAll(JpaUnitContext.getInstance(originalFixture.getClass()), originalFixture.getClass());
         } catch (final Exception e) {
             throw new JpaUnitException(e);
         }
-        super.afterSuite();
+        super.afterSpecification();
     }
 
     private static Object getDelegate(final Object fixtureObject) {
