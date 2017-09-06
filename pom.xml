@@ -53,6 +53,7 @@
     <version.mongo-driver>3.5.0</version.mongo-driver>
     <version.flapdoodle.embed.mongo>2.0.0</version.flapdoodle.embed.mongo>
     <version.cglib>3.2.5</version.cglib>
+    <verions.concordion>2.1.0</verions.concordion>
 
     <version.powermock>1.7.0</version.powermock>
     <version.junit>4.12</version.junit>
@@ -276,10 +277,14 @@
           </executions>
         </plugin>
         <plugin>
-          <inherited>true</inherited>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
           <version>${plugin.version.enforcer}</version>
+          <configuration>
+            <rules>
+              <dependencyConvergence />
+            </rules>
+          </configuration>
           <executions>
             <execution>
               <!-- Make sure maven 3 is used -->
@@ -601,6 +606,11 @@
         <groupId>info.cukes</groupId>
         <artifactId>cucumber-junit</artifactId>
         <version>${version.cucumber}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.concordion</groupId>
+        <artifactId>concordion</artifactId>
+        <version>${verions.concordion}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

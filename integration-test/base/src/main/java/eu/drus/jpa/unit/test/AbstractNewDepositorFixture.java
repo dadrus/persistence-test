@@ -5,7 +5,7 @@ import org.junit.runner.RunWith;
 import eu.drus.jpa.unit.api.Cleanup;
 import eu.drus.jpa.unit.api.CleanupPhase;
 import eu.drus.jpa.unit.api.ExpectedDataSets;
-import eu.drus.jpa.unit.concordion.JpaUnitConcordionRunner;
+import eu.drus.jpa.unit.api.concordion.JpaUnitConcordionRunner;
 import eu.drus.jpa.unit.test.model.Depositor;
 import eu.drus.jpa.unit.test.model.InstantAccessAccount;
 
