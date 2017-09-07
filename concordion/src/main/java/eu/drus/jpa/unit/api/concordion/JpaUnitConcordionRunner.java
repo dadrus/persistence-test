@@ -1,5 +1,6 @@
 package eu.drus.jpa.unit.api.concordion;
 
+import static eu.drus.jpa.unit.concordion.utils.ClassLoaderUtils.tryLoadClassForName;
 import static eu.drus.jpa.unit.util.ReflectionUtils.getValue;
 import static eu.drus.jpa.unit.util.ReflectionUtils.injectValue;
 
@@ -44,7 +45,7 @@ public class JpaUnitConcordionRunner extends ConcordionRunner {
 
     @Override
     protected Object createTest() throws Exception {
-        Object fixtureObject;
+        Object enhancedFixture;
         final Field firstTestSuperField = getClass().getSuperclass().getDeclaredField("firstTest");
         final Field setupFixtureField = getClass().getSuperclass().getDeclaredField("setupFixture");
 
@@ -55,20 +56,39 @@ public class JpaUnitConcordionRunner extends ConcordionRunner {
             injectValue(firstTestSuperField, this, false);
             // we've already created a test object above, so reuse it to make sure we don't
             // initialize the fixture object multiple times
-            fixtureObject = setupFixture.getFixtureObject();
+            enhancedFixture = setupFixture.getFixtureObject();
 
             // we need to setup the concordion scoped objects so that the @Before methods and @Rules
             // can access them
-            setupFixture.setupForRun(getDelegate(fixtureObject));
+            final Object fixtureObject = getDelegate(enhancedFixture);
+            setupFixture.setupForRun(fixtureObject);
+
+            injectFields(fixtureObject);
         } else {
             // junit creates a new object for each test case, so we need to capture this
             // and setup our object - that makes sure that scoped variables are injected properly
             // the setup of concordion scoped objects is done in this call
-            final Object target = super.createTest();
-            fixtureObject = createProxy(target);
+            final Object fixtureObject = super.createTest();
+            injectFields(fixtureObject);
+            enhancedFixture = createProxy(fixtureObject);
         }
 
-        return fixtureObject;
+        return enhancedFixture;
+    }
+
+    private void injectFields(final Object fixtureObject) {
+        final Class<?> bpClass = tryLoadClassForName("org.apache.deltaspike.core.api.provider.BeanProvider");
+        if (bpClass != null) {
+            try {
+                final Method injectFieldsMethod = bpClass.getMethod("injectFields", Object.class);
+                injectFieldsMethod.invoke(bpClass, fixtureObject);
+            } catch (final Exception e) {
+                // CDI and Deltaspike are not present and configured - fall back
+                // TODO: log this exception
+            }
+        }
+
+        // TODO: implement lookup for different DI implementations. For now only CDI is supported
     }
 
     @Override

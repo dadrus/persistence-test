@@ -1,5 +1,6 @@
 package eu.drus.jpa.unit.concordion;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import eu.drus.jpa.unit.api.CleanupPhase;
@@ -21,14 +22,36 @@ public class ConcordionInterceptor implements MethodInterceptor {
         this.delegate = delegate;
     }
 
+    private static boolean isObjectMethod(final Method method) {
+        switch (method.getName()) {
+        case "hashCode":
+        case "toString":
+        case "clone":
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    private static boolean hasConcordionAnnotations(final Method method) {
+        final Annotation[] annotations = method.getDeclaredAnnotations();
+        for (final Annotation annotation : annotations) {
+            final Class<? extends Annotation> annotationType = annotation.annotationType();
+            if (annotationType.getName().startsWith("org.concordion.api")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public Object intercept(final Object proxy, final Method method, final Object[] args, final MethodProxy methodProxy) throws Throwable {
-        final FeatureResolver resolver = FeatureResolver.newFeatureResolver(method, delegate.getClass())
-                .withDefaultCleanupPhase(CleanupPhase.NONE).build();
-
-        if (isObjectMethod(method)) {
+        if (isObjectMethod(method) || hasConcordionAnnotations(method)) {
             return methodProxy.invoke(delegate, args);
         }
+
+        final FeatureResolver resolver = FeatureResolver.newFeatureResolver(method, delegate.getClass())
+                .withDefaultCleanupPhase(CleanupPhase.NONE).build();
 
         Object result = null;
         final TestMethodInvocationImpl invocation = new TestMethodInvocationImpl(delegate, method, resolver);
@@ -43,17 +66,6 @@ public class ConcordionInterceptor implements MethodInterceptor {
         executor.processAfter(invocation);
 
         return result;
-    }
-
-    private boolean isObjectMethod(final Method method) {
-        switch (method.getName()) {
-        case "hashCode":
-        case "toString":
-        case "clone":
-            return true;
-        default:
-            return false;
-        }
     }
 
     private static class TestMethodInvocationImpl implements TestMethodInvocation {

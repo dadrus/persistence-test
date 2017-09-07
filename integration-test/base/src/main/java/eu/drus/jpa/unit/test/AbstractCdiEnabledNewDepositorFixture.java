@@ -1,12 +1,18 @@
 package eu.drus.jpa.unit.test;
 
+import javax.inject.Inject;
+
 import eu.drus.jpa.unit.api.Cleanup;
 import eu.drus.jpa.unit.api.CleanupPhase;
 import eu.drus.jpa.unit.api.ExpectedDataSets;
 import eu.drus.jpa.unit.test.model.Depositor;
+import eu.drus.jpa.unit.test.model.DepositorRepository;
 import eu.drus.jpa.unit.test.model.InstantAccessAccount;
 
-public abstract class AbstractNewDepositorFixture extends AbstractConcordionFixture {
+public abstract class AbstractCdiEnabledNewDepositorFixture extends AbstractConcordionFixture {
+
+    @Inject
+    private DepositorRepository repository;
 
     public Depositor createNewCustomer(final String customerName) {
         final String[] nameParts = customerName.split(" ");
@@ -16,7 +22,7 @@ public abstract class AbstractNewDepositorFixture extends AbstractConcordionFixt
     }
 
     public void finalizeOnboarding(final Depositor depositor) {
-        manager.persist(depositor);
+        repository.save(depositor);
     }
 
     @ExpectedDataSets(value = "datasets/max-payne-data.json", excludeColumns = {
