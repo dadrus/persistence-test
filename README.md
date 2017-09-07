@@ -23,7 +23,7 @@ Implements [JUnit 4](http://junit.org/junit4) runner and rule, as well as [JUnit
 - Enables bootstrapping of the database schema and contents using plain data base statements (e.g. SQL) or arbitrary frameworks, like e.g. [FlywayDB](https://flywaydb.org) or [Liquibase](http://www.liquibase.org) before the starting of JPA provider
 - Implements seamless integration with CDI.
 - Supports acceptance based testing using [Cucumber](https://cucumber.io/docs/reference/jvm#java)
-- Supports acceptance based testing using [Concordion](https://cocordion.org)
+- Supports acceptance based testing using [Concordion](http://concordion.org)
 - Supports SQL and NoSQL databases (based on what is possible with the chosen JPA provider). See below for a list of supported NoSQL databases and known limitations.
 	
 ## Credits
@@ -864,20 +864,23 @@ public class ConcordionFixture {
 }
 ```
 
+The associated specification looks like this:
 ```.markdown
 # Create New Depositor
 
-During the on-boarding of a new banking customer for an instant access account a new depositor as well as a new instant access account
-have to be created. 
+During the on-boarding of a new banking customer for an instant access account a new depositor as well
+as a new instant access account have to be created. 
  
 
 ### [Example](- "Onboard a new customer")
 
-Given a new customer *[Max Payne](- "#customer = createNewCustomer(#TEXT)")*, applying for an instant access account
+Given a new customer *[Max Payne](- "#customer = createNewCustomer(#TEXT)")*, applying for an instant
+access account
 
 When the [onboarding process completes](- "finalizeOnboarding(#customer)")
 
-Then [a new depositor object and a new instant access account object are present in the system](- "verifyExistenceOfExpectedObjects()").
+Then a new depositor object and a new instant access account object are 
+[present in the system](- "verifyExistenceOfExpectedObjects()").
 ```
 
 If you would like to use concordion with JPA Unit and CDI, you will have to follow the requirements from [CDI Integration](#cdi-integration). However, since
@@ -926,4 +929,4 @@ public class ConcordionFixture {
 }
 ```
 
-Now you can inject your dependencies into glue objects.
+Now you can inject your dependencies into fixture objects.
