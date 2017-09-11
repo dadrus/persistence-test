@@ -13,6 +13,8 @@ import org.concordion.api.SpecificationLocator;
 import org.concordion.integration.junit4.ConcordionRunner;
 import org.concordion.internal.ClassNameAndTypeBasedSpecificationLocator;
 import org.junit.runners.model.InitializationError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.drus.jpa.unit.api.JpaUnitException;
 import eu.drus.jpa.unit.concordion.ConcordionInterceptor;
@@ -25,6 +27,8 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.Factory;
 
 public class JpaUnitConcordionRunner extends ConcordionRunner {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JpaUnitConcordionRunner.class);
 
     private static DecoratorExecutor executor = new DecoratorExecutor();
 
@@ -83,12 +87,11 @@ public class JpaUnitConcordionRunner extends ConcordionRunner {
                 final Method injectFieldsMethod = bpClass.getMethod("injectFields", Object.class);
                 injectFieldsMethod.invoke(bpClass, fixtureObject);
             } catch (final Exception e) {
-                // CDI and Deltaspike are not present and configured - fall back
-                // TODO: log this exception
+                LOG.error("CDI and Deltaspike are not properly configured", e);
             }
         }
 
-        // TODO: implement lookup for different DI implementations. For now only CDI is supported
+        // XXX: implement lookup for different DI implementations. For now only CDI is supported
     }
 
     @Override

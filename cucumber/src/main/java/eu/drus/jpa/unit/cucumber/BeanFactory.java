@@ -22,7 +22,7 @@ public final class BeanFactory {
             }
         }
 
-        // TODO: implement lookup for different DI implementations. For now only CDI is supported
+        // XXX: implement lookup for different DI implementations. For now only CDI is supported
 
         // fall back
         return createInstance(clazz);
