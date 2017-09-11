@@ -1,6 +1,6 @@
 package eu.drus.jpa.unit.cucumber;
 
-import static eu.drus.jpa.unit.cucumber.utils.ClassLoaderUtils.tryLoadClassForName;
+import static eu.drus.jpa.unit.util.ClassLoaderUtils.tryLoadClassForName;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

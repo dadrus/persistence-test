@@ -1,6 +1,6 @@
 package eu.drus.jpa.unit.api.concordion;
 
-import static eu.drus.jpa.unit.concordion.utils.ClassLoaderUtils.tryLoadClassForName;
+import static eu.drus.jpa.unit.util.ClassLoaderUtils.tryLoadClassForName;
 import static eu.drus.jpa.unit.util.ReflectionUtils.getValue;
 import static eu.drus.jpa.unit.util.ReflectionUtils.injectValue;
 
