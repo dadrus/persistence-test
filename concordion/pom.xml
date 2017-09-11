@@ -110,11 +110,11 @@
               <relocations>
                 <relocation>
                   <pattern>net.sf.cglib</pattern>
-                  <shadedPattern>eu.drus.jpa.unit.cucumber.cglib</shadedPattern>
+                  <shadedPattern>eu.drus.jpa.unit.concordion.cglib</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>org.objectweb.asm</pattern>
-                  <shadedPattern>eu.drus.jpa.unit.cucumber.asm</shadedPattern>
+                  <shadedPattern>eu.drus.jpa.unit.concordion.asm</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>
