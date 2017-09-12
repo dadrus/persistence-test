@@ -24,7 +24,9 @@ public class Neo4JDriverDecorator implements TestClassDecorator {
     @Override
     public void beforeAll(final ExecutionContext ctx, final Class<?> testClass) throws Exception {
         final Configuration configuration = configurationRegistry.getConfiguration(ctx.getDescriptor());
-        ctx.storeData("gds", configuration.getConnection());
+        final Connection connection = configuration.getConnection();
+        connection.setAutoCommit(false);
+        ctx.storeData("gds", connection);
     }
 
     @Override

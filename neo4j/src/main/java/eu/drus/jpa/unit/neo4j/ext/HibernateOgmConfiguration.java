@@ -26,7 +26,7 @@ public class HibernateOgmConfiguration implements Configuration {
 
             final String key = (String) dbConfig.get(HIBERNATE_OGM_DATASTORE_PROVIDER);
 
-            return key != null && (key == "neo4j_bolt" || key == "neo4j_http");
+            return key != null && (key.equals("neo4j_bolt") || key.equals("neo4j_http"));
         }
 
         @Override
