@@ -55,7 +55,6 @@
     <dependency>
       <groupId>net.sf.ehcache</groupId>
       <artifactId>ehcache</artifactId>
-      <version>${version.ehcache}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -66,7 +65,6 @@
     <dependency>
       <groupId>javax.transaction</groupId>
       <artifactId>jta</artifactId>
-      <version>${version.jta}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
