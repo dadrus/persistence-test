@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,8 @@ public class Neo4JDbFeatureExecutor extends AbstractDbFeatureExecutor<Graph<Node
                 for (final String scriptPath : scriptPaths) {
                     executeScript(loadScript(scriptPath), connection);
                 }
-            } catch (IOException | URISyntaxException e) {
+                connection.commit();
+            } catch (IOException | URISyntaxException | SQLException e) {
                 throw new DbFeatureException("Could not apply custom scripts feature", e);
             }
         };
@@ -109,8 +111,10 @@ public class Neo4JDbFeatureExecutor extends AbstractDbFeatureExecutor<Graph<Node
         };
     }
 
-    private void executeScript(final String script, final Connection connection) {
-        // TODO Auto-generated method stub
+    private void executeScript(final String script, final Connection connection) throws SQLException {
+        try (PreparedStatement ps = connection.prepareStatement(script)) {
+            ps.execute();
+        }
     }
 
 }
