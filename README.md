@@ -57,7 +57,6 @@ To work with JUnit 4, you would need to add `jpa-unit4` to your test dependencie
   <groupId>com.github.dadrus.jpa-unit</groupId>
   <artifactId>jpa-unit4</artifactId>
   <version>${jpa-unit.version}</version>
-  <scope>test</scope>
 </dependency>
 ```
 
@@ -109,7 +108,6 @@ To work with JUnit 5, you would need to add `jpa-unit5` to your test dependencie
   <groupId>com.github.dadrus.jpa-unit</groupId>
   <artifactId>jpa-unit5</artifactId>
   <version>${jpa-unit.version}</version>
-  <scope>test</scope>
 </dependency>
 ```
 
@@ -479,7 +477,6 @@ For all relational databases the `jpa-unit-rdbms` dependency needs to be added:
   <groupId>com.github.dadrus.jpa-unit</groupId>
   <artifactId>jpa-unit-rdbms</artifactId>
   <version>${jpa-unit.version}</version>
-  <scope>test</scope>
 </dependency>
 ```
 
@@ -527,7 +524,7 @@ Thanks to [DBUnit](http://dbunit.sourceforge.net/), which is used internally for
 - YAML. Similar to the flat XML layout, but has some improvements (columns are calculated by parsing the entire data set, not just the first row)
 - JSON. Similar to YAML.
 - XSL(X). With this data set format each sheet represents a table. The first row of a sheet defines the columns names and remaining rows contains the data.
-- CSV. Here a data set can be constructed from a directory containing csv files, each representing a separate table with its entries.
+- [CSV](https://www.ietf.org/rfc/rfc4180.txt). Here a data set can be constructed from a directory containing csv files, each representing a separate table with its entries.
 
 
 Here some data set examples:
@@ -587,7 +584,6 @@ For [MongoDB](https://www.mongodb.com), the `jpa-unit-mongodb` dependency needs 
   <groupId>com.github.dadrus.jpa-unit</groupId>
   <artifactId>jpa-unit-mongodb</artifactId>
   <version>${jpa-unit.version}</version>
-  <scope>test</scope>
 </dependency>
 ```
 
@@ -601,7 +597,7 @@ To overcome this limitation, or made it at least less painful, one can use e.g.
 
 Since JPA does not address NoSQL databases, each JPA provider defines its own properties. These properties are also the only dependencies to a specific JPA provider implementation. As of todays JPA Unit MongoDB extension can use the properties of the following JPA provider:
 
-- [Hibernate OGM (with MongoDB extension)](https://docs.jboss.org/hibernate/ogm/5.1/reference/en-US/html_single/#ogm-mongodb).
+- [Hibernate OGM (with MongoDB extension)](https://docs.jboss.org/hibernate/ogm/5.2/reference/en-US/html_single/#ogm-mongodb).
 - [EclipseLink (with MongoDB extension)](https://www.eclipse.org/eclipselink/documentation/2.6/concepts/nosql002.htm)
 - [DataNucleus (with MongoDB extension)](http://www.datanucleus.org/products/datanucleus/jpa/samples/tutorial_mongodb.html)
 - [Kundera (with MongoDB extension)](https://github.com/impetus-opensource/Kundera/wiki/Kundera-with-MongoDB)
@@ -674,6 +670,78 @@ If indexes (for more information on MongoDB indexes and types see [MongoDB Index
 Please note, that in this case the collection document consists of two subdocuments. The first one - `indexes` is where the indexes are defined. Basically this is which fields of the collection are going to be indexed.
 The second one - `data`, where all documents, which belong to the collection under test, are defined. In both cases all the types defined by MongoDB are supported.
 
+## Neo4j
+
+For [Neo4j](https://www.neo4j.com), the `jpa-unit-neo4j` dependency needs to be added:
+
+```xml
+<dependency>
+  <groupId>com.github.dadrus.jpa-unit</groupId>
+  <artifactId>jpa-unit-neo4j</artifactId>
+  <version>${jpa-unit.version}</version>
+</dependency>
+```
+
+JPA Unit needs to connect to a running Neo4j instance. This is done using [Neo4j JDBC Driver](http://neo4j-contrib.github.io/neo4j-jdbc/). Usage of an in-process, in-memory Neo4j implementation is unfortunately not 
+possible (Neo4J does not allow opening multiple driver connections to the embedded DB). To overcome this limitation, or made it at least less painful, one can use e.g.
+
+- TODO: How to download and start an external instance for test purposes only.
+
+### JPA Provider Dependencies
+
+Since JPA does not address NoSQL databases, each JPA provider defines its own properties. These properties are also the only dependencies to a specific JPA provider implementation. As of todays JPA Unit Node4j
+extension can use the properties of the following JPA provider:
+
+- [Hibernate OGM (with MongoDB extension)](https://docs.jboss.org/hibernate/ogm/5.2/reference/en-US/html_single/#ogm-neo4j).
+
+[DataNucleus](http://www.datanucleus.org/products/datanucleus/jpa/samples/tutorial_neo4j.html) and [Kundera](https://github.com/impetus-opensource/Kundera/wiki/Neo4J-Specific-Configuration) both support Node4j
+in an embedded mode only and thus cannot be used with JPA-Unit today.
+
+### Data Set Format
+
+Thanks to [jgrapht](https://github.com/jgrapht/jgrapht), which is used internally for graph handling, following data set formats are supported:
+
+- [GraphML](http://graphml.graphdrawing.org/primer/graphml-primer.html). an XML-based file format for graphs.
+- [CSV](https://www.ietf.org/rfc/rfc4180.txt) CSV format as supported by [Gephi](https://gephi.org/) to represent relationships.
+
+If you want to generate/export data out of an existing Neo4j instance [APOC](https://neo4j-contrib.github.io/neo4j-apoc-procedures/) can be really helpful.
+
+Here some examples:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+	<key id="name" for="node" attr.name="name" attr.type="string"/>
+	<key id="id" for="node" attr.name="id" attr.type="long"/>
+	<key id="labels" for="node" attr.name="labels" attr.type="string"/>
+	<key id="label" for="edge" attr.name="label" attr.type="string"/>
+	<graph id="G" edgedefault="directed">
+		<node id="n1399" labels=":Person:ENTITY">
+			<data key="labels">:Person:ENTITY</data>
+			<data key="name">Dimitrij</data>
+			<data key="id">1</data>
+		</node>
+		<node id="n1400" labels=":Person:ENTITY">
+			<data key="labels">:Person:ENTITY</data>
+			<data key="name">Milana</data>
+			<data key="id">2</data>
+		</node>
+		<node id="n1401" labels=":Person:ENTITY">
+			<data key="labels">:Person:ENTITY</data>
+			<data key="name">Daliah</data>
+			<data key="id">3</data>
+		</node>
+		<edge id="e1036" source="n1399" target="n1400" label="daughter">
+			<data key="label">daughter</data>
+		</edge>
+		<edge id="e1037" source="n1399" target="n1401" label="daughter">
+			<data key="label">daughter</data>
+		</edge>
+	</graph>
+</graphml>
+```
+
+
 # CDI Integration
 
 To be able to use the JPA Unit with CDI, all you need in addition to your CDI test dependency, like [DeltaSpike Test-Control Module](https://deltaspike.apache.org/documentation/test-control.html) or [Gunnar's CDI Test](https://github.com/guhilling/cdi-test), is to add the following dependency to your Maven project :
@@ -683,7 +751,6 @@ To be able to use the JPA Unit with CDI, all you need in addition to your CDI te
   <groupId>com.github.dadrus.jpa-unit</groupId>
   <artifactId>jpa-unit-cdi</artifactId>
   <version>${jpa-unit.version}</version>
-  <scope>test</scope>
 </dependency>
 ```
 
@@ -720,7 +787,6 @@ Cucumber is a BDD test framework. To be able to use JPA Unit with it, all you ne
   <groupId>com.github.dadrus.jpa-unit</groupId>
   <artifactId>jpa-unit-cucumber</artifactId>
   <version>${jpa-unit.version}</version>
-  <scope>test</scope>
 </dependency>
 ```
 
@@ -815,7 +881,6 @@ Concordion is a BDD test framework. To be able to use JPA Unit with it, all you 
   <groupId>com.github.dadrus.jpa-unit</groupId>
   <artifactId>jpa-unit-concordion</artifactId>
   <version>${jpa-unit.version}</version>
-  <scope>test</scope>
 </dependency>
 ```
 
