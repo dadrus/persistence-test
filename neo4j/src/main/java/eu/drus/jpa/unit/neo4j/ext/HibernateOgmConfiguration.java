@@ -47,7 +47,7 @@ public class HibernateOgmConfiguration implements Configuration {
         password = (String) properties.get(HIBERNATE_OGM_DATASTORE_PASSWORD);
 
         final String key = (String) properties.get(HIBERNATE_OGM_DATASTORE_PROVIDER);
-        if (key == "neo4j_bolt") {
+        if (key.equals("neo4j_bolt")) {
             url = "jdbc:neo4j:bolt://" + host;
         } else {
             url = "jdbc:neo4j:http://" + host;

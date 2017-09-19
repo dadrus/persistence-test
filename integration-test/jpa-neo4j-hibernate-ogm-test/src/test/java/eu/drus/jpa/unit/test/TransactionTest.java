@@ -5,4 +5,4 @@ import org.junit.runner.RunWith;
 import eu.drus.jpa.unit.api.JpaUnitRunner;
 
 @RunWith(JpaUnitRunner.class)
-public class CleanupTest extends AbstractCleanupTest {}
+public class TransactionTest extends AbstractTransactionTest {}

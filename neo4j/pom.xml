@@ -12,6 +12,14 @@
   <artifactId>jpa-unit-neo4j</artifactId>
   <name>JPA Unit - Neo4J Extension</name>
 
+  <repositories>
+    <repository>
+      <id>neo4j</id>
+      <name>neo4j-repository</name>
+      <url>https://m2.neo4j.org/content/repositories/releases</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -23,6 +31,12 @@
       <artifactId>neo4j-jdbc-driver</artifactId>
       <version>3.1.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.neo4j</groupId>
+      <artifactId>neo4j-cypher-dsl</artifactId>
+      <version>2.3.1</version>
+    </dependency>
+
     <!-- <dependency> -->
     <!-- <groupId>org.neo4j.driver</groupId> -->
     <!-- <artifactId>neo4j-java-driver</artifactId> -->
@@ -34,11 +48,11 @@
     <!-- <version>3.2.3</version> -->
     <!-- </dependency> -->
 
-    <!-- <dependency> -->
-    <!-- <groupId>com.lordofthejars</groupId> -->
-    <!-- <artifactId>nosqlunit-neo4j</artifactId> -->
-    <!-- <version>1.0.0-rc.5</version> -->
-    <!-- </dependency> -->
+<!--     <dependency> -->
+<!--     <groupId>com.lordofthejars</groupId> -->
+<!--     <artifactId>nosqlunit-neo4j</artifactId> -->
+<!--     <version>1.0.0-rc.5</version> -->
+<!--     </dependency> -->
 
     <!-- <dependency> -->
     <!-- <groupId>org.apache.tinkerpop</groupId> -->
@@ -51,6 +65,14 @@
     <!-- <artifactId>neo4j-gremlin</artifactId> -->
     <!-- <version>3.2.5</version> -->
     <!-- </dependency> -->
+
+    <dependency>
+      <groupId>org.jgrapht</groupId>
+      <artifactId>jgrapht-ext</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+
+
 
     <!-- TEST DEPENDENCIES -->
     <dependency>
