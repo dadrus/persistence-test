@@ -6,28 +6,22 @@ import static eu.drus.jpa.unit.core.DecoratorRegistrar.getMethodDecorators;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import eu.drus.jpa.unit.spi.ExecutionContext;
-import eu.drus.jpa.unit.spi.TestClassDecorator;
-import eu.drus.jpa.unit.spi.TestDecorator;
-import eu.drus.jpa.unit.spi.TestMethodDecorator;
-import eu.drus.jpa.unit.spi.TestInvocation;
-
 public class DecoratorExecutor {
 
     private static final Comparator<TestDecorator> BEFORE_COMPARATOR = (a, b) -> a.getPriority() - b.getPriority();
     private static final Comparator<TestDecorator> AFTER_COMPARATOR = (a, b) -> b.getPriority() - a.getPriority();
 
-    public void processBeforeAll(final ExecutionContext ctx, final Class<?> testClass) throws Exception {
-        final Iterator<TestClassDecorator> it = classDecoratorIterator(ctx, BEFORE_COMPARATOR);
+    public void processBeforeAll(final TestInvocation invocation) throws Exception {
+        final Iterator<TestClassDecorator> it = classDecoratorIterator(invocation.getContext(), BEFORE_COMPARATOR);
         while (it.hasNext()) {
-            it.next().beforeAll(ctx, testClass);
+            it.next().beforeAll(invocation);
         }
     }
 
-    public void processAfterAll(final ExecutionContext ctx, final Class<?> testClass) throws Exception {
-        final Iterator<TestClassDecorator> it = classDecoratorIterator(ctx, AFTER_COMPARATOR);
+    public void processAfterAll(final TestInvocation invocation) throws Exception {
+        final Iterator<TestClassDecorator> it = classDecoratorIterator(invocation.getContext(), AFTER_COMPARATOR);
         while (it.hasNext()) {
-            it.next().afterAll(ctx, testClass);
+            it.next().afterAll(invocation);
         }
     }
 

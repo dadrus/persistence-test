@@ -6,7 +6,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
@@ -97,9 +96,15 @@ public class JpaUnitTest {
         unit.beforeAll(context);
 
         // THEN
+        final ArgumentCaptor<TestInvocation> invocationCaptor = ArgumentCaptor.forClass(TestInvocation.class);
+
         final InOrder order = inOrder(firstClassDecorator, secondClassDecorator);
-        order.verify(firstClassDecorator).beforeAll(notNull(ExecutionContext.class), eq(testClass));
-        order.verify(secondClassDecorator).beforeAll(notNull(ExecutionContext.class), eq(testClass));
+        order.verify(firstClassDecorator).beforeAll(invocationCaptor.capture());
+        assertThat(invocationCaptor.getValue().getTestClass(), equalTo(testClass));
+
+        order.verify(secondClassDecorator).beforeAll(invocationCaptor.capture());
+        assertThat(invocationCaptor.getValue().getTestClass(), equalTo(testClass));
+
         verifyZeroInteractions(firstMethodDecorator, secondMethodDecorator);
     }
 
@@ -112,9 +117,15 @@ public class JpaUnitTest {
         unit.afterAll(context);
 
         // THEN
+        final ArgumentCaptor<TestInvocation> invocationCaptor = ArgumentCaptor.forClass(TestInvocation.class);
+
         final InOrder order = inOrder(secondClassDecorator, firstClassDecorator);
-        order.verify(secondClassDecorator).afterAll(notNull(ExecutionContext.class), eq(testClass));
-        order.verify(firstClassDecorator).afterAll(notNull(ExecutionContext.class), eq(testClass));
+        order.verify(secondClassDecorator).afterAll(invocationCaptor.capture());
+        assertThat(invocationCaptor.getValue().getTestClass(), equalTo(testClass));
+
+        order.verify(firstClassDecorator).afterAll(invocationCaptor.capture());
+        assertThat(invocationCaptor.getValue().getTestClass(), equalTo(testClass));
+
         verifyZeroInteractions(firstMethodDecorator, secondMethodDecorator);
     }
 
@@ -163,7 +174,7 @@ public class JpaUnitTest {
 
         final TestInvocation invocation = invocationCaptor.getValue();
         assertNotNull(invocation.getContext());
-        assertThat(invocation.getTestMethod(), equalTo(getClass().getMethod("prepareMocks")));
+        assertThat(invocation.getTestMethod().get(), equalTo(getClass().getMethod("prepareMocks")));
         assertThat(invocation.getTestClass(), equalTo(getClass()));
         assertFalse(invocation.getException().isPresent());
         assertThat(invocation.getFeatureResolver().shouldCleanupAfter(), equalTo(Boolean.TRUE));
@@ -185,7 +196,7 @@ public class JpaUnitTest {
 
         final TestInvocation invocation = invocationCaptor.getValue();
         assertNotNull(invocation.getContext());
-        assertThat(invocation.getTestMethod(), equalTo(getClass().getMethod("prepareMocks")));
+        assertThat(invocation.getTestMethod().get(), equalTo(getClass().getMethod("prepareMocks")));
         assertThat(invocation.getTestClass(), equalTo(getClass()));
         assertFalse(invocation.getException().isPresent());
         assertThat(invocation.getFeatureResolver().shouldCleanupAfter(), equalTo(Boolean.TRUE));

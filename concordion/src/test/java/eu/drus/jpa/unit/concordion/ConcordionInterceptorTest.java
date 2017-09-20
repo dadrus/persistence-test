@@ -88,8 +88,8 @@ public class ConcordionInterceptorTest {
         assertThat(invocation1.getFeatureResolver().shouldCleanupAfter(), equalTo(Boolean.FALSE));
         assertThat(invocation1.getFeatureResolver().shouldCleanupBefore(), equalTo(Boolean.FALSE));
         assertThat(invocation1.getTestClass(), equalTo(TestDelegate.class));
-        assertThat(invocation1.getTestInstance(), equalTo(delegate));
-        assertThat(invocation1.getTestMethod(), equalTo(method));
+        assertThat(invocation1.getTestInstance().get(), equalTo(delegate));
+        assertThat(invocation1.getTestMethod().get(), equalTo(method));
     }
 
     @Test
@@ -125,8 +125,8 @@ public class ConcordionInterceptorTest {
         assertThat(invocation1.getFeatureResolver().shouldCleanupAfter(), equalTo(Boolean.FALSE));
         assertThat(invocation1.getFeatureResolver().shouldCleanupBefore(), equalTo(Boolean.FALSE));
         assertThat(invocation1.getTestClass(), equalTo(TestDelegate.class));
-        assertThat(invocation1.getTestInstance(), equalTo(delegate));
-        assertThat(invocation1.getTestMethod(), equalTo(method));
+        assertThat(invocation1.getTestInstance().get(), equalTo(delegate));
+        assertThat(invocation1.getTestMethod().get(), equalTo(method));
     }
 
 }

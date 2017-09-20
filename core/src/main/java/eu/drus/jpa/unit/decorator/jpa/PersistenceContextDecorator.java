@@ -11,8 +11,8 @@ import javax.persistence.PersistenceContextType;
 
 import eu.drus.jpa.unit.spi.Constants;
 import eu.drus.jpa.unit.spi.ExecutionContext;
-import eu.drus.jpa.unit.spi.TestMethodDecorator;
 import eu.drus.jpa.unit.spi.TestInvocation;
+import eu.drus.jpa.unit.spi.TestMethodDecorator;
 
 public class PersistenceContextDecorator implements TestMethodDecorator {
 
@@ -31,7 +31,7 @@ public class PersistenceContextDecorator implements TestMethodDecorator {
         if (field.getType().equals(EntityManager.class)) {
             final EntityManager em = getEntityManager(context, emf);
             context.storeData(Constants.KEY_ENTITY_MANAGER, em);
-            injectValue(field, invocation.getTestInstance(), em);
+            injectValue(field, invocation.getTestInstance().get(), em);
         }
     }
 

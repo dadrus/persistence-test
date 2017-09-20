@@ -6,8 +6,8 @@ import javax.persistence.EntityManagerFactory;
 
 import eu.drus.jpa.unit.spi.Constants;
 import eu.drus.jpa.unit.spi.ExecutionContext;
-import eu.drus.jpa.unit.spi.TestMethodDecorator;
 import eu.drus.jpa.unit.spi.TestInvocation;
+import eu.drus.jpa.unit.spi.TestMethodDecorator;
 
 public class PersistenceUnitDecorator implements TestMethodDecorator {
 
@@ -22,7 +22,7 @@ public class PersistenceUnitDecorator implements TestMethodDecorator {
 
         final Class<?> fieldType = invocation.getContext().getPersistenceField().getType();
         if (fieldType.equals(EntityManagerFactory.class)) {
-            injectValue(invocation.getContext().getPersistenceField(), invocation.getTestInstance(), emf);
+            injectValue(invocation.getContext().getPersistenceField(), invocation.getTestInstance().get(), emf);
         }
     }
 

@@ -21,16 +21,12 @@ public class JpaUnit implements BeforeAllCallback, AfterAllCallback, BeforeEachC
 
     @Override
     public void beforeAll(final ExtensionContext context) throws Exception {
-        final Class<?> testClass = context.getTestClass().get();
-
-        executor.processBeforeAll(JpaUnitContext.getInstance(testClass), testClass);
+        executor.processBeforeAll(createTestMethodInvocation(context, true));
     }
 
     @Override
     public void afterAll(final ExtensionContext context) throws Exception {
-        final Class<?> testClass = context.getTestClass().get();
-
-        executor.processAfterAll(JpaUnitContext.getInstance(testClass), testClass);
+        executor.processAfterAll(createTestMethodInvocation(context, true));
     }
 
     @Override
@@ -70,7 +66,12 @@ public class JpaUnit implements BeforeAllCallback, AfterAllCallback, BeforeEachC
 
             @Override
             public FeatureResolver getFeatureResolver() {
-                return FeatureResolver.newFeatureResolver(getTestClass()).withTestMethod(getTestMethod().get()).build();
+                final FeatureResolver.Builder builder = FeatureResolver.newFeatureResolver(getTestClass());
+                final Optional<Method> method = getTestMethod();
+                if (method.isPresent()) {
+                    builder.withTestMethod(method.get());
+                }
+                return builder.build();
             }
 
             @Override
