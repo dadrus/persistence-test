@@ -10,7 +10,7 @@ import eu.drus.jpa.unit.spi.ExecutionContext;
 import eu.drus.jpa.unit.spi.TestClassDecorator;
 import eu.drus.jpa.unit.spi.TestDecorator;
 import eu.drus.jpa.unit.spi.TestMethodDecorator;
-import eu.drus.jpa.unit.spi.TestMethodInvocation;
+import eu.drus.jpa.unit.spi.TestInvocation;
 
 public class DecoratorExecutor {
 
@@ -31,14 +31,14 @@ public class DecoratorExecutor {
         }
     }
 
-    public void processBefore(final TestMethodInvocation invocation) throws Exception {
+    public void processBefore(final TestInvocation invocation) throws Exception {
         final Iterator<TestMethodDecorator> it = methodDecoratorIterator(invocation.getContext(), BEFORE_COMPARATOR);
         while (it.hasNext()) {
             it.next().beforeTest(invocation);
         }
     }
 
-    public void processAfter(final TestMethodInvocation invocation) throws Exception {
+    public void processAfter(final TestInvocation invocation) throws Exception {
         final Iterator<TestMethodDecorator> it = methodDecoratorIterator(invocation.getContext(), AFTER_COMPARATOR);
         while (it.hasNext()) {
             it.next().afterTest(invocation);

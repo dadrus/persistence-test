@@ -10,6 +10,8 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
+import java.util.Optional;
+
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.junit.Before;
@@ -21,7 +23,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import eu.drus.jpa.unit.spi.ExecutionContext;
 import eu.drus.jpa.unit.spi.FeatureResolver;
-import eu.drus.jpa.unit.spi.TestMethodInvocation;
+import eu.drus.jpa.unit.spi.TestInvocation;
 import eu.drus.jpa.unit.sql.Constants;
 
 @RunWith(PowerMockRunner.class)
@@ -31,7 +33,7 @@ import eu.drus.jpa.unit.sql.Constants;
 public class DbUnitDecoratorTest {
 
     @Mock
-    private TestMethodInvocation invocation;
+    private TestInvocation invocation;
 
     @Mock
     private ExecutionContext ctx;
@@ -71,7 +73,7 @@ public class DbUnitDecoratorTest {
     @Test
     public void testAfterTest() throws Throwable {
         // GIVEN
-        when(invocation.hasErrors()).thenReturn(Boolean.FALSE);
+        when(invocation.getException()).thenReturn(Optional.empty());
 
         // WHEN
         decorator.afterTest(invocation);

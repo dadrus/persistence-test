@@ -2,13 +2,14 @@ package eu.drus.jpa.unit.concordion;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import eu.drus.jpa.unit.api.CleanupPhase;
 import eu.drus.jpa.unit.core.JpaUnitContext;
 import eu.drus.jpa.unit.spi.DecoratorExecutor;
 import eu.drus.jpa.unit.spi.ExecutionContext;
 import eu.drus.jpa.unit.spi.FeatureResolver;
-import eu.drus.jpa.unit.spi.TestMethodInvocation;
+import eu.drus.jpa.unit.spi.TestInvocation;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
@@ -50,7 +51,7 @@ public class ConcordionInterceptor implements MethodInterceptor {
             return methodProxy.invoke(delegate, args);
         }
 
-        final FeatureResolver resolver = FeatureResolver.newFeatureResolver(method, delegate.getClass())
+        final FeatureResolver resolver = FeatureResolver.newFeatureResolver(delegate.getClass()).withTestMethod(method)
                 .withDefaultCleanupPhase(CleanupPhase.NONE).build();
 
         Object result = null;
@@ -68,7 +69,7 @@ public class ConcordionInterceptor implements MethodInterceptor {
         return result;
     }
 
-    private static class TestMethodInvocationImpl implements TestMethodInvocation {
+    private static class TestMethodInvocationImpl implements TestInvocation {
 
         private final Object instance;
         private final Class<?> clazz;
@@ -91,8 +92,8 @@ public class ConcordionInterceptor implements MethodInterceptor {
         }
 
         @Override
-        public Method getTestMethod() {
-            return method;
+        public Optional<Method> getTestMethod() {
+            return Optional.of(method);
         }
 
         @Override
@@ -101,8 +102,8 @@ public class ConcordionInterceptor implements MethodInterceptor {
         }
 
         @Override
-        public boolean hasErrors() {
-            return e != null;
+        public Optional<Throwable> getException() {
+            return Optional.ofNullable(e);
         }
 
         public void setTestException(final Exception e) {
@@ -115,8 +116,8 @@ public class ConcordionInterceptor implements MethodInterceptor {
         }
 
         @Override
-        public Object getTestInstance() {
-            return instance;
+        public Optional<Object> getTestInstance() {
+            return Optional.of(instance);
         }
     }
 

@@ -39,7 +39,7 @@ public class DecoratorExecutorTest {
     private TestMethodDecorator secondMethodDecorator;
 
     @Mock
-    private TestMethodInvocation invocation;
+    private TestInvocation invocation;
 
     @Mock
     private ExecutionContext jpaUnitContext;
@@ -105,8 +105,8 @@ public class DecoratorExecutorTest {
 
         // THEN
         final InOrder order = inOrder(firstMethodDecorator, secondMethodDecorator);
-        order.verify(firstMethodDecorator).beforeTest(notNull(TestMethodInvocation.class));
-        order.verify(secondMethodDecorator).beforeTest(notNull(TestMethodInvocation.class));
+        order.verify(firstMethodDecorator).beforeTest(notNull(TestInvocation.class));
+        order.verify(secondMethodDecorator).beforeTest(notNull(TestInvocation.class));
         verifyZeroInteractions(firstClassDecorator, secondClassDecorator);
     }
 
@@ -120,8 +120,8 @@ public class DecoratorExecutorTest {
 
         // THEN
         final InOrder order = inOrder(firstMethodDecorator, secondMethodDecorator);
-        order.verify(secondMethodDecorator).afterTest(notNull(TestMethodInvocation.class));
-        order.verify(firstMethodDecorator).afterTest(notNull(TestMethodInvocation.class));
+        order.verify(secondMethodDecorator).afterTest(notNull(TestInvocation.class));
+        order.verify(firstMethodDecorator).afterTest(notNull(TestInvocation.class));
         verifyZeroInteractions(firstClassDecorator, secondClassDecorator);
     }
 }

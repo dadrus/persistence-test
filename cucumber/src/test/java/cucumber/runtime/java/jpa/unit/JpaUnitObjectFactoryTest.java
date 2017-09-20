@@ -26,7 +26,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.ru.Если;
 import eu.drus.jpa.unit.core.JpaUnitContext;
 import eu.drus.jpa.unit.spi.DecoratorExecutor;
-import eu.drus.jpa.unit.spi.TestMethodInvocation;
+import eu.drus.jpa.unit.spi.TestInvocation;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JpaUnitContext.class)
@@ -158,8 +158,8 @@ public class JpaUnitObjectFactoryTest {
 
         // THEN
         final InOrder inOrder = inOrder(executor);
-        inOrder.verify(executor).processBefore(notNull(TestMethodInvocation.class));
-        inOrder.verify(executor).processAfter(notNull(TestMethodInvocation.class));
+        inOrder.verify(executor).processBefore(notNull(TestInvocation.class));
+        inOrder.verify(executor).processAfter(notNull(TestInvocation.class));
 
         verifyNoMoreInteractions(executor);
     }

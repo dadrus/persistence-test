@@ -32,8 +32,8 @@ import eu.drus.jpa.unit.core.DecoratorRegistrar;
 import eu.drus.jpa.unit.core.JpaUnitContext;
 import eu.drus.jpa.unit.spi.ExecutionContext;
 import eu.drus.jpa.unit.spi.TestClassDecorator;
+import eu.drus.jpa.unit.spi.TestInvocation;
 import eu.drus.jpa.unit.spi.TestMethodDecorator;
-import eu.drus.jpa.unit.spi.TestMethodInvocation;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore("org.mockito.*")
@@ -128,8 +128,8 @@ public class JpaUnitTest {
 
         // THEN
         final InOrder order = inOrder(firstMethodDecorator, secondMethodDecorator);
-        order.verify(firstMethodDecorator).beforeTest(notNull(TestMethodInvocation.class));
-        order.verify(secondMethodDecorator).beforeTest(notNull(TestMethodInvocation.class));
+        order.verify(firstMethodDecorator).beforeTest(notNull(TestInvocation.class));
+        order.verify(secondMethodDecorator).beforeTest(notNull(TestInvocation.class));
         verifyZeroInteractions(firstClassDecorator, secondClassDecorator);
     }
 
@@ -143,8 +143,8 @@ public class JpaUnitTest {
 
         // THEN
         final InOrder order = inOrder(firstMethodDecorator, secondMethodDecorator);
-        order.verify(secondMethodDecorator).afterTest(notNull(TestMethodInvocation.class));
-        order.verify(firstMethodDecorator).afterTest(notNull(TestMethodInvocation.class));
+        order.verify(secondMethodDecorator).afterTest(notNull(TestInvocation.class));
+        order.verify(firstMethodDecorator).afterTest(notNull(TestInvocation.class));
         verifyZeroInteractions(firstClassDecorator, secondClassDecorator);
     }
 
@@ -158,14 +158,14 @@ public class JpaUnitTest {
         unit.beforeEach(context);
 
         // THEN
-        final ArgumentCaptor<TestMethodInvocation> invocationCaptor = ArgumentCaptor.forClass(TestMethodInvocation.class);
+        final ArgumentCaptor<TestInvocation> invocationCaptor = ArgumentCaptor.forClass(TestInvocation.class);
         verify(firstMethodDecorator).beforeTest(invocationCaptor.capture());
 
-        final TestMethodInvocation invocation = invocationCaptor.getValue();
+        final TestInvocation invocation = invocationCaptor.getValue();
         assertNotNull(invocation.getContext());
         assertThat(invocation.getTestMethod(), equalTo(getClass().getMethod("prepareMocks")));
         assertThat(invocation.getTestClass(), equalTo(getClass()));
-        assertFalse(invocation.hasErrors());
+        assertFalse(invocation.getException().isPresent());
         assertThat(invocation.getFeatureResolver().shouldCleanupAfter(), equalTo(Boolean.TRUE));
         assertThat(invocation.getTestInstance(), notNullValue());
     }
@@ -180,14 +180,14 @@ public class JpaUnitTest {
         unit.afterEach(context);
 
         // THEN
-        final ArgumentCaptor<TestMethodInvocation> invocationCaptor = ArgumentCaptor.forClass(TestMethodInvocation.class);
+        final ArgumentCaptor<TestInvocation> invocationCaptor = ArgumentCaptor.forClass(TestInvocation.class);
         verify(firstMethodDecorator).afterTest(invocationCaptor.capture());
 
-        final TestMethodInvocation invocation = invocationCaptor.getValue();
+        final TestInvocation invocation = invocationCaptor.getValue();
         assertNotNull(invocation.getContext());
         assertThat(invocation.getTestMethod(), equalTo(getClass().getMethod("prepareMocks")));
         assertThat(invocation.getTestClass(), equalTo(getClass()));
-        assertFalse(invocation.hasErrors());
+        assertFalse(invocation.getException().isPresent());
         assertThat(invocation.getFeatureResolver().shouldCleanupAfter(), equalTo(Boolean.TRUE));
         assertThat(invocation.getTestInstance(), notNullValue());
     }

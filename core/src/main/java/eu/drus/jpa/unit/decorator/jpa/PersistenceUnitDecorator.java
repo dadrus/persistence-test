@@ -7,7 +7,7 @@ import javax.persistence.EntityManagerFactory;
 import eu.drus.jpa.unit.spi.Constants;
 import eu.drus.jpa.unit.spi.ExecutionContext;
 import eu.drus.jpa.unit.spi.TestMethodDecorator;
-import eu.drus.jpa.unit.spi.TestMethodInvocation;
+import eu.drus.jpa.unit.spi.TestInvocation;
 
 public class PersistenceUnitDecorator implements TestMethodDecorator {
 
@@ -17,7 +17,7 @@ public class PersistenceUnitDecorator implements TestMethodDecorator {
     }
 
     @Override
-    public void beforeTest(final TestMethodInvocation invocation) throws Exception {
+    public void beforeTest(final TestInvocation invocation) throws Exception {
         final EntityManagerFactory emf = (EntityManagerFactory) invocation.getContext().getData(Constants.KEY_ENTITY_MANAGER_FACTORY);
 
         final Class<?> fieldType = invocation.getContext().getPersistenceField().getType();
@@ -27,7 +27,7 @@ public class PersistenceUnitDecorator implements TestMethodDecorator {
     }
 
     @Override
-    public void afterTest(final TestMethodInvocation invocation) throws Exception {
+    public void afterTest(final TestInvocation invocation) throws Exception {
         // nothing to do
     }
 

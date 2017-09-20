@@ -1,6 +1,7 @@
 package eu.drus.jpa.unit.api;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -12,7 +13,7 @@ import eu.drus.jpa.unit.core.JpaUnitContext;
 import eu.drus.jpa.unit.spi.DecoratorExecutor;
 import eu.drus.jpa.unit.spi.ExecutionContext;
 import eu.drus.jpa.unit.spi.FeatureResolver;
-import eu.drus.jpa.unit.spi.TestMethodInvocation;
+import eu.drus.jpa.unit.spi.TestInvocation;
 
 public class JpaUnit implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
 
@@ -42,14 +43,14 @@ public class JpaUnit implements BeforeAllCallback, AfterAllCallback, BeforeEachC
         executor.processAfter(createTestMethodInvocation(context, true));
     }
 
-    private TestMethodInvocation createTestMethodInvocation(final ExtensionContext context, final boolean considerExceptions) {
+    private TestInvocation createTestMethodInvocation(final ExtensionContext context, final boolean considerExceptions) {
         final JpaUnitContext ctx = JpaUnitContext.getInstance(context.getTestClass().get());
 
-        return new TestMethodInvocation() {
+        return new TestInvocation() {
 
             @Override
-            public Method getTestMethod() {
-                return context.getTestMethod().get();
+            public Optional<Method> getTestMethod() {
+                return context.getTestMethod();
             }
 
             @Override
@@ -63,18 +64,18 @@ public class JpaUnit implements BeforeAllCallback, AfterAllCallback, BeforeEachC
             }
 
             @Override
-            public boolean hasErrors() {
-                return considerExceptions ? context.getExecutionException().isPresent() : false;
+            public Optional<Throwable> getException() {
+                return considerExceptions ? context.getExecutionException() : Optional.empty();
             }
 
             @Override
             public FeatureResolver getFeatureResolver() {
-                return FeatureResolver.newFeatureResolver(getTestMethod(), getTestClass()).build();
+                return FeatureResolver.newFeatureResolver(getTestClass()).withTestMethod(getTestMethod().get()).build();
             }
 
             @Override
-            public Object getTestInstance() {
-                return context.getTestInstance().get();
+            public Optional<Object> getTestInstance() {
+                return context.getTestInstance();
             }
         };
     }
