@@ -28,9 +28,9 @@ import eu.drus.jpa.unit.sql.Constants;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-        DbUnitDecorator.class, DbUnitDecoratorTest.class
+        DbUnitTestMethodDecorator.class, DbUnitTestMethodDecoratorTest.class
 })
-public class DbUnitDecoratorTest {
+public class DbUnitTestMethodDecoratorTest {
 
     @Mock
     private TestInvocation invocation;
@@ -44,7 +44,7 @@ public class DbUnitDecoratorTest {
     @Mock
     private SqlDbFeatureExecutor executor;
 
-    private DbUnitDecorator decorator;
+    private DbUnitTestMethodDecorator decorator;
 
     @Before
     public void prepareMocks() throws Throwable {
@@ -55,7 +55,7 @@ public class DbUnitDecoratorTest {
         when(ctx.getData(eq(Constants.KEY_CONNECTION))).thenReturn(connection);
         when(ctx.getData(eq(Constants.KEY_FEATURE_EXECUTOR))).thenReturn(executor);
 
-        decorator = new DbUnitDecorator();
+        decorator = new DbUnitTestMethodDecorator();
     }
 
     @Test

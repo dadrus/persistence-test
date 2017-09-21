@@ -8,7 +8,7 @@ import eu.drus.jpa.unit.spi.TestMethodDecorator;
 import eu.drus.jpa.unit.sql.Constants;
 import eu.drus.jpa.unit.sql.SqlDbConfiguration;
 
-public class DbUnitDecorator implements TestMethodDecorator {
+public class DbUnitTestMethodDecorator implements TestMethodDecorator {
 
     @Override
     public int getPriority() {
