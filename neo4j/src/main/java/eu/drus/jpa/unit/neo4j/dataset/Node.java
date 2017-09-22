@@ -7,20 +7,21 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.jgrapht.io.Attribute;
+
 public class Node {
 
     private String id;
     private List<String> labels;
     private Map<String, ?> attributes;
 
-    public Node(final String id, final Map<String, ?> attributes) {
+    public Node(final String id, final Map<String, Attribute> attributes) {
         this.id = id;
-        labels = attributes.entrySet().stream().filter(e -> e.getKey().equals("label") || e.getKey().equals("labels"))
-                .map(v -> v.getValue().toString().split(":")).flatMap(Arrays::stream).filter(v -> !v.isEmpty())
-                .collect(Collectors.toList());
+        labels = attributes.entrySet().stream().filter(e -> e.getKey().equals("labels")).map(v -> v.getValue().getValue().split(":"))
+                .flatMap(Arrays::stream).filter(v -> !v.isEmpty()).collect(Collectors.toList());
 
-        this.attributes = attributes.entrySet().stream().filter(e -> !e.getKey().equals("label") && !e.getKey().equals("labels"))
-                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+        this.attributes = attributes.entrySet().stream().filter(e -> !e.getKey().equals("labels"))
+                .collect(Collectors.toMap(Entry::getKey, e -> AttributeTypeConverter.convert(e.getValue())));
     }
 
     public Node(final String id, final List<String> labels, final Map<String, ?> attributes) {

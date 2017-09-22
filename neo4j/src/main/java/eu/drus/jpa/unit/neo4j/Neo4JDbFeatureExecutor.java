@@ -12,9 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jgrapht.Graph;
-import org.jgrapht.ext.ImportException;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.io.GraphMLImporter;
+import org.jgrapht.io.ImportException;
 
 import eu.drus.jpa.unit.api.CleanupStrategy;
 import eu.drus.jpa.unit.api.DataSeedStrategy;
@@ -22,7 +23,6 @@ import eu.drus.jpa.unit.api.ExpectedDataSets;
 import eu.drus.jpa.unit.api.JpaUnitException;
 import eu.drus.jpa.unit.neo4j.dataset.Edge;
 import eu.drus.jpa.unit.neo4j.dataset.Node;
-import eu.drus.jpa.unit.neo4j.graphml.GraphMLReader;
 import eu.drus.jpa.unit.neo4j.operation.Neo4JOperation;
 import eu.drus.jpa.unit.spi.AbstractDbFeatureExecutor;
 import eu.drus.jpa.unit.spi.CleanupStrategyExecutor;
@@ -47,7 +47,7 @@ public class Neo4JDbFeatureExecutor extends AbstractDbFeatureExecutor<Graph<Node
 
     @Override
     protected List<Graph<Node, Edge>> loadDataSets(final List<String> paths) {
-        final GraphMLReader<Node, Edge> importer = new GraphMLReader<>(Node::new, Edge::new);
+        final GraphMLImporter<Node, Edge> importer = new GraphMLImporter<>(Node::new, Edge::new);
 
         final List<Graph<Node, Edge>> dataSets = new ArrayList<>();
         try {

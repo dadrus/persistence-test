@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.jgrapht.io.Attribute;
+
 public class Edge {
 
     private Node from;
@@ -15,7 +17,7 @@ public class Edge {
     private Map<String, ?> attributes;
     private List<String> references;
 
-    public Edge(final Node from, final Node to, final String id, final Map<String, ?> attributes) {
+    public Edge(final Node from, final Node to, final String id, final Map<String, Attribute> attributes) {
         this(from, to, id, extractLabels(attributes), extractAttributes(attributes));
     }
 
@@ -27,15 +29,14 @@ public class Edge {
         this.attributes = attributes;
     }
 
-    private static Map<String, ?> extractAttributes(final Map<String, ?> attributes) {
-        return attributes.entrySet().stream().filter(e -> !e.getKey().equals("label") && !e.getKey().equals("labels"))
-                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+    private static Map<String, ?> extractAttributes(final Map<String, Attribute> attributes) {
+        return attributes.entrySet().stream().filter(e -> !e.getKey().equals("label"))
+                .collect(Collectors.toMap(Entry::getKey, e -> AttributeTypeConverter.convert(e.getValue())));
     }
 
-    private static List<String> extractLabels(final Map<String, ?> attributes) {
-        return attributes.entrySet().stream().filter(e -> e.getKey().equals("label") || e.getKey().equals("labels"))
-                .map(v -> v.getValue().toString().split(":")).flatMap(Arrays::stream).filter(v -> !v.isEmpty())
-                .collect(Collectors.toList());
+    private static List<String> extractLabels(final Map<String, Attribute> attributes) {
+        return attributes.entrySet().stream().filter(e -> e.getKey().equals("label")).map(v -> v.getValue().getValue().split(":"))
+                .flatMap(Arrays::stream).filter(v -> !v.isEmpty()).collect(Collectors.toList());
     }
 
     public List<String> getRelationships() {
