@@ -36,7 +36,7 @@ public class Edge {
 
     private static List<String> extractLabels(final Map<String, Attribute> attributes) {
         return attributes.entrySet().stream().filter(e -> e.getKey().equals("label")).map(v -> v.getValue().getValue().split(":"))
-                .flatMap(Arrays::stream).filter(v -> !v.isEmpty()).collect(Collectors.toList());
+                .flatMap(Arrays::stream).filter(v -> !v.isEmpty()).sorted((a, b) -> a.compareTo(b)).collect(Collectors.toList());
     }
 
     public List<String> getRelationships() {

@@ -9,9 +9,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jgrapht.Graph;
+import org.jgrapht.Graphs;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.io.GraphMLImporter;
@@ -25,6 +27,7 @@ import eu.drus.jpa.unit.neo4j.dataset.Edge;
 import eu.drus.jpa.unit.neo4j.dataset.Node;
 import eu.drus.jpa.unit.neo4j.operation.Neo4JOperation;
 import eu.drus.jpa.unit.spi.AbstractDbFeatureExecutor;
+import eu.drus.jpa.unit.spi.AssertionErrorCollector;
 import eu.drus.jpa.unit.spi.CleanupStrategyExecutor;
 import eu.drus.jpa.unit.spi.DbFeature;
 import eu.drus.jpa.unit.spi.DbFeatureException;
@@ -48,6 +51,7 @@ public class Neo4JDbFeatureExecutor extends AbstractDbFeatureExecutor<Graph<Node
     @Override
     protected List<Graph<Node, Edge>> loadDataSets(final List<String> paths) {
         final GraphMLImporter<Node, Edge> importer = new GraphMLImporter<>(Node::new, Edge::new);
+        importer.setSchemaValidation(false);
 
         final List<Graph<Node, Edge>> dataSets = new ArrayList<>();
         try {
@@ -92,11 +96,11 @@ public class Neo4JDbFeatureExecutor extends AbstractDbFeatureExecutor<Graph<Node
     protected DbFeature<Connection> createSeedDataFeature(final DataSeedStrategy dataSeedStrategy,
             final List<Graph<Node, Edge>> initialDataSets) {
         return (final Connection connection) -> {
+            final Graph<Node, Edge> mergedGraph = mergeGraphs(initialDataSets);
+
             final Neo4JOperation operation = dataSeedStrategy.provide(new DataSeedStrategyProvider());
             try {
-                for (final Graph<Node, Edge> graph : initialDataSets) {
-                    operation.execute(connection, graph);
-                }
+                operation.execute(connection, mergedGraph);
                 connection.commit();
             } catch (final SQLException e) {
                 throw new DbFeatureException("Could not seed data base", e);
@@ -107,8 +111,25 @@ public class Neo4JDbFeatureExecutor extends AbstractDbFeatureExecutor<Graph<Node
     @Override
     protected DbFeature<Connection> createVerifyDataAfterFeature(final ExpectedDataSets expectedDataSets) {
         return (final Connection connection) -> {
-            // TODO
+            final Graph<Node, Edge> mergedGraph = mergeGraphs(loadDataSets(Arrays.asList(expectedDataSets.value())));
+
+            final GraphComparator graphComparator = new GraphComparator(expectedDataSets.excludeColumns(), expectedDataSets.strict());
+
+            final AssertionErrorCollector errorCollector = new AssertionErrorCollector();
+            graphComparator.compare(connection, mergedGraph, errorCollector);
+
+            errorCollector.report();
         };
+    }
+
+    private Graph<Node, Edge> mergeGraphs(final List<Graph<Node, Edge>> graphs) {
+        final Graph<Node, Edge> mergedGraph = new DefaultDirectedGraph<>(new ClassBasedEdgeFactory<>(Edge.class));
+
+        for (final Graph<Node, Edge> graph : graphs) {
+            Graphs.addGraph(mergedGraph, graph);
+        }
+
+        return mergedGraph;
     }
 
     private void executeScript(final String script, final Connection connection) throws SQLException {

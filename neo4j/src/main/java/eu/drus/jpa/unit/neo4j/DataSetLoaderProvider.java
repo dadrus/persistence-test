@@ -23,6 +23,7 @@ public class DataSetLoaderProvider implements LoaderProvider<Graph<Node, Edge>> 
             try {
                 final DefaultDirectedGraph<Node, Edge> graph = new DefaultDirectedGraph<>(new ClassBasedEdgeFactory<>(Edge.class));
                 final GraphMLImporter<Node, Edge> importer = new GraphMLImporter<>(Node::new, Edge::new);
+                importer.setSchemaValidation(false);
                 importer.importGraph(graph, path);
                 return graph;
             } catch (final ImportException e) {

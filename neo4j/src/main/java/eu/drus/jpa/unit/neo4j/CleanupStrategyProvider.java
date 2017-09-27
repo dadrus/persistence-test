@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
@@ -78,8 +77,8 @@ public class CleanupStrategyProvider implements StrategyProvider<CleanupStrategy
         };
     }
 
-    private DirectedGraph<Node, Edge> computeGraphToBeDeleted(final Graph<Node, Edge> graph, final String... nodesToRetain) {
-        final DirectedGraph<Node, Edge> toDelete = new DefaultDirectedGraph<>(new ClassBasedEdgeFactory<>(Edge.class));
+    private Graph<Node, Edge> computeGraphToBeDeleted(final Graph<Node, Edge> graph, final String... nodesToRetain) {
+        final Graph<Node, Edge> toDelete = new DefaultDirectedGraph<>(new ClassBasedEdgeFactory<>(Edge.class));
 
         // copy graph to a destination, which we are going to modify
         Graphs.addGraph(toDelete, graph);
@@ -119,25 +118,20 @@ public class CleanupStrategyProvider implements StrategyProvider<CleanupStrategy
 
         try (PreparedStatement ps = connection.prepareStatement(
                 "MATCH (n) MATCH ()-[r]->() RETURN { id: id(n), labels: labels(n), attributes: properties(n) } as node, {id: id(r), label: type(r), attributes: properties(r), from: id(startNode(r)), to: id(endNode(r))} as relation")) {
-            final ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                final Map<String, ?> n = (Map<String, ?>) rs.getObject("node");
-                final Map<String, ?> r = (Map<String, ?>) rs.getObject("relation");
-                final Node node = toNode(n);
-                nodeList.add(node);
-                nodes.put(n.get("id"), node);
-                edges.put(r.get("id"), r);
+            try (final ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    final Map<String, ?> n = (Map<String, ?>) rs.getObject("node");
+                    final Map<String, ?> r = (Map<String, ?>) rs.getObject("relation");
+                    final Node node = toNode(n);
+                    nodeList.add(node);
+                    nodes.put(n.get("id"), node);
+                    edges.put(r.get("id"), r);
+                }
             }
         }
 
         for (final Map<String, ?> edge : edges.values()) {
-            final Node from = nodes.get(edge.get("from"));
-            final Node to = nodes.get(edge.get("to"));
-
-            final Edge e = new Edge(from, to, edge.get("id").toString(), Arrays.asList(edge.get("label").toString()),
-                    (Map<String, ?>) edge.get("attributes"));
-
-            edgeList.add(e);
+            edgeList.add(toEdge(nodes, edge));
         }
 
     }
@@ -148,6 +142,15 @@ public class CleanupStrategyProvider implements StrategyProvider<CleanupStrategy
         final List<String> labels = (List<String>) node.get("labels");
         final Map<String, ?> attributes = (Map<String, ?>) node.get("attributes");
         return new Node(id.toString(), labels, attributes);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Edge toEdge(final Map<Object, Node> nodes, final Map<String, ?> edge) {
+        final Node from = nodes.get(edge.get("from"));
+        final Node to = nodes.get(edge.get("to"));
+
+        return new Edge(from, to, edge.get("id").toString(), Arrays.asList(edge.get("label").toString()),
+                (Map<String, ?>) edge.get("attributes"));
     }
 
 }

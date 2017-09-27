@@ -16,18 +16,23 @@ public class Node {
     private Map<String, ?> attributes;
 
     public Node(final String id, final Map<String, Attribute> attributes) {
-        this.id = id;
-        labels = attributes.entrySet().stream().filter(e -> e.getKey().equals("labels")).map(v -> v.getValue().getValue().split(":"))
-                .flatMap(Arrays::stream).filter(v -> !v.isEmpty()).collect(Collectors.toList());
-
-        this.attributes = attributes.entrySet().stream().filter(e -> !e.getKey().equals("labels"))
-                .collect(Collectors.toMap(Entry::getKey, e -> AttributeTypeConverter.convert(e.getValue())));
+        this(id, extractLabels(attributes), extractAttributes(attributes));
     }
 
     public Node(final String id, final List<String> labels, final Map<String, ?> attributes) {
         this.id = id;
         this.labels = labels;
         this.attributes = attributes;
+    }
+
+    private static Map<String, Object> extractAttributes(final Map<String, Attribute> attributes) {
+        return attributes.entrySet().stream().filter(e -> !e.getKey().equals("labels"))
+                .collect(Collectors.toMap(Entry::getKey, e -> AttributeTypeConverter.convert(e.getValue())));
+    }
+
+    private static List<String> extractLabels(final Map<String, Attribute> attributes) {
+        return attributes.entrySet().stream().filter(e -> e.getKey().equals("labels")).map(v -> v.getValue().getValue().split(":"))
+                .flatMap(Arrays::stream).filter(v -> !v.isEmpty()).sorted((a, b) -> a.compareTo(b)).collect(Collectors.toList());
     }
 
     public List<String> getLabels() {
