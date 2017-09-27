@@ -17,8 +17,8 @@
     <shared-cache-mode>NONE</shared-cache-mode>
 
     <properties>
-      <property name="hibernate.ogm.datastore.provider" value="neo4j_http"/>
-      <property name="hibernate.ogm.datastore.host" value="localhost:7474"/>
+      <property name="hibernate.ogm.datastore.provider" value="neo4j_bolt"/>
+      <property name="hibernate.ogm.datastore.host" value="localhost:7687"/>
       <property name="hibernate.ogm.datastore.username" value="neo4j"/>
       <property name="hibernate.ogm.datastore.password" value="test"/>
 
