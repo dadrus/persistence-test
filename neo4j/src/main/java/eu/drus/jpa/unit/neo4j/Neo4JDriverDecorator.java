@@ -25,7 +25,6 @@ public class Neo4JDriverDecorator implements TestClassDecorator {
     public void beforeAll(final ExecutionContext ctx, final Class<?> testClass) throws Exception {
         final Configuration configuration = configurationRegistry.getConfiguration(ctx.getDescriptor());
         final Connection connection = configuration.getConnection();
-        connection.setAutoCommit(false);
         ctx.storeData("gds", connection);
     }
 

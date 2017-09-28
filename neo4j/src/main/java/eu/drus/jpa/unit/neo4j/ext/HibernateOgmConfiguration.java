@@ -56,7 +56,9 @@ public class HibernateOgmConfiguration implements Configuration {
 
     @Override
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, user, password);
+        final Connection connection = DriverManager.getConnection(url, user, password);
+        connection.setAutoCommit(false);
+        return connection;
     }
 
 }
