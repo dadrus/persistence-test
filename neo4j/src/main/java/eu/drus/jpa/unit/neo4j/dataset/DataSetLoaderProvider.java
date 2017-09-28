@@ -1,4 +1,4 @@
-package eu.drus.jpa.unit.neo4j;
+package eu.drus.jpa.unit.neo4j.dataset;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,8 +9,6 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.io.GraphMLImporter;
 import org.jgrapht.io.ImportException;
 
-import eu.drus.jpa.unit.neo4j.dataset.Edge;
-import eu.drus.jpa.unit.neo4j.dataset.Node;
 import eu.drus.jpa.unit.spi.DataSetFormat.LoaderProvider;
 import eu.drus.jpa.unit.spi.DataSetLoader;
 import eu.drus.jpa.unit.spi.UnsupportedDataSetFormatException;
@@ -39,7 +37,7 @@ public class DataSetLoaderProvider implements LoaderProvider<Graph<Node, Edge>> 
 
     @Override
     public DataSetLoader<Graph<Node, Edge>> jsonLoader() {
-        throw new UnsupportedDataSetFormatException("YAML data sets are not supportred for Neo4j");
+        throw new UnsupportedDataSetFormatException("JSON data sets are not supportred for Neo4j");
     }
 
     @Override

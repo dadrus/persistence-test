@@ -131,7 +131,6 @@ public class HibernateOgmConfigurationTest {
         verify(dataSource).setUsername(userCaptor.capture());
         verify(dataSource).setPassword(passCaptor.capture());
         verify(dataSource).setJdbcUrl(urlCaptor.capture());
-        verify(dataSource).setAutoCommit(eq(Boolean.FALSE));
 
         assertThat(urlCaptor.getValue(), equalTo("jdbc:neo4j:http://localhost:7474"));
         assertThat(userCaptor.getValue(), equalTo("neo4j"));
@@ -164,7 +163,6 @@ public class HibernateOgmConfigurationTest {
         verify(dataSource).setUsername(userCaptor.capture());
         verify(dataSource).setPassword(passCaptor.capture());
         verify(dataSource).setJdbcUrl(urlCaptor.capture());
-        verify(dataSource).setAutoCommit(eq(Boolean.FALSE));
 
         assertThat(urlCaptor.getValue(), equalTo("jdbc:neo4j:bolt://localhost:7687"));
         assertThat(userCaptor.getValue(), equalTo("neo4j"));

@@ -702,7 +702,6 @@ in an embedded mode only and thus cannot be used with JPA-Unit today.
 Thanks to [jgrapht](https://github.com/jgrapht/jgrapht), which is used internally for graph handling, following data set formats are supported:
 
 - [GraphML](http://graphml.graphdrawing.org/primer/graphml-primer.html). an XML-based file format for graphs.
-- [CSV](https://www.ietf.org/rfc/rfc4180.txt) CSV format as supported by [Gephi](https://gephi.org/) to represent relationships.
 
 If you want to generate/export data out of an existing Neo4j instance [APOC](https://neo4j-contrib.github.io/neo4j-apoc-procedures/) can be really helpful.
 
