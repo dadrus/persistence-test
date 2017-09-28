@@ -67,5 +67,11 @@
       <artifactId>jta</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.liquigraph</groupId>
+      <artifactId>liquigraph-core</artifactId>
+      <version>3.0.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

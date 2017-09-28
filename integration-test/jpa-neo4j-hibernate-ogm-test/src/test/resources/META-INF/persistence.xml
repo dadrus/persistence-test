@@ -52,5 +52,29 @@
       <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory" />
     </properties>
   </persistence-unit>
+  
+  <persistence-unit name="my-verification-unit" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
+
+    <!-- your classes converters, etc -->
+    <class>eu.drus.jpa.unit.test.model.Account</class>
+    <class>eu.drus.jpa.unit.test.model.AccountEntry</class>
+    <class>eu.drus.jpa.unit.test.model.Address</class>
+    <class>eu.drus.jpa.unit.test.model.ContactDetail</class>
+    <class>eu.drus.jpa.unit.test.model.CreditCondition</class>
+    <class>eu.drus.jpa.unit.test.model.Depositor</class>
+    <class>eu.drus.jpa.unit.test.model.GiroAccount</class>
+    <class>eu.drus.jpa.unit.test.model.InstantAccessAccount</class>
+
+    <shared-cache-mode>NONE</shared-cache-mode>
+
+    <properties>
+      <property name="hibernate.ogm.datastore.provider" value="neo4j_bolt"/>
+      <property name="hibernate.ogm.datastore.host" value="localhost:7687"/>
+      <property name="hibernate.ogm.datastore.username" value="neo4j"/>
+      <property name="hibernate.ogm.datastore.password" value="test"/>
+
+    </properties>
+  </persistence-unit>
 
 </persistence>
