@@ -1,9 +1,8 @@
 package eu.drus.jpa.unit.neo4j.ext;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import javax.sql.DataSource;
 
 public interface Configuration {
 
-    Connection getConnection() throws SQLException;
+    DataSource createDataSource();
 }

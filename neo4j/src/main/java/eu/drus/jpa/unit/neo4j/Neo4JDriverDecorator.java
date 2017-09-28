@@ -1,6 +1,6 @@
 package eu.drus.jpa.unit.neo4j;
 
-import java.sql.Connection;
+import com.zaxxer.hikari.HikariDataSource;
 
 import eu.drus.jpa.unit.neo4j.ext.Configuration;
 import eu.drus.jpa.unit.neo4j.ext.ConfigurationRegistry;
@@ -24,15 +24,14 @@ public class Neo4JDriverDecorator implements TestClassDecorator {
     @Override
     public void beforeAll(final ExecutionContext ctx, final Class<?> testClass) throws Exception {
         final Configuration configuration = configurationRegistry.getConfiguration(ctx.getDescriptor());
-        final Connection connection = configuration.getConnection();
-        ctx.storeData("gds", connection);
+        ctx.storeData(Constants.KEY_DATA_SOURCE, configuration.createDataSource());
     }
 
     @Override
     public void afterAll(final ExecutionContext ctx, final Class<?> testClass) throws Exception {
-        final Connection connection = (Connection) ctx.getData("gds");
-        connection.close();
-        ctx.storeData("gds", null);
+        final HikariDataSource ds = (HikariDataSource) ctx.getData(Constants.KEY_DATA_SOURCE);
+        ds.close();
+        ctx.storeData(Constants.KEY_DATA_SOURCE, null);
     }
 
 }

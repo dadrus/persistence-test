@@ -2,6 +2,8 @@ package eu.drus.jpa.unit.neo4j;
 
 import java.sql.Connection;
 
+import javax.sql.DataSource;
+
 import eu.drus.jpa.unit.neo4j.ext.ConfigurationRegistry;
 import eu.drus.jpa.unit.spi.ExecutionContext;
 import eu.drus.jpa.unit.spi.TestMethodDecorator;
@@ -26,7 +28,10 @@ public class Neo4JDbDecorator implements TestMethodDecorator {
         final ExecutionContext context = invocation.getContext();
 
         final Neo4JDbFeatureExecutor dbFeatureExecutor = new Neo4JDbFeatureExecutor(invocation.getFeatureResolver());
-        final Connection connection = (Connection) context.getData("gds");
+        final DataSource ds = (DataSource) context.getData(Constants.KEY_DATA_SOURCE);
+        final Connection connection = ds.getConnection();
+        connection.setAutoCommit(false);
+        context.storeData(Constants.KEY_CONNECTION, connection);
         dbFeatureExecutor.executeBeforeTest(connection);
     }
 
@@ -35,8 +40,12 @@ public class Neo4JDbDecorator implements TestMethodDecorator {
         final ExecutionContext context = invocation.getContext();
 
         final Neo4JDbFeatureExecutor dbFeatureExecutor = new Neo4JDbFeatureExecutor(invocation.getFeatureResolver());
-        final Connection connection = (Connection) context.getData("gds");
-        dbFeatureExecutor.executeAfterTest(connection, invocation.hasErrors());
+        try (final Connection connection = (Connection) context.getData(Constants.KEY_CONNECTION)) {
+            dbFeatureExecutor.executeAfterTest(connection, invocation.hasErrors());
+        } finally {
+            context.storeData(Constants.KEY_CONNECTION, null);
+        }
+
     }
 
 }
