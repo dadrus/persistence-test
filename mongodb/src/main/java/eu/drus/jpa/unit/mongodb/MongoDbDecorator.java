@@ -11,14 +11,11 @@ import eu.drus.jpa.unit.spi.TestMethodInvocation;
 
 public class MongoDbDecorator implements TestMethodDecorator {
 
-    protected static final String KEY_MONGO_DB = "eu.drus.jpa.unit.mongodb.MongoDatabase";
-    protected static final String KEY_MONGO_CLIENT = "eu.drus.jpa.unit.mongodb.MongoClient";
-
     private ConfigurationRegistry configurationRegistry = new ConfigurationRegistry();
 
     @Override
     public int getPriority() {
-        return 4;
+        return 3;
     }
 
     @Override
@@ -27,34 +24,26 @@ public class MongoDbDecorator implements TestMethodDecorator {
 
         final Configuration configuration = configurationRegistry.getConfiguration(context.getDescriptor());
 
-        final MongoClient client = new MongoClient(configuration.getServerAddresses(), configuration.getCredentials(),
-                configuration.getClientOptions());
+        final MongoClient client = (MongoClient) context.getData(Constants.KEY_MONGO_CLIENT);
         final MongoDatabase mongoDb = client.getDatabase(configuration.getDatabaseName());
-
-        context.storeData(KEY_MONGO_CLIENT, client);
-        context.storeData(KEY_MONGO_DB, mongoDb);
+        context.storeData(Constants.KEY_MONGO_DB, mongoDb);
 
         final MongoDbFeatureExecutor dbFeatureExecutor = new MongoDbFeatureExecutor(invocation.getFeatureResolver());
 
         dbFeatureExecutor.executeBeforeTest(mongoDb);
+        context.storeData(Constants.KEY_FEATURE_EXECUTOR, dbFeatureExecutor);
     }
 
     @Override
     public void afterTest(final TestMethodInvocation invocation) throws Exception {
         final ExecutionContext context = invocation.getContext();
 
-        final MongoClient client = (MongoClient) context.getData(KEY_MONGO_CLIENT);
-        final MongoDatabase mongoDb = (MongoDatabase) context.getData(KEY_MONGO_DB);
-        context.storeData(KEY_MONGO_CLIENT, null);
-        context.storeData(KEY_MONGO_DB, null);
+        final MongoDatabase mongoDb = (MongoDatabase) context.getData(Constants.KEY_MONGO_DB);
+        final MongoDbFeatureExecutor dbFeatureExecutor = (MongoDbFeatureExecutor) context.getData(Constants.KEY_FEATURE_EXECUTOR);
+        context.storeData(Constants.KEY_MONGO_DB, null);
+        context.storeData(Constants.KEY_FEATURE_EXECUTOR, null);
 
-        final MongoDbFeatureExecutor dbFeatureExecutor = new MongoDbFeatureExecutor(invocation.getFeatureResolver());
-
-        try {
-            dbFeatureExecutor.executeAfterTest(mongoDb, invocation.hasErrors());
-        } finally {
-            client.close();
-        }
+        dbFeatureExecutor.executeAfterTest(mongoDb, invocation.hasErrors());
     }
 
     @Override
