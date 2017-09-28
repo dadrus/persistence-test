@@ -138,19 +138,23 @@ public class CleanupStrategyProvider implements StrategyProvider<CleanupStrategy
 
     @SuppressWarnings("unchecked")
     private static Node toNode(final Map<String, ?> node) {
-        final Object id = node.get("id");
+        final String id = node.get("id").toString();
         final List<String> labels = (List<String>) node.get("labels");
         final Map<String, ?> attributes = (Map<String, ?>) node.get("attributes");
-        return new Node(id.toString(), labels, attributes);
+
+        return new Node(id, labels, attributes);
     }
 
     @SuppressWarnings("unchecked")
     private Edge toEdge(final Map<Object, Node> nodes, final Map<String, ?> edge) {
+        final String id = edge.get("id").toString();
+        final List<String> labels = Arrays.asList(edge.get("label").toString());
+        final Map<String, ?> attributes = (Map<String, ?>) edge.get("attributes");
+
         final Node from = nodes.get(edge.get("from"));
         final Node to = nodes.get(edge.get("to"));
 
-        return new Edge(from, to, edge.get("id").toString(), Arrays.asList(edge.get("label").toString()),
-                (Map<String, ?>) edge.get("attributes"));
+        return new Edge(from, to, id, labels, attributes);
     }
 
 }

@@ -16,12 +16,10 @@ public final class AttributeTypeConverter {
             return Double.valueOf(attribute.getValue());
         case FLOAT:
             // float types are always represented as double in neo4j
-            // see
             // https://neo4j.com/docs/developer-manual/current/drivers/cypher-values/#driver-type-mappings
             return Double.valueOf(attribute.getValue());
         case INT:
             // int types are always represented as long in neo4j
-            // see
             // https://neo4j.com/docs/developer-manual/current/drivers/cypher-values/#driver-type-mappings
             return Long.valueOf(attribute.getValue());
         case LONG:

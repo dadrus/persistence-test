@@ -1,5 +1,9 @@
 package eu.drus.jpa.unit.neo4j.dataset;
 
+import static java.util.stream.Collectors.toList;
+import static org.neo4j.cypherdsl.CypherQuery.node;
+import static org.neo4j.cypherdsl.CypherQuery.value;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -8,6 +12,10 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.jgrapht.io.Attribute;
+import org.neo4j.cypherdsl.CypherQuery;
+import org.neo4j.cypherdsl.Identifier;
+import org.neo4j.cypherdsl.Path;
+import org.neo4j.cypherdsl.PathRelationship;
 
 public class Edge {
 
@@ -15,7 +23,7 @@ public class Edge {
     private Node to;
     private String id;
     private Map<String, ?> attributes;
-    private List<String> references;
+    private List<String> labels;
 
     public Edge(final Node from, final Node to, final String id, final Map<String, Attribute> attributes) {
         this(from, to, id, extractLabels(attributes), extractAttributes(attributes));
@@ -25,7 +33,7 @@ public class Edge {
         this.from = from;
         this.to = to;
         this.id = id;
-        references = labels;
+        this.labels = labels;
         this.attributes = attributes;
     }
 
@@ -40,7 +48,7 @@ public class Edge {
     }
 
     public List<String> getRelationships() {
-        return Collections.unmodifiableList(references);
+        return Collections.unmodifiableList(labels);
     }
 
     public String getId() {
@@ -59,8 +67,36 @@ public class Edge {
         return to;
     }
 
+    public PathBuilder toPath() {
+        return new PathBuilder();
+    }
+
     @Override
     public String toString() {
         return id;
+    }
+
+    public class PathBuilder {
+
+        private PathRelationship path;
+
+        private PathBuilder() {
+            final List<Identifier> relationShips = labels.stream().map(CypherQuery::identifier).collect(toList());
+            path = node(from.getId()).out(relationShips.toArray(new Identifier[relationShips.size()])).as(id);
+        }
+
+        public PathBuilder withAttribute(final String attribute) {
+            path = path.values(value(attribute, attributes.get(attribute)));
+            return this;
+        }
+
+        public PathBuilder withAllAttributes() {
+            path = path.values(attributes.entrySet().stream().map(e -> value(e.getKey(), e.getValue())).collect(toList()));
+            return this;
+        }
+
+        public Path build() {
+            return path.node(to.getId());
+        }
     }
 }

@@ -1,5 +1,9 @@
 package eu.drus.jpa.unit.neo4j.dataset;
 
+import static java.util.stream.Collectors.toList;
+import static org.neo4j.cypherdsl.CypherQuery.node;
+import static org.neo4j.cypherdsl.CypherQuery.value;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -8,6 +12,8 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.jgrapht.io.Attribute;
+import org.neo4j.cypherdsl.CypherQuery;
+import org.neo4j.cypherdsl.Path;
 
 public class Node {
 
@@ -32,11 +38,20 @@ public class Node {
 
     private static List<String> extractLabels(final Map<String, Attribute> attributes) {
         return attributes.entrySet().stream().filter(e -> e.getKey().equals("labels")).map(v -> v.getValue().getValue().split(":"))
-                .flatMap(Arrays::stream).filter(v -> !v.isEmpty()).sorted((a, b) -> a.compareTo(b)).collect(Collectors.toList());
+                .flatMap(Arrays::stream).filter(v -> !v.isEmpty()).collect(Collectors.toList());
+    }
+
+    public static String toNodeType(final List<String> labels) {
+        final List<String> tmp = labels.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toList());
+        return String.join(":", tmp);
     }
 
     public List<String> getLabels() {
         return Collections.unmodifiableList(labels);
+    }
+
+    public String getType() {
+        return toNodeType(labels);
     }
 
     public String getId() {
@@ -47,9 +62,46 @@ public class Node {
         return Collections.unmodifiableMap(attributes);
     }
 
+    public PathBuilder toPath() {
+        return new PathBuilder();
+    }
+
     @Override
     public String toString() {
         return id;
     }
 
+    public class PathBuilder {
+
+        private Path path;
+
+        private PathBuilder() {
+            path = node(id).labels(labels.stream().map(CypherQuery::label).collect(toList()));
+        }
+
+        public PathBuilder withId(final String id) {
+            path = node(id).labels(labels.stream().map(CypherQuery::label).collect(toList()));
+            return this;
+        }
+
+        public PathBuilder withAttribute(final String attribute) {
+            path = path.values(value(attribute, attributes.get(attribute)));
+            return this;
+        }
+
+        public PathBuilder withAllAttributes() {
+            path = path.values(attributes.entrySet().stream().map(e -> value(e.getKey(), e.getValue())).collect(toList()));
+            return this;
+        }
+
+        public PathBuilder withAllAttributesBut(final List<String> toExclude) {
+            path = path.values(attributes.entrySet().stream().filter(e -> !toExclude.contains(e.getKey()))
+                    .map(e -> value(e.getKey(), e.getValue())).collect(toList()));
+            return this;
+        }
+
+        public Path build() {
+            return path;
+        }
+    }
 }

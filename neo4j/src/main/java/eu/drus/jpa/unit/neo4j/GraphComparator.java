@@ -1,10 +1,11 @@
 package eu.drus.jpa.unit.neo4j;
 
+import static eu.drus.jpa.unit.neo4j.dataset.Node.toNodeType;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.neo4j.cypherdsl.CypherQuery.identifier;
 import static org.neo4j.cypherdsl.CypherQuery.match;
 import static org.neo4j.cypherdsl.CypherQuery.node;
-import static org.neo4j.cypherdsl.CypherQuery.value;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,7 +19,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.jgrapht.Graph;
 import org.neo4j.cypherdsl.CypherQuery;
@@ -61,12 +61,10 @@ public class GraphComparator {
             try (final ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     final Map<String, ?> node = (Map<String, ?>) rs.getObject("node");
-                    List<String> labels = (List<String>) node.get("labels");
-                    labels = labels.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toList());
-                    final String label = String.join(":", labels);
-                    final Integer val = unexpectedNodesOccurence.computeIfPresent(label, (k, v) -> v + 1);
+                    final String nodeType = toNodeType((List<String>) node.get("labels"));
+                    final Integer val = unexpectedNodesOccurence.computeIfPresent(nodeType, (k, v) -> v + 1);
                     if (val == null) {
-                        unexpectedNodesOccurence.put(label, 1);
+                        unexpectedNodesOccurence.put(nodeType, 1);
                     }
                 }
             }
@@ -85,19 +83,18 @@ public class GraphComparator {
     private void compareContent(final Connection connection, final Graph<Node, Edge> expectedGraph,
             final AssertionErrorCollector errorCollector) {
 
-        final List<String> expectedNodeLables = expectedGraph.vertexSet().stream().map(n -> String.join(":", n.getLabels()))
-                .collect(Collectors.toList());
+        final List<String> expectedNodeTypes = expectedGraph.vertexSet().stream().map(Node::getType).collect(toList());
 
-        final Set<String> currentNodeLabels = getAvailableNodeLabels(connection);
+        final Set<String> currentNodeTypes = getAvailableNodeTypes(connection);
 
-        verifyNodeLabels(currentNodeLabels, expectedNodeLables, errorCollector,
+        verifyNodeLabels(currentNodeTypes, expectedNodeTypes, errorCollector,
                 "Nodes with %s labels were expected to be present, but not found");
 
         checkPresenceOfExpectedNodes(connection, expectedGraph, errorCollector);
         checkAbsenseOfNotExpectedNodes(connection, expectedGraph, errorCollector);
 
         if (isStrict) {
-            verifyNodeLabels(expectedNodeLables, currentNodeLabels, errorCollector,
+            verifyNodeLabels(expectedNodeTypes, currentNodeTypes, errorCollector,
                     "Nodes with %s labels were not expected, but are present");
         }
     }
@@ -105,18 +102,17 @@ public class GraphComparator {
     @SuppressWarnings("unchecked")
     private void checkAbsenseOfNotExpectedNodes(final Connection connection, final Graph<Node, Edge> expectedGraph,
             final AssertionErrorCollector errorCollector) {
-        final List<List<String>> expectedNodeLables = expectedGraph.vertexSet().stream().map(Node::getLabels).distinct()
-                .collect(Collectors.toList());
+        final List<List<String>> expectedNodeLables = expectedGraph.vertexSet().stream().map(Node::getLabels).distinct().collect(toList());
 
         for (final List<String> labels : expectedNodeLables) {
             final List<Node> expectedNodes = expectedGraph.vertexSet().stream().filter(node -> node.getLabels().containsAll(labels))
-                    .collect(Collectors.toList());
+                    .collect(toList());
 
             final List<String> attributesToExclude = labels.stream().map(toExclude::getColumns).flatMap(List::stream).distinct()
-                    .collect(Collectors.toList());
+                    .collect(toList());
 
-            final Path nodesPath = node("n").labels(labels.stream().map(CypherQuery::label).collect(toList()));
-            final ReturnNext query = match(nodesPath).returns(identifier("n"));
+            final ReturnNext query = match(node("n").labels(labels.stream().map(CypherQuery::label).collect(toList())))
+                    .returns(identifier("n"));
 
             try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
                 try (final ResultSet rs = ps.executeQuery()) {
@@ -124,7 +120,7 @@ public class GraphComparator {
                         final Map<String, Object> n = (Map<String, Object>) rs.getObject("n");
                         final boolean nodePresent = expectedNodes.stream().anyMatch(node -> {
                             final Set<Entry<String, Object>> attributes = node.getAttributes().entrySet().stream()
-                                    .filter(e -> !attributesToExclude.contains(e.getKey())).collect(Collectors.toSet());
+                                    .filter(e -> !attributesToExclude.contains(e.getKey())).collect(toSet());
 
                             return n.entrySet().containsAll(attributes);
                         });
@@ -143,9 +139,9 @@ public class GraphComparator {
             final AssertionErrorCollector errorCollector) {
         for (final Node expectedNode : expectedGraph.vertexSet()) {
             final List<String> attributesToExclude = expectedNode.getLabels().stream().map(toExclude::getColumns).flatMap(List::stream)
-                    .distinct().collect(Collectors.toList());
+                    .distinct().collect(toList());
 
-            final Path nodePath = toNodePath(expectedNode, attributesToExclude);
+            final Path nodePath = expectedNode.toPath().withAllAttributesBut(attributesToExclude).build();
             final ReturnNext query = match(nodePath).returns(identifier(expectedNode.getId()));
 
             try (PreparedStatement ps = connection.prepareStatement(query.toString())) {
@@ -168,31 +164,19 @@ public class GraphComparator {
     }
 
     @SuppressWarnings("unchecked")
-    private Set<String> getAvailableNodeLabels(final Connection connection) {
-        final Set<String> currentNodeLabels = new HashSet<>();
+    private Set<String> getAvailableNodeTypes(final Connection connection) {
+        final Set<String> currentNodeTypes = new HashSet<>();
 
         try (final PreparedStatement ps = connection.prepareStatement("MATCH (n) RETURN distinct labels(n) as labels")) {
             try (final ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    List<String> labels = (List<String>) rs.getObject("labels");
-                    labels = labels.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toList());
-                    currentNodeLabels.add(String.join(":", labels));
+                    currentNodeTypes.add(toNodeType((List<String>) rs.getObject("labels")));
                 }
             }
         } catch (final SQLException e) {
             throw new JpaUnitException(FAILED_TO_VERIFY_DATA_BASE_STATE, e);
         }
-        return currentNodeLabels;
-    }
 
-    private static Path toNodePath(final Node node, final List<String> attributesToExclude) {
-        // @formatter:off
-        return node(node.getId())
-                .labels(node.getLabels().stream().map(CypherQuery::label).collect(toList()))
-                .values(node.getAttributes().entrySet().stream()
-                    .filter(e -> !attributesToExclude.contains(e.getKey()))
-                    .map(e -> value(e.getKey(), e.getValue()))
-                    .collect(toList()));
-        // @formatter:on
+        return currentNodeTypes;
     }
 }
