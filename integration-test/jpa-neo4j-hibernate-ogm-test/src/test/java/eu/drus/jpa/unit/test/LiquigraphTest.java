@@ -12,6 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.liquigraph.core.api.Liquigraph;
@@ -20,6 +21,7 @@ import org.liquigraph.core.configuration.ConfigurationBuilder;
 
 import eu.drus.jpa.unit.api.Bootstrapping;
 import eu.drus.jpa.unit.api.JpaUnitRunner;
+import eu.drus.jpa.unit.suite.Neo4jManager;
 import eu.drus.jpa.unit.test.model.Account;
 import eu.drus.jpa.unit.test.model.Address;
 import eu.drus.jpa.unit.test.model.ContactDetail;
@@ -29,6 +31,11 @@ import eu.drus.jpa.unit.test.model.GiroAccount;
 
 @RunWith(JpaUnitRunner.class)
 public class LiquigraphTest {
+
+    @BeforeClass
+    public static void startNeo4j() {
+        Neo4jManager.startServer();
+    }
 
     @PersistenceContext(unitName = "my-verification-unit")
     private EntityManager manager;

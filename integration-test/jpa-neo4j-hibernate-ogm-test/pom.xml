@@ -73,5 +73,11 @@
       <version>3.0.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.neo4j.test</groupId>
+      <artifactId>neo4j-harness</artifactId>
+      <version>3.2.3</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

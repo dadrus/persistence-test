@@ -12,6 +12,7 @@ import org.concordion.internal.ClassNameAndTypeBasedSpecificationLocator;
 import org.junit.runner.RunWith;
 
 import eu.drus.jpa.unit.api.concordion.JpaUnitConcordionRunner;
+import eu.drus.jpa.unit.suite.Neo4jManager;
 
 @RunWith(JpaUnitConcordionRunner.class)
 public class CdiEnabledNewDepositorFixture extends AbstractCdiEnabledNewDepositorFixture {
@@ -46,6 +47,11 @@ public class CdiEnabledNewDepositorFixture extends AbstractCdiEnabledNewDeposito
     @AfterSuite
     public static void stopContainer() {
         cdiContainer.shutdown();
+    }
+
+    @BeforeSuite
+    public static void startNeo4j() {
+        Neo4jManager.startServer();
     }
 
 }
