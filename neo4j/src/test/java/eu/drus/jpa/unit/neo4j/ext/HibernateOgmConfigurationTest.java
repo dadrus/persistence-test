@@ -29,9 +29,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import eu.drus.jpa.unit.spi.PersistenceUnitDescriptor;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({
-        HibernateOgmConfiguration.class, HikariDataSource.class
-})
+@PrepareForTest(HibernateOgmConfiguration.class)
 public class HibernateOgmConfigurationTest {
 
     @Mock
