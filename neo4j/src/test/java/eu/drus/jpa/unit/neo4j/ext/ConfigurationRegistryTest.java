@@ -1,6 +1,7 @@
 package eu.drus.jpa.unit.neo4j.ext;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -14,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import eu.drus.jpa.unit.api.JpaUnitException;
 import eu.drus.jpa.unit.spi.PersistenceUnitDescriptor;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -45,6 +47,21 @@ public class ConfigurationRegistryTest {
     }
 
     @Test
+    public void testNonHibernateOgmNeo4jDbConfigurationIsAvailable() {
+        // GIVEN
+        final Map<String, Object> properties = new HashMap<>();
+        when(descriptor.getProperties()).thenReturn(properties);
+
+        properties.put(HibernateOgmConfiguration.HIBERNATE_OGM_DATASTORE_PROVIDER, "foo");
+
+        // WHEN
+        final boolean hasConfiguration = registry.hasConfiguration(descriptor);
+
+        // THEN
+        assertFalse(hasConfiguration);
+    }
+
+    @Test
     public void testHibernateOgmNeo4jConfigurationCanBeAccessed() {
         // GIVEN
         final Map<String, Object> properties = new HashMap<>();
@@ -58,5 +75,20 @@ public class ConfigurationRegistryTest {
 
         // THEN
         assertThat(configuration, notNullValue());
+    }
+
+    @Test(expected = JpaUnitException.class)
+    public void testNonHibernateOgmNeo4jConfigurationCanBeAccessed() {
+        // GIVEN
+        final Map<String, Object> properties = new HashMap<>();
+        when(descriptor.getProperties()).thenReturn(properties);
+
+        properties.put(HibernateOgmConfiguration.HIBERNATE_OGM_DATASTORE_PROVIDER, "foo");
+
+        // WHEN
+        registry.getConfiguration(descriptor);
+
+        // THEN
+        // exception is thrown
     }
 }

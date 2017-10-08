@@ -2,8 +2,10 @@ package eu.drus.jpa.unit.neo4j;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -88,14 +90,34 @@ public class Neo4JDbDecoratorTest {
     }
 
     @Test
-    public void testAfterTest() throws Exception {
+    public void testAfterTestExecutesWithoutErrors() throws Exception {
         // GIVEN
 
         // WHEN
         decorator.afterTest(invocation);
 
         // THEN
+        verify(connection).close();
         verify(executor).executeAfterTest(eq(connection), eq(Boolean.FALSE));
+        verify(ctx).storeData(eq(Constants.KEY_CONNECTION), isNull());
+        verifyZeroInteractions(dataSource);
+    }
+
+    @Test
+    public void testAfterTestExecutesWithErrors() throws Exception {
+        // GIVEN
+        doThrow(RuntimeException.class).when(executor).executeAfterTest(eq(connection), eq(Boolean.FALSE));
+
+        // WHEN
+        try {
+            decorator.afterTest(invocation);
+            fail("Exception expected");
+        } catch (final RuntimeException e) {
+            // expected
+        }
+
+        // THEN
+        verify(connection).close();
         verify(ctx).storeData(eq(Constants.KEY_CONNECTION), isNull());
         verifyZeroInteractions(dataSource);
     }

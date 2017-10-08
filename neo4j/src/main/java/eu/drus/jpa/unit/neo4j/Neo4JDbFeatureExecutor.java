@@ -128,6 +128,10 @@ public class Neo4JDbFeatureExecutor extends AbstractDbFeatureExecutor<Graph<Node
     }
 
     private void executeScript(final String script, final Connection connection) throws SQLException {
+        if (script.isEmpty()) {
+            return;
+        }
+
         try (PreparedStatement ps = connection.prepareStatement(script)) {
             ps.execute();
         }
