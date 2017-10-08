@@ -1,32 +1,27 @@
 package eu.drus.jpa.unit.test;
 
 import static org.junit.Assert.assertNotNull;
-
-import java.util.Set;
+import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.junit.FixMethodOrder;
+import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.runner.RunWith;
 
 import eu.drus.jpa.unit.api.ExpectedDataSets;
 import eu.drus.jpa.unit.api.InitialDataSets;
 import eu.drus.jpa.unit.api.JpaUnitRule;
 import eu.drus.jpa.unit.api.TransactionMode;
 import eu.drus.jpa.unit.api.Transactional;
-import eu.drus.jpa.unit.test.model.Account;
-import eu.drus.jpa.unit.test.model.Depositor;
+import eu.drus.jpa.unit.test.model.TestObject;
 import eu.drus.jpa.unit.test.model.TestObjectRepository;
-import eu.drus.jpa.unit.test.model.GiroAccount;
-import eu.drus.jpa.unit.test.model.InstantAccessAccount;
-import eu.drus.jpa.unit.test.model.OperationNotSupportedException;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public abstract class AbstractCdiEnabledJpaUnitTest {
+@RunWith(CdiTestRunner.class)
+public class CdiEnabledJpaUnitTest {
 
     @Rule
     public JpaUnitRule rule = new JpaUnitRule(getClass());
@@ -37,15 +32,26 @@ public abstract class AbstractCdiEnabledJpaUnitTest {
     @Inject
     private TestObjectRepository repo;
 
+    @Inject
+    private EntityManager em;
+
+    @Test
+    public void testEntityManagerIsInjectedAndIsOpen() {
+        assertNotNull(em);
+        assertTrue(em.isOpen());
+
+        assertTrue(em.getTransaction().isActive());
+    }
+
     @Test
     @InitialDataSets("datasets/initial-data.json")
     @ExpectedDataSets("datasets/initial-data.json")
     @Transactional(TransactionMode.DISABLED)
     public void transactionDisabledTest() {
-        final Depositor entity = repo.findBy(106L);
+        final TestObject entity = repo.findBy(1L);
 
         assertNotNull(entity);
-        entity.setName("David");
+        entity.setValue("Test1");
     }
 
     @Test
@@ -53,29 +59,20 @@ public abstract class AbstractCdiEnabledJpaUnitTest {
     @ExpectedDataSets("datasets/initial-data.json")
     @Transactional(TransactionMode.ROLLBACK)
     public void transactionRollbackTest() {
-        final Depositor entity = repo.findBy(106L);
+        final TestObject entity = repo.findBy(1L);
 
         assertNotNull(entity);
-        entity.setName("Alex");
+        entity.setValue("Test2");
     }
 
     @Test
     @InitialDataSets("datasets/initial-data.json")
     @ExpectedDataSets("datasets/expected-data.json")
     @Transactional(TransactionMode.COMMIT)
-    public void transactionCommitTest() throws OperationNotSupportedException {
-        final Depositor entity = repo.findBy(106L);
+    public void transactionCommitTest() {
+        final TestObject entity = repo.findBy(1L);
 
         assertNotNull(entity);
-        entity.setName("Max");
-
-        final Set<Account> accounts = entity.getAccounts();
-
-        final GiroAccount giroAccount = accounts.stream().filter(a -> a instanceof GiroAccount).map(a -> (GiroAccount) a).findFirst().get();
-        final InstantAccessAccount accessAcount = accounts.stream().filter(a -> a instanceof InstantAccessAccount)
-                .map(a -> (InstantAccessAccount) a).findFirst().get();
-
-        giroAccount.deposit(100.0f);
-        giroAccount.transfer(150.0f, accessAcount);
+        entity.setValue("Test3");
     }
 }

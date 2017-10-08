@@ -22,7 +22,7 @@ import eu.drus.jpa.unit.api.InitialDataSets;
 import eu.drus.jpa.unit.api.JpaUnitRule;
 import eu.drus.jpa.unit.test.model.Account;
 import eu.drus.jpa.unit.test.model.Depositor;
-import eu.drus.jpa.unit.test.model.DepositorRepository;
+import eu.drus.jpa.unit.test.model.TestObjectRepository;
 import eu.drus.jpa.unit.test.model.GiroAccount;
 import eu.drus.jpa.unit.test.model.OperationNotSupportedException;
 
@@ -37,7 +37,7 @@ public class NewAccountForExistingDepositorSteps {
     private EntityManager manager;
 
     @Inject
-    private DepositorRepository repo;
+    private TestObjectRepository repo;
 
     private Depositor depositor;
 

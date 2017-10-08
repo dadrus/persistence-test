@@ -20,6 +20,18 @@
     </repository>
   </repositories>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.hibernate.ogm</groupId>
+        <artifactId>hibernate-ogm-bom</artifactId>
+        <version>${verions.hibernate-ogm}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -36,62 +48,19 @@
       <artifactId>neo4j-cypher-dsl</artifactId>
       <version>2.3.1</version>
     </dependency>
-
-    <!-- <dependency> -->
-    <!-- <groupId>org.neo4j.driver</groupId> -->
-    <!-- <artifactId>neo4j-java-driver</artifactId> -->
-    <!-- <version>1.4.2</version> -->
-    <!-- </dependency> -->
-    <!-- <dependency> -->
-    <!-- <groupId>org.neo4j</groupId> -->
-    <!-- <artifactId>neo4j</artifactId> -->
-    <!-- <version>3.2.3</version> -->
-    <!-- </dependency> -->
-
-    <!-- <dependency> -->
-    <!-- <groupId>com.lordofthejars</groupId> -->
-    <!-- <artifactId>nosqlunit-neo4j</artifactId> -->
-    <!-- <version>1.0.0-rc.5</version> -->
-    <!-- </dependency> -->
-
-    <!-- <dependency> -->
-    <!-- <groupId>org.apache.tinkerpop</groupId> -->
-    <!-- <artifactId>gremlin-core</artifactId> -->
-    <!-- <version>3.2.5</version> -->
-    <!-- </dependency> -->
-
-    <!-- <dependency> -->
-    <!-- <groupId>org.apache.tinkerpop</groupId> -->
-    <!-- <artifactId>neo4j-gremlin</artifactId> -->
-    <!-- <version>3.2.5</version> -->
-    <!-- </dependency> -->
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
       <version>2.7.1</version>
     </dependency>
-
     <dependency>
       <groupId>org.jgrapht</groupId>
       <artifactId>jgrapht-io</artifactId>
       <version>1.0.2-SNAPSHOT</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.neo4j.test</groupId>
-      <artifactId>neo4j-harness</artifactId>
-      <version>3.2.5</version>
-      <scope>test</scope>
-    </dependency>
-
 
     <!-- TEST DEPENDENCIES -->
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>jpa-unit4</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -137,6 +106,79 @@
       <artifactId>org.jacoco.agent</artifactId>
       <version>${version.jacoco}</version>
       <classifier>runtime</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-runner</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- INTEGRATION TEST DEPENDENIES -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>jpa-unit4</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>jpa-unit5</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-ehcache</artifactId>
+      <version>5.1.4.Final</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.ehcache</groupId>
+      <artifactId>ehcache</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.ogm</groupId>
+      <artifactId>hibernate-ogm-neo4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.transaction</groupId>
+      <artifactId>jta</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.liquigraph</groupId>
+      <artifactId>liquigraph-core</artifactId>
+      <version>3.0.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.neo4j.test</groupId>
+      <artifactId>neo4j-harness</artifactId>
+      <version>3.2.3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

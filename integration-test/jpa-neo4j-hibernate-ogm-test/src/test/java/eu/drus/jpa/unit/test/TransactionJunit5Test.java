@@ -6,7 +6,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import eu.drus.jpa.unit.api.JpaUnit;
-import eu.drus.jpa.unit.suite.Neo4jManager;
+import eu.drus.jpa.unit.util.Neo4jManager;
 
 @ExtendWith(JpaUnit.class)
 @RunWith(JUnitPlatform.class)

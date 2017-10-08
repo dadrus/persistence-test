@@ -21,13 +21,13 @@ import org.liquigraph.core.configuration.ConfigurationBuilder;
 
 import eu.drus.jpa.unit.api.Bootstrapping;
 import eu.drus.jpa.unit.api.JpaUnitRunner;
-import eu.drus.jpa.unit.suite.Neo4jManager;
 import eu.drus.jpa.unit.test.model.Account;
 import eu.drus.jpa.unit.test.model.Address;
 import eu.drus.jpa.unit.test.model.ContactDetail;
 import eu.drus.jpa.unit.test.model.ContactType;
 import eu.drus.jpa.unit.test.model.Depositor;
 import eu.drus.jpa.unit.test.model.GiroAccount;
+import eu.drus.jpa.unit.util.Neo4jManager;
 
 @RunWith(JpaUnitRunner.class)
 public class LiquigraphTest {

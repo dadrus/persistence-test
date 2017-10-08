@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
-import eu.drus.jpa.unit.suite.Neo4jManager;
+import eu.drus.jpa.unit.util.Neo4jManager;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(strict = false, format = {

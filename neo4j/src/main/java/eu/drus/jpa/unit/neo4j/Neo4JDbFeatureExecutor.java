@@ -16,19 +16,20 @@ import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.io.GraphMLImporter;
-import org.jgrapht.io.ImportException;
 
 import eu.drus.jpa.unit.api.CleanupStrategy;
 import eu.drus.jpa.unit.api.DataSeedStrategy;
 import eu.drus.jpa.unit.api.ExpectedDataSets;
 import eu.drus.jpa.unit.api.JpaUnitException;
+import eu.drus.jpa.unit.neo4j.dataset.DataSetLoaderProvider;
 import eu.drus.jpa.unit.neo4j.dataset.Edge;
 import eu.drus.jpa.unit.neo4j.dataset.Node;
 import eu.drus.jpa.unit.neo4j.operation.Neo4JOperation;
 import eu.drus.jpa.unit.spi.AbstractDbFeatureExecutor;
 import eu.drus.jpa.unit.spi.AssertionErrorCollector;
 import eu.drus.jpa.unit.spi.CleanupStrategyExecutor;
+import eu.drus.jpa.unit.spi.DataSetFormat;
+import eu.drus.jpa.unit.spi.DataSetLoader;
 import eu.drus.jpa.unit.spi.DbFeature;
 import eu.drus.jpa.unit.spi.DbFeatureException;
 import eu.drus.jpa.unit.spi.FeatureResolver;
@@ -50,20 +51,14 @@ public class Neo4JDbFeatureExecutor extends AbstractDbFeatureExecutor<Graph<Node
 
     @Override
     protected List<Graph<Node, Edge>> loadDataSets(final List<String> paths) {
-        final GraphMLImporter<Node, Edge> importer = new GraphMLImporter<>(Node::new, Edge::new);
-        importer.setSchemaValidation(false);
-
         final List<Graph<Node, Edge>> dataSets = new ArrayList<>();
         try {
             for (final String path : paths) {
                 final File file = new File(toUri(path));
-
-                final DefaultDirectedGraph<Node, Edge> graph = new DefaultDirectedGraph<>(new ClassBasedEdgeFactory<>(Edge.class));
-                importer.importGraph(graph, file);
-
-                dataSets.add(graph);
+                final DataSetLoader<Graph<Node, Edge>> loader = DataSetFormat.inferFromFile(file).select(new DataSetLoaderProvider());
+                dataSets.add(loader.load(file));
             }
-        } catch (final URISyntaxException | ImportException e) {
+        } catch (final IOException | URISyntaxException e) {
             throw new JpaUnitException("Could not load initial data sets", e);
         }
         return dataSets;

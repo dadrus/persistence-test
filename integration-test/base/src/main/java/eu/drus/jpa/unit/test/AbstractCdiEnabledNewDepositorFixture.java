@@ -6,13 +6,13 @@ import eu.drus.jpa.unit.api.Cleanup;
 import eu.drus.jpa.unit.api.CleanupPhase;
 import eu.drus.jpa.unit.api.ExpectedDataSets;
 import eu.drus.jpa.unit.test.model.Depositor;
-import eu.drus.jpa.unit.test.model.DepositorRepository;
+import eu.drus.jpa.unit.test.model.TestObjectRepository;
 import eu.drus.jpa.unit.test.model.InstantAccessAccount;
 
 public abstract class AbstractCdiEnabledNewDepositorFixture extends AbstractConcordionFixture {
 
     @Inject
-    private DepositorRepository repository;
+    private TestObjectRepository repository;
 
     public Depositor createNewCustomer(final String customerName) {
         final String[] nameParts = customerName.split(" ");

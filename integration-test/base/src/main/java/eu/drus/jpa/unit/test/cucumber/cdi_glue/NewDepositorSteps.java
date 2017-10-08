@@ -15,7 +15,7 @@ import eu.drus.jpa.unit.api.CleanupPhase;
 import eu.drus.jpa.unit.api.ExpectedDataSets;
 import eu.drus.jpa.unit.api.JpaUnitRule;
 import eu.drus.jpa.unit.test.model.Depositor;
-import eu.drus.jpa.unit.test.model.DepositorRepository;
+import eu.drus.jpa.unit.test.model.TestObjectRepository;
 import eu.drus.jpa.unit.test.model.InstantAccessAccount;
 import eu.drus.jpa.unit.test.model.OperationNotSupportedException;
 
@@ -29,7 +29,7 @@ public class NewDepositorSteps {
     private EntityManager manager;
 
     @Inject
-    private DepositorRepository repo;
+    private TestObjectRepository repo;
 
     private Depositor depositor;
 
