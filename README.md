@@ -685,7 +685,7 @@ For [Neo4j](https://www.neo4j.com), the `jpa-unit-neo4j` dependency needs to be 
 JPA Unit needs to connect to a running Neo4j instance. This is done using [Neo4j JDBC Driver](http://neo4j-contrib.github.io/neo4j-jdbc/). Usage of an in-process, in-memory Neo4j implementation is unfortunately not 
 possible (Neo4J does not allow opening multiple driver connections to the embedded DB). To overcome this limitation, or made it at least less painful, one can use e.g.
 
-- TODO: How to download and start an external instance for test purposes only.
+- [Neo4J Harness](https://neo4j.com/docs/java-reference/current/) for the lifecycle management of a Neo4j instance from code, e.g. by using a `Neo4jRule`. You can find working example as part of integration tests of JPA-Unit's neo4j project.
 
 ### JPA Provider Dependencies
 
