@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
@@ -78,7 +79,7 @@ public class CleanupStrategyProvider implements StrategyProvider<CleanupStrategy
     }
 
     private Graph<Node, Edge> computeGraphToBeDeleted(final Graph<Node, Edge> graph, final String... nodesToRetain) {
-        final Graph<Node, Edge> toDelete = new DefaultDirectedGraph<>(new ClassBasedEdgeFactory<>(Edge.class));
+        final DirectedGraph<Node, Edge> toDelete = new DefaultDirectedGraph<>(new ClassBasedEdgeFactory<>(Edge.class));
 
         // copy graph to a destination, which we are going to modify
         Graphs.addGraph(toDelete, graph);

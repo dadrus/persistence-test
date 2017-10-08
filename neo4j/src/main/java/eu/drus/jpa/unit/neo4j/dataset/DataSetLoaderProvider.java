@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.IOException;
 
 import org.jgrapht.Graph;
+import org.jgrapht.ext.ImportException;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.io.GraphMLImporter;
-import org.jgrapht.io.ImportException;
 
+import eu.drus.jpa.unit.neo4j.graphml.GraphMLReader;
 import eu.drus.jpa.unit.spi.DataSetFormat.LoaderProvider;
 import eu.drus.jpa.unit.spi.DataSetLoader;
 import eu.drus.jpa.unit.spi.UnsupportedDataSetFormatException;
@@ -20,8 +20,7 @@ public class DataSetLoaderProvider implements LoaderProvider<Graph<Node, Edge>> 
         return (final File path) -> {
             try {
                 final DefaultDirectedGraph<Node, Edge> graph = new DefaultDirectedGraph<>(new ClassBasedEdgeFactory<>(Edge.class));
-                final GraphMLImporter<Node, Edge> importer = new GraphMLImporter<>(Node::new, Edge::new);
-                importer.setSchemaValidation(false);
+                final GraphMLReader<Node, Edge> importer = new GraphMLReader<>(Node::new, Edge::new);
                 importer.importGraph(graph, path);
                 return graph;
             } catch (final ImportException e) {

@@ -4,9 +4,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
-import org.jgrapht.io.AttributeType;
-import org.jgrapht.io.DefaultAttribute;
 import org.junit.Test;
+
+import eu.drus.jpa.unit.neo4j.graphml.AttributeType;
+import eu.drus.jpa.unit.neo4j.graphml.DefaultAttribute;
 
 public class AttributeTypeConverterTest {
 

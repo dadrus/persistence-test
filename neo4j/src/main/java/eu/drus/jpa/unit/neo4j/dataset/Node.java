@@ -11,9 +11,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.jgrapht.io.Attribute;
 import org.neo4j.cypherdsl.CypherQuery;
 import org.neo4j.cypherdsl.Path;
+
+import eu.drus.jpa.unit.neo4j.graphml.Attribute;
 
 public class Node {
 
