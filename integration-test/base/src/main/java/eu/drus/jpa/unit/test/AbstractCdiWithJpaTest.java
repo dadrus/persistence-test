@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 
-import eu.drus.jpa.unit.test.model.TestObjectRepository;
+import eu.drus.jpa.unit.test.model.DepositorRepository;
 
 /*
  * The solely purpose of this test is to show that even the CDI extension is in the classpath, it
@@ -19,7 +19,7 @@ import eu.drus.jpa.unit.test.model.TestObjectRepository;
 public class AbstractCdiWithJpaTest {
 
     @Inject
-    private TestObjectRepository repository;
+    private DepositorRepository repository;
 
     @Test
     public void testEntityManagerIsInjected() {

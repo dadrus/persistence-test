@@ -20,7 +20,7 @@ import eu.drus.jpa.unit.api.TransactionMode;
 import eu.drus.jpa.unit.api.Transactional;
 import eu.drus.jpa.unit.test.model.Account;
 import eu.drus.jpa.unit.test.model.Depositor;
-import eu.drus.jpa.unit.test.model.TestObjectRepository;
+import eu.drus.jpa.unit.test.model.DepositorRepository;
 import eu.drus.jpa.unit.test.model.GiroAccount;
 import eu.drus.jpa.unit.test.model.InstantAccessAccount;
 import eu.drus.jpa.unit.test.model.OperationNotSupportedException;
@@ -35,7 +35,7 @@ public abstract class AbstractCdiEnabledJpaUnitTest {
     private static EntityManager manager;
 
     @Inject
-    private TestObjectRepository repo;
+    private DepositorRepository repo;
 
     @Test
     @InitialDataSets("datasets/initial-data.json")
