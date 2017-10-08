@@ -22,6 +22,7 @@ import eu.drus.jpa.unit.neo4j.ext.Configuration;
 import eu.drus.jpa.unit.neo4j.ext.ConfigurationRegistry;
 import eu.drus.jpa.unit.spi.ExecutionContext;
 import eu.drus.jpa.unit.spi.PersistenceUnitDescriptor;
+import eu.drus.jpa.unit.spi.TestInvocation;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Neo4JDriverDecorator.class)
@@ -29,6 +30,9 @@ public class Neo4JDriverDecoratorTest {
 
     @Mock
     private ExecutionContext ctx;
+
+    @Mock
+    private TestInvocation invocation;
 
     @Mock
     private HikariDataSource dataSource;
@@ -47,6 +51,8 @@ public class Neo4JDriverDecoratorTest {
         whenNew(HikariDataSource.class).withAnyArguments().thenReturn(dataSource);
 
         when(configuration.createDataSource()).thenReturn(dataSource);
+        when(invocation.getContext()).thenReturn(ctx);
+        when(invocation.getTestClass()).thenReturn((Class) getClass());
         when(ctx.getData(eq(Constants.KEY_DATA_SOURCE))).thenReturn(dataSource);
         when(configRegistry.getConfiguration(any(PersistenceUnitDescriptor.class))).thenReturn(configuration);
 
@@ -69,7 +75,7 @@ public class Neo4JDriverDecoratorTest {
         // GIVEN
 
         // WHEN
-        decorator.beforeAll(ctx, null);
+        decorator.beforeAll(invocation);
 
         // THEN
         verify(ctx).storeData(eq(Constants.KEY_DATA_SOURCE), eq(dataSource));
@@ -80,7 +86,7 @@ public class Neo4JDriverDecoratorTest {
         // GIVEN
 
         // WHEN
-        decorator.afterAll(ctx, null);
+        decorator.afterAll(invocation);
 
         // THEN
         verify(dataSource).close();

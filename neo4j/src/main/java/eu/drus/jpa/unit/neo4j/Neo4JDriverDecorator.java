@@ -6,6 +6,7 @@ import eu.drus.jpa.unit.neo4j.ext.Configuration;
 import eu.drus.jpa.unit.neo4j.ext.ConfigurationRegistry;
 import eu.drus.jpa.unit.spi.ExecutionContext;
 import eu.drus.jpa.unit.spi.TestClassDecorator;
+import eu.drus.jpa.unit.spi.TestInvocation;
 
 public class Neo4JDriverDecorator implements TestClassDecorator {
 
@@ -22,16 +23,18 @@ public class Neo4JDriverDecorator implements TestClassDecorator {
     }
 
     @Override
-    public void beforeAll(final ExecutionContext ctx, final Class<?> testClass) throws Exception {
-        final Configuration configuration = configurationRegistry.getConfiguration(ctx.getDescriptor());
-        ctx.storeData(Constants.KEY_DATA_SOURCE, configuration.createDataSource());
+    public void beforeAll(final TestInvocation invocation) throws Exception {
+        final ExecutionContext context = invocation.getContext();
+        final Configuration configuration = configurationRegistry.getConfiguration(context.getDescriptor());
+        context.storeData(Constants.KEY_DATA_SOURCE, configuration.createDataSource());
     }
 
     @Override
-    public void afterAll(final ExecutionContext ctx, final Class<?> testClass) throws Exception {
-        final HikariDataSource ds = (HikariDataSource) ctx.getData(Constants.KEY_DATA_SOURCE);
+    public void afterAll(final TestInvocation invocation) throws Exception {
+        final ExecutionContext context = invocation.getContext();
+        final HikariDataSource ds = (HikariDataSource) context.getData(Constants.KEY_DATA_SOURCE);
         ds.close();
-        ctx.storeData(Constants.KEY_DATA_SOURCE, null);
+        context.storeData(Constants.KEY_DATA_SOURCE, null);
     }
 
 }

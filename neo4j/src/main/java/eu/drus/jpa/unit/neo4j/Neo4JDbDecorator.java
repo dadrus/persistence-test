@@ -6,8 +6,8 @@ import javax.sql.DataSource;
 
 import eu.drus.jpa.unit.neo4j.ext.ConfigurationRegistry;
 import eu.drus.jpa.unit.spi.ExecutionContext;
+import eu.drus.jpa.unit.spi.TestInvocation;
 import eu.drus.jpa.unit.spi.TestMethodDecorator;
-import eu.drus.jpa.unit.spi.TestMethodInvocation;
 
 public class Neo4JDbDecorator implements TestMethodDecorator {
 
@@ -24,7 +24,7 @@ public class Neo4JDbDecorator implements TestMethodDecorator {
     }
 
     @Override
-    public void beforeTest(final TestMethodInvocation invocation) throws Exception {
+    public void beforeTest(final TestInvocation invocation) throws Exception {
         final ExecutionContext context = invocation.getContext();
 
         final Neo4JDbFeatureExecutor dbFeatureExecutor = new Neo4JDbFeatureExecutor(invocation.getFeatureResolver());
@@ -36,12 +36,12 @@ public class Neo4JDbDecorator implements TestMethodDecorator {
     }
 
     @Override
-    public void afterTest(final TestMethodInvocation invocation) throws Exception {
+    public void afterTest(final TestInvocation invocation) throws Exception {
         final ExecutionContext context = invocation.getContext();
 
         final Neo4JDbFeatureExecutor dbFeatureExecutor = new Neo4JDbFeatureExecutor(invocation.getFeatureResolver());
         try (final Connection connection = (Connection) context.getData(Constants.KEY_CONNECTION)) {
-            dbFeatureExecutor.executeAfterTest(connection, invocation.hasErrors());
+            dbFeatureExecutor.executeAfterTest(connection, invocation.getException().isPresent());
         } finally {
             context.storeData(Constants.KEY_CONNECTION, null);
         }

@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 import java.sql.Connection;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +23,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import eu.drus.jpa.unit.neo4j.ext.ConfigurationRegistry;
 import eu.drus.jpa.unit.spi.ExecutionContext;
-import eu.drus.jpa.unit.spi.TestMethodInvocation;
+import eu.drus.jpa.unit.spi.TestInvocation;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Neo4JDbDecorator.class)
@@ -38,7 +39,7 @@ public class Neo4JDbDecoratorTest {
     private Connection connection;
 
     @Mock
-    private TestMethodInvocation invocation;
+    private TestInvocation invocation;
 
     @Mock
     private ExecutionContext ctx;
@@ -54,6 +55,7 @@ public class Neo4JDbDecoratorTest {
         whenNew(Neo4JDbFeatureExecutor.class).withAnyArguments().thenReturn(executor);
 
         when(invocation.getContext()).thenReturn(ctx);
+        when(invocation.getException()).thenReturn(Optional.empty());
         when(dataSource.getConnection()).thenReturn(connection);
         when(ctx.getData(eq(Constants.KEY_DATA_SOURCE))).thenReturn(dataSource);
         when(ctx.getData(eq(Constants.KEY_CONNECTION))).thenReturn(connection);

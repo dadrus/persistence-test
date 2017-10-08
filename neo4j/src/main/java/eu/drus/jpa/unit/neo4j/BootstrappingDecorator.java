@@ -12,6 +12,7 @@ import eu.drus.jpa.unit.core.metadata.MetadataExtractor;
 import eu.drus.jpa.unit.neo4j.ext.ConfigurationRegistry;
 import eu.drus.jpa.unit.spi.ExecutionContext;
 import eu.drus.jpa.unit.spi.TestClassDecorator;
+import eu.drus.jpa.unit.spi.TestInvocation;
 
 public class BootstrappingDecorator implements TestClassDecorator {
 
@@ -23,10 +24,11 @@ public class BootstrappingDecorator implements TestClassDecorator {
     }
 
     @Override
-    public void beforeAll(final ExecutionContext ctx, final Class<?> testClass) throws Exception {
-        final DataSource ds = (DataSource) ctx.getData(Constants.KEY_DATA_SOURCE);
+    public void beforeAll(final TestInvocation invocation) throws Exception {
 
-        final MetadataExtractor extractor = new MetadataExtractor(testClass);
+        final DataSource ds = (DataSource) invocation.getContext().getData(Constants.KEY_DATA_SOURCE);
+
+        final MetadataExtractor extractor = new MetadataExtractor(invocation.getTestClass());
         final List<Method> bootstrappingMethods = extractor.bootstrapping().getAnnotatedMethods();
         checkArgument(bootstrappingMethods.size() <= 1, "Only single method is allowed to be annotated with @Bootstrapping");
 
@@ -44,7 +46,7 @@ public class BootstrappingDecorator implements TestClassDecorator {
     }
 
     @Override
-    public void afterAll(final ExecutionContext ctx, final Class<?> testClass) throws Exception {
+    public void afterAll(final TestInvocation invocation) throws Exception {
         // nothing to do here
     }
 

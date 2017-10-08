@@ -24,6 +24,7 @@ import eu.drus.jpa.unit.api.Bootstrapping;
 import eu.drus.jpa.unit.core.metadata.AnnotationInspector;
 import eu.drus.jpa.unit.core.metadata.MetadataExtractor;
 import eu.drus.jpa.unit.spi.ExecutionContext;
+import eu.drus.jpa.unit.spi.TestInvocation;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
@@ -33,6 +34,9 @@ public class BootstrappingDecoratorTest {
 
     @Mock
     private ExecutionContext ctx;
+
+    @Mock
+    private TestInvocation invocation;
 
     @Mock
     private DataSource ds;
@@ -54,6 +58,8 @@ public class BootstrappingDecoratorTest {
         whenNew(MetadataExtractor.class).withAnyArguments().thenReturn(extractor);
 
         when(ctx.getData("ds")).thenReturn(ds);
+        when(invocation.getContext()).thenReturn(ctx);
+        when(invocation.getTestClass()).thenReturn((Class) getClass());
         when(extractor.bootstrapping()).thenReturn(bootstrappingInpector);
     }
 
@@ -78,7 +84,7 @@ public class BootstrappingDecoratorTest {
         final BootstrappingDecorator decorator = new BootstrappingDecorator();
 
         // WHEN
-        decorator.beforeAll(ctx, getClass());
+        decorator.beforeAll(invocation);
 
         // THEN
         // IllegalArgumentException is thrown. A bootstrapping method is required to have a single
@@ -95,7 +101,7 @@ public class BootstrappingDecoratorTest {
         final BootstrappingDecorator decorator = new BootstrappingDecorator();
 
         // WHEN
-        decorator.beforeAll(ctx, getClass());
+        decorator.beforeAll(invocation);
 
         // THEN
         // IllegalArgumentException is thrown. Only single method is allowed
@@ -110,7 +116,7 @@ public class BootstrappingDecoratorTest {
         final BootstrappingDecorator decorator = new BootstrappingDecorator();
 
         // WHEN
-        decorator.beforeAll(ctx, getClass());
+        decorator.beforeAll(invocation);
 
         // THEN
         verifyStatic(BootstrappingDecoratorTest.class, times(1));
@@ -126,7 +132,7 @@ public class BootstrappingDecoratorTest {
         final BootstrappingDecorator decorator = new BootstrappingDecorator();
 
         // WHEN
-        decorator.beforeAll(ctx, getClass());
+        decorator.beforeAll(invocation);
 
         // THEN
         // IllegalArgumentException is thrown. Method must be static
