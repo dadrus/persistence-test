@@ -52,7 +52,7 @@ public class DataSetLoaderProviderTest {
         assertThat(loader, notNullValue());
 
         // WHEN
-        final Graph<Node, Edge> graph = loader.load(getFile("test-data.graphml"));
+        final Graph<Node, Edge> graph = loader.load(getFile("test-data.xml"));
 
         // THEN
         assertThat(graph, notNullValue());
