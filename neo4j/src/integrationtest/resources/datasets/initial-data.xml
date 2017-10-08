@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+	<graph id="G" edgedefault="directed">
+		<key id="label" for="edge" attr.name="label" attr.type="string"/>
+		<key id="labels" for="node" attr.name="labels" attr.type="string"/>
+		<key id="id" for="node" attr.name="id" attr.type="long"/>
+		<key id="DEPOSITOR_ID" for="node" attr.name="DEPOSITOR_ID" attr.type="long"/>
+		<key id="NAME" for="node" attr.name="NAME" attr.type="string"/>
+		<key id="SURNAME" for="node" attr.name="SURNAME" attr.type="string"/>
+		<key id="CREDIT_LIMIT" for="node" attr.name="CREDIT_LIMIT" attr.type="float"/>
+		<key id="TYPE" for="node" attr.name="TYPE" attr.type="string"/>
+		<key id="ZIP_CODE" for="node" attr.name="ZIP_CODE" attr.type="string"/>
+		<key id="COUNTRY" for="node" attr.name="COUNTRY" attr.type="string"/>
+		<key id="CITY" for="node" attr.name="CITY" attr.type="string"/>
+		<key id="STREET" for="node" attr.name="STREET" attr.type="string"/>
+		<key id="VALUE" for="node" attr.name="VALUE" attr.type="string"/>
+		
+		<node id="n2" labels=":DEPOSITOR:ENTITY">
+			<data key="labels">:DEPOSITOR:ENTITY</data>
+			<data key="id">106</data>
+			<data key="SURNAME">Doe</data>
+			<data key="NAME">John</data>
+		</node>
+		<node id="n3" labels=":ENTITY:ACCOUNT">
+			<data key="labels">:ENTITY:ACCOUNT</data>
+			<data key="CREDIT_LIMIT">1000</data>
+			<data key="TYPE">GIRO_ACCOUNT</data>
+			<data key="id">106</data>
+		</node>
+		<node id="n4" labels=":ENTITY:ACCOUNT">
+			<data key="labels">:ENTITY:ACCOUNT</data>
+			<data key="TYPE">INSTANT_ACCESS_ACCOUNT</data>
+			<data key="id">107</data>
+		</node>
+		<node id="n5" labels=":ENTITY:ADDRESS">
+			<data key="labels">:ENTITY:ADDRESS</data>
+			<data key="id">106</data>
+			<data key="ZIP_CODE">12345</data>
+			<data key="COUNTRY">SomeCountry</data>
+			<data key="DEPOSITOR_ID">106</data>
+			<data key="CITY">SomeCity</data>
+			<data key="STREET">SomeStreet 1</data>
+		</node>
+		<node id="n6" labels=":CONTACT_DETAIL:ENTITY">
+			<data key="labels">:CONTACT_DETAIL:ENTITY</data>
+			<data key="id">106</data>
+			<data key="TYPE">EMAIL</data>
+			<data key="VALUE">john.doe@acme.com</data>
+			<data key="DEPOSITOR_ID">106</data>
+		</node>
+		<node id="n7" labels=":CONTACT_DETAIL:ENTITY">
+			<data key="labels">:CONTACT_DETAIL:ENTITY</data>
+			<data key="id">107</data>
+			<data key="TYPE">MOBILE</data>
+			<data key="VALUE">+1 11 1111 1111</data>
+			<data key="DEPOSITOR_ID">106</data>
+		</node>
+		<node id="n8" labels=":CONTACT_DETAIL:ENTITY">
+			<data key="labels">:CONTACT_DETAIL:ENTITY</data>
+			<data key="id">108</data>
+			<data key="TYPE">TELEPHONE</data>
+			<data key="VALUE">+1 22 2222 2222</data>
+			<data key="DEPOSITOR_ID">106</data>
+		</node>
+		
+		<edge id="e1" source="n2" target="n6" label="contactDetails">
+			<data key="label">contactDetails</data>
+		</edge>
+		<edge id="e2" source="n2" target="n7" label="contactDetails">
+			<data key="label">contactDetails</data>
+		</edge>
+		<edge id="e3" source="n2" target="n8" label="contactDetails">
+			<data key="label">contactDetails</data>
+		</edge>
+		<edge id="e4" source="n3" target="n2" label="depositor">
+			<data key="label">depositor</data>
+		</edge>
+		<edge id="e4" source="n4" target="n2" label="depositor">
+			<data key="label">depositor</data>
+		</edge>
+		<edge id="e5" source="n2" target="n5" label="addresses">
+			<data key="label">addresses</data>
+		</edge>
+	</graph>
+</graphml>
+

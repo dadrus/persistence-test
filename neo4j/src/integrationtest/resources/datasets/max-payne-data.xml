@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+	<graph id="G" edgedefault="directed">
+		<key id="label" for="edge" attr.name="label" attr.type="string"/>
+		<key id="labels" for="node" attr.name="labels" attr.type="string"/>
+		<key id="id" for="node" attr.name="id" attr.type="long"/>
+		<key id="DEPOSITOR_ID" for="node" attr.name="DEPOSITOR_ID" attr.type="long"/>
+		<key id="NAME" for="node" attr.name="NAME" attr.type="string"/>
+		<key id="SURNAME" for="node" attr.name="SURNAME" attr.type="string"/>
+		<key id="CREDIT_LIMIT" for="node" attr.name="CREDIT_LIMIT" attr.type="float"/>
+		<key id="TYPE" for="node" attr.name="TYPE" attr.type="string"/>
+		<key id="ZIP_CODE" for="node" attr.name="ZIP_CODE" attr.type="string"/>
+		<key id="COUNTRY" for="node" attr.name="COUNTRY" attr.type="string"/>
+		<key id="CITY" for="node" attr.name="CITY" attr.type="string"/>
+		<key id="STREET" for="node" attr.name="STREET" attr.type="string"/>
+		<key id="VALUE" for="node" attr.name="VALUE" attr.type="string"/>
+		
+		<node id="n1" labels=":DEPOSITOR:ENTITY">
+			<data key="labels">:DEPOSITOR:ENTITY</data>
+			<data key="id">106</data>
+			<data key="SURNAME">Payne</data>
+			<data key="NAME">Max</data>
+		</node>
+		<node id="n2" labels=":ENTITY:ACCOUNT">
+			<data key="labels">:ENTITY:ACCOUNT</data>
+			<data key="TYPE">INSTANT_ACCESS_ACCOUNT</data>
+			<data key="id">107</data>
+		</node>
+		<edge id="e1" source="n2" target="n1" label="depositor">
+			<data key="label">depositor</data>
+		</edge>
+	</graph>
+</graphml>

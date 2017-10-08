@@ -1,0 +1,5 @@
+CREATE (d:DEPOSITOR:ENTITY {id: 1, NAME: "Max", SURNAME: "Payne"})<-[:depositor]-(a:ACCOUNT:ENTITY {id: 1, DEPOSITOR_ID: 1, CREDIT_LIMIT: 100000.0, TYPE: "GIRO_ACCOUNT"}),
+(a)-[:entries]->(:ACCOUNT_ENTRY:ENTITY {id: 1, ACCOUNT_ID: 1, AMOUNT: 0.0, DATE: "2017/09/19 01:12:47:669 +0200", DETAILS: "deposit", REFERENCE: "ACC", TYPE: "DEBIT"}),
+(a)-[:entries]->(:ACCOUNT_ENTRY:ENTITY {id: 2, ACCOUNT_ID: 1, AMOUNT: 100000.0, DATE: "2017/09/19 01:12:47:669 +0200", DETAILS: "deposit", REFERENCE: "ACC", TYPE: "DEBIT"}),
+(d)-[:addresses]->(:ADDRESS:ENTITY {id: 1, DEPOSITOR_ID: 1, CITY: "Unknown", COUNTRY: "Unknown", STREET: "Unknown", ZIP_CODE: "111111" }),
+(d)-[:contactDetails]->(:CONTACT_DETAIL:ENTITY {id: 1, DEPOSITOR_ID: 1, TYPE: "EMAIL", VALUE: "max@payne.com"});

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+	<key id="label" for="edge" attr.name="label" attr.type="string"/>
+	<key id="labels" for="node" attr.name="labels" attr.type="string"/>
+	
+	<key id="SURNAME" for="node" attr.name="SURNAME" attr.type="string"/>
+	<key id="ACCOUNT_ID" for="node" attr.name="ACCOUNT_ID" attr.type="long"/>
+	<key id="DETAILS" for="node" attr.name="DETAILS" attr.type="string"/>
+	<key id="VALUE" for="node" attr.name="VALUE" attr.type="string"/>
+	<key id="NAME" for="node" attr.name="NAME" attr.type="string"/>
+	<key id="DATE" for="node" attr.name="DATE" attr.type="string"/>
+	<key id="CREDIT_LIMIT" for="node" attr.name="CREDIT_LIMIT" attr.type="double"/>
+	<key id="AMOUNT" for="node" attr.name="AMOUNT" attr.type="double"/>
+	<key id="REFERENCE" for="node" attr.name="REFERENCE" attr.type="string"/>
+	<key id="id" for="node" attr.name="id" attr.type="long"/>
+	<key id="DEPOSITOR_ID" for="node" attr.name="DEPOSITOR_ID" attr.type="long"/>
+	<key id="TYPE" for="node" attr.name="TYPE" attr.type="string"/>
+	
+	<graph id="G" edgedefault="directed">
+		<node id="n2240" labels=":DEPOSITOR:ENTITY">
+			<data key="labels">:DEPOSITOR:ENTITY</data>
+			<data key="SURNAME">Doe</data>
+			<data key="NAME">Max</data>
+			<data key="id">106</data>
+		</node>
+		<node id="n2241" labels=":ENTITY:ACCOUNT">
+			<data key="labels">:ENTITY:ACCOUNT</data>
+			<data key="id">107</data>
+			<data key="TYPE">INSTANT_ACCESS_ACCOUNT</data>
+		</node>
+		<node id="n2242" labels=":ACCOUNT_ENTRY:ENTITY">
+			<data key="labels">:ACCOUNT_ENTRY:ENTITY</data>
+			<data key="AMOUNT">150</data>
+			<data key="TYPE">DEBIT</data>
+			<data key="DETAILS">money transfer</data>
+			<data key="REFERENCE">ACC</data>
+			<data key="ACCOUNT_ID">107</data>
+		</node>
+		<node id="n2243" labels=":ENTITY:ACCOUNT">
+			<data key="labels">:ENTITY:ACCOUNT</data>
+			<data key="CREDIT_LIMIT">1000</data>
+			<data key="TYPE">GIRO_ACCOUNT</data>
+			<data key="id">106</data>
+		</node>
+		<node id="n2244" labels=":ACCOUNT_ENTRY:ENTITY">
+			<data key="labels">:ACCOUNT_ENTRY:ENTITY</data>
+			<data key="AMOUNT">100</data>
+			<data key="TYPE">DEBIT</data>
+			<data key="DETAILS">deposit</data>
+			<data key="REFERENCE">ACC</data>
+			<data key="ACCOUNT_ID">106</data>
+		</node>
+		<node id="n2245" labels=":ACCOUNT_ENTRY:ENTITY">
+			<data key="labels">:ACCOUNT_ENTRY:ENTITY</data>
+			<data key="REFERENCE">ACC</data>
+			<data key="AMOUNT">150</data>
+			<data key="TYPE">CREDIT</data>
+			<data key="DETAILS">money transfer</data>
+			<data key="ACCOUNT_ID">106</data>
+		</node>
+		<node id="n2246" labels=":CONTACT_DETAIL:ENTITY">
+			<data key="labels">:CONTACT_DETAIL:ENTITY</data>
+			<data key="DEPOSITOR_ID">106</data>
+			<data key="id">108</data>
+			<data key="TYPE">TELEPHONE</data>
+			<data key="VALUE">+1 22 2222 2222</data>
+		</node>
+		<node id="n2247" labels=":CONTACT_DETAIL:ENTITY">
+			<data key="labels">:CONTACT_DETAIL:ENTITY</data>
+			<data key="id">106</data>
+			<data key="TYPE">EMAIL</data>
+			<data key="VALUE">john.doe@acme.com</data>
+			<data key="DEPOSITOR_ID">106</data>
+		</node>
+		<node id="n2248" labels=":CONTACT_DETAIL:ENTITY">
+			<data key="labels">:CONTACT_DETAIL:ENTITY</data>
+			<data key="DEPOSITOR_ID">106</data>
+			<data key="id">107</data>
+			<data key="TYPE">MOBILE</data>
+			<data key="VALUE">+1 11 1111 1111</data>
+		</node>
+		<edge id="e1743" source="n2241" target="n2240" label="depositor">
+			<data key="label">depositor</data>
+		</edge>
+		<edge id="e1744" source="n2243" target="n2240" label="depositor">
+			<data key="label">depositor</data>
+		</edge>
+		<edge id="e1745" source="n2240" target="n2246" label="contactDetails">
+			<data key="label">contactDetails</data>
+		</edge>
+		<edge id="e1746" source="n2240" target="n2247" label="contactDetails">
+			<data key="label">contactDetails</data>
+		</edge>
+		<edge id="e1747" source="n2240" target="n2248" label="contactDetails">
+			<data key="label">contactDetails</data>
+		</edge>
+		<edge id="e1748" source="n2241" target="n2242" label="entries">
+			<data key="label">entries</data>
+		</edge>
+		<edge id="e1749" source="n2243" target="n2244" label="entries">
+			<data key="label">entries</data>
+		</edge>
+		<edge id="e1750" source="n2243" target="n2245" label="entries">
+			<data key="label">entries</data>
+		</edge>
+	</graph>
+</graphml>
