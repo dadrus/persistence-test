@@ -62,7 +62,6 @@ public class HibernateOgmConfiguration implements Configuration {
         ds.setUsername(username);
         ds.setPassword(password);
         ds.setJdbcUrl(connectionUrl);
-        // ds.setAutoCommit(false);
         ds.setMinimumIdle(1);
         ds.setMinimumIdle(2);
 

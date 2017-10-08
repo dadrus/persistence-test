@@ -19,8 +19,8 @@ package eu.drus.jpa.unit.neo4j.graphml;
 
 public class DefaultAttribute<T> implements Attribute {
 
-    public AttributeType type;
-    public T value;
+    private AttributeType type;
+    private T value;
 
     public DefaultAttribute(final T value, final AttributeType type) {
         this.type = type;

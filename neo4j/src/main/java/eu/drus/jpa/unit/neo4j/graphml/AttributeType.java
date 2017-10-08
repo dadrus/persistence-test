@@ -19,11 +19,10 @@ package eu.drus.jpa.unit.neo4j.graphml;
 
 /**
  * Denotes the type of an attribute.
- * 
+ *
  * @author Dimitrios Michail
  */
-public enum AttributeType
-{
+public enum AttributeType {
     BOOLEAN("boolean"),
     INT("int"),
     LONG("long"),
@@ -33,29 +32,28 @@ public enum AttributeType
 
     private String name;
 
-    private AttributeType(String name)
-    {
+    private AttributeType(final String name) {
         this.name = name;
     }
 
     /**
      * Get a string representation of the attribute type
-     * 
+     *
      * @return the string representation of the attribute type
      */
-    public String toString()
-    {
+    @Override
+    public String toString() {
         return name;
     }
 
     /**
      * Create a type from a string representation
-     * 
-     * @param value the name of the type
+     *
+     * @param value
+     *            the name of the type
      * @return the attribute type
      */
-    public static AttributeType create(String value)
-    {
+    public static AttributeType create(final String value) {
         switch (value) {
         case "boolean":
             return BOOLEAN;
@@ -69,8 +67,9 @@ public enum AttributeType
             return DOUBLE;
         case "string":
             return STRING;
+        default:
+            throw new IllegalArgumentException("Type " + value + " is unknown");
         }
-        throw new IllegalArgumentException("Type " + value + " is unknown");
     }
 
 }
