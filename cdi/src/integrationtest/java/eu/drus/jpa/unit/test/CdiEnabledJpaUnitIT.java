@@ -21,7 +21,7 @@ import eu.drus.jpa.unit.test.model.TestObject;
 import eu.drus.jpa.unit.test.model.TestObjectRepository;
 
 @RunWith(CdiTestRunner.class)
-public class CdiEnabledJpaUnitTest {
+public class CdiEnabledJpaUnitIT {
 
     @Rule
     public JpaUnitRule rule = new JpaUnitRule(getClass());
