@@ -1,5 +1,7 @@
 package eu.drus.jpa.unit.util;
 
+import java.io.File;
+
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.neo4j.harness.ServerControls;
@@ -11,7 +13,8 @@ public class Neo4jManager implements BeforeAllCallback {
 
     public static synchronized void startServer() {
         if (server == null) {
-            server = TestServerBuilders.newInProcessBuilder().withConfig("dbms.connector.bolt.address", "localhost:7687").newServer();
+            final File dbPath = new File(System.getProperty("java.io.tmpdir"), "neo4j_test_db");
+            server = TestServerBuilders.newInProcessBuilder(dbPath).withConfig("dbms.connector.bolt.address", "localhost:7687").newServer();
 
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 @Override
