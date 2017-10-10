@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -152,6 +153,28 @@ public class Neo4JDbFeatureExecutorTest {
         verify(connection, times(2)).prepareStatement(any(String.class));
         verify(ps, times(2)).execute();
         verify(ps, times(2)).close();
+    }
+
+    @Test
+    public void testApplyCustomScriptFeatureExecutionHandlesSQLExceptionsProperly() throws DbFeatureException, SQLException {
+        // GIVEN
+        when(ps.execute()).thenThrow(new SQLException("error"));
+
+        // WHEN
+        final DbFeature<Connection> feature = featureExecutor.createApplyCustomScriptFeature(Arrays.asList("test.script"));
+        assertThat(feature, notNullValue());
+
+        try {
+            feature.execute(connection);
+            fail("exception expected");
+        } catch (final DbFeatureException e) {
+            // expected
+        }
+
+        // THEN
+        verify(connection).prepareStatement(any(String.class));
+        verify(ps).execute();
+        verify(ps).close();
     }
 
     @Test

@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
@@ -136,5 +137,16 @@ public class BootstrappingDecoratorTest {
 
         // THEN
         // IllegalArgumentException is thrown. Method must be static
+    }
+
+    public void testAfterAll() throws Exception {
+        // GIVEN
+        final BootstrappingDecorator decorator = new BootstrappingDecorator();
+
+        // WHEN
+        decorator.afterAll(invocation);
+
+        // THEN
+        verifyZeroInteractions(invocation);
     }
 }
