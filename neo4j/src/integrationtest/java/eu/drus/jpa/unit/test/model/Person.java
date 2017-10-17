@@ -29,7 +29,12 @@ public class Person {
     private String surname;
 
     @OneToMany
+    @Column(name = "friendOf")
     private Set<Person> friends = new HashSet<>();
+
+    @OneToMany
+    @Column(name = "knowsTechnology")
+    private Set<Technology> knownTechnologies = new HashSet<>();
 
     protected Person() {
         // for JPA
