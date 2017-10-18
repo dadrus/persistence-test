@@ -194,8 +194,8 @@
               <include>**/*IT.java</include>
               <include>**/*ITCase.java</include>
               <include>**/*IntegrationTest.java</include>
-              <include>**/*Feature.java</include>
-              <include>**/*Fixture.java</include>
+<!--               <include>**/*Feature.java</include> -->
+<!--               <include>**/*Fixture.java</include> -->
             </includes>
             <!-- Specific to generate mapping between tests and covered code -->
             <!-- <properties> -->
