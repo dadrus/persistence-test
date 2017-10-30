@@ -23,8 +23,8 @@ public class UpdateOperation extends AbstractNeo4JOperation {
     public void execute(final Connection connection, final Graph<Node, Edge> graph) throws SQLException {
         for (final Node node : graph.vertexSet()) {
 
-            final List<SetExpression> attributes = node.getAttributes().entrySet().stream()
-                    .map(e -> property(identifier(node.getId()).property(e.getKey()), literal(e.getValue()))).collect(toList());
+            final List<SetExpression> attributes = node.getAttributes().stream()
+                    .map(a -> property(identifier(node.getId()).property(a.getName()), literal(a.getValue()))).collect(toList());
 
             final UpdateNext query = match(node.toPath().withAttribute("id").build()).set(attributes);
 

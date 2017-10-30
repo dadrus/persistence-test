@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.junit.BeforeClass;
@@ -22,8 +23,7 @@ import eu.drus.jpa.unit.api.CleanupPhase;
 import eu.drus.jpa.unit.api.DataSeedStrategy;
 import eu.drus.jpa.unit.api.InitialDataSets;
 import eu.drus.jpa.unit.api.JpaUnitRunner;
-import eu.drus.jpa.unit.test.model.Depositor;
-import eu.drus.jpa.unit.test.model.OperationNotSupportedException;
+import eu.drus.jpa.unit.test.model.Person;
 import eu.drus.jpa.unit.util.Neo4jManager;
 
 @RunWith(JpaUnitRunner.class)
@@ -39,29 +39,29 @@ public class InitialDataSetsIT {
     @PersistenceContext(unitName = "my-test-unit")
     private EntityManager manager;
 
+    private Person someGuy = new Person("Max", "Payne");
+
     @Test
     @InitialDataSets("datasets/initial-data.xml")
-    public void test1() throws OperationNotSupportedException {
+    public void test1() {
         // this test uses the default INSERT DataSeedStrategy
-        final TypedQuery<Depositor> query = manager.createQuery("SELECT d FROM Depositor d WHERE d.name='John'", Depositor.class);
-        final Depositor entity = query.getSingleResult();
+        final TypedQuery<Person> query = manager.createQuery("SELECT p FROM Person p WHERE p.name='Bronislav'", Person.class);
+        final Person entity = query.getSingleResult();
 
         assertNotNull(entity);
-        assertThat(entity.getName(), equalTo("John"));
-        assertThat(entity.getSurname(), equalTo("Doe"));
+        assertThat(entity.getSurname(), equalTo("Orlov"));
 
-        final Depositor depositor = new Depositor("Max", "Payne");
-        manager.persist(depositor);
+        manager.persist(someGuy);
     }
 
     @Test
     public void test2() {
-        // Since cleanup is disabled 2 Depositor entities do exist.
+        // Since cleanup is disabled 6 Person entities do exist.
 
-        final TypedQuery<Depositor> query = manager.createQuery("SELECT d FROM Depositor d", Depositor.class);
-        final List<Depositor> depositors = query.getResultList();
+        final Query query = manager.createNativeQuery("START n=node(*) MATCH (n:Person) RETURN count(n)");
+        final Long count = (Long) query.getSingleResult();
 
-        assertThat(depositors.size(), equalTo(2));
+        assertThat(count, equalTo(6L));
     }
 
     @Test
@@ -73,28 +73,27 @@ public class InitialDataSetsIT {
         // corresponding data from the data set and retain other data.
         // Thus: Max Payne entity is deleted
 
-        final TypedQuery<Depositor> query = manager.createQuery("SELECT d FROM Depositor d", Depositor.class);
-        final List<Depositor> depositors = query.getResultList();
+        final TypedQuery<Person> query = manager.createQuery("SELECT p FROM Person p", Person.class);
+        final List<Person> persons = query.getResultList();
 
-        assertThat(depositors.size(), equalTo(1));
+        assertThat(persons.size(), equalTo(5));
 
         // insert a new depositor and update e.g a name of the previously stored depositor and let's
         // see what REFRESH DataSeedStrategy will do (see next test methods)
-        final Depositor depositor = new Depositor("Max", "Payne");
-        manager.persist(depositor);
+        manager.persist(someGuy);
 
-        depositors.get(0).setName("Foo");
+        persons.get(0).setName("Foo");
     }
 
     @Test
     public void test4() {
         // Just to verify the surname update has been persisted
-        final TypedQuery<Depositor> query = manager.createQuery("SELECT d FROM Depositor d WHERE d.surname='Doe'", Depositor.class);
-        final Depositor entity = query.getSingleResult();
+        final TypedQuery<Person> query = manager.createQuery("SELECT p FROM Person p WHERE p.name='Foo'", Person.class);
+        final Person entity = query.getSingleResult();
 
         assertNotNull(entity);
         assertThat(entity.getName(), equalTo("Foo"));
-        assertThat(entity.getSurname(), equalTo("Doe"));
+        assertThat(entity.getSurname(), equalTo("Orlov"));
     }
 
     @Test
@@ -102,19 +101,19 @@ public class InitialDataSetsIT {
     public void test5() {
         // Since the given data is already present (thanks to the disabled cleanup) usage of REFRESH
         // will update data referenced by the given dataset, add new data and retain other data.
-        // Thus: Max Payne entity is still there, the name of Foo is changed back to John and a new
-        // entity Jack is added
+        // Thus: Max Payne entity is still there, the name of Foo is changed back to Bronislav and a
+        // new entity Jack is added
 
-        TypedQuery<Depositor> query = manager.createQuery("SELECT d FROM Depositor d WHERE d.surname='Doe'", Depositor.class);
-        Depositor entity = query.getSingleResult();
-        assertThat(entity.getName(), equalTo("John")); // not Foo!!!
+        TypedQuery<Person> query = manager.createQuery("SELECT p FROM Person p WHERE p.surname='Orlov'", Person.class);
+        Person entity = query.getSingleResult();
+        assertThat(entity.getName(), equalTo("Bronislav")); // not Foo!!!
         entity.setName("Foo"); // change it to Foo for the next test again
 
-        query = manager.createQuery("SELECT d FROM Depositor d WHERE d.name='Max'", Depositor.class);
+        query = manager.createQuery("SELECT p FROM Person p WHERE p.name='Max'", Person.class);
         entity = query.getSingleResult();
         assertThat(entity.getSurname(), equalTo("Payne"));
 
-        query = manager.createQuery("SELECT d FROM Depositor d WHERE d.name='Jack'", Depositor.class);
+        query = manager.createQuery("SELECT p FROM Person p WHERE p.name='Jack'", Person.class);
         entity = query.getSingleResult();
         assertThat(entity.getSurname(), equalTo("Sparrow"));
 
@@ -129,17 +128,17 @@ public class InitialDataSetsIT {
         // Since the given data is already present (thanks to the disabled cleanup) usage of UPDATE
         // will update data referenced by the given dataset and present in the database. All rows
         // not present in the database are ignored.
-        // Thus John is John again, Max is still there, and Jack is still absent
+        // Thus Bronislav is Bronislav again, Max is still there, and Jack is absent
 
-        TypedQuery<Depositor> query = manager.createQuery("SELECT d FROM Depositor d WHERE d.surname='Doe'", Depositor.class);
-        Depositor entity = query.getSingleResult();
-        assertThat(entity.getName(), equalTo("John")); // not Foo!!!
+        TypedQuery<Person> query = manager.createQuery("SELECT p FROM Person p WHERE p.surname='Orlov'", Person.class);
+        Person entity = query.getSingleResult();
+        assertThat(entity.getName(), equalTo("Bronislav")); // not Foo!!!
 
-        query = manager.createQuery("SELECT d FROM Depositor d WHERE d.name='Max'", Depositor.class);
+        query = manager.createQuery("SELECT p FROM Person p WHERE p.name='Max'", Person.class);
         entity = query.getSingleResult();
         assertThat(entity.getSurname(), equalTo("Payne"));
 
-        query = manager.createQuery("SELECT d FROM Depositor d WHERE d.name='Jack'", Depositor.class);
+        query = manager.createQuery("SELECT p FROM Person p WHERE p.name='Jack'", Person.class);
         assertTrue(query.getResultList().isEmpty());
     }
 }

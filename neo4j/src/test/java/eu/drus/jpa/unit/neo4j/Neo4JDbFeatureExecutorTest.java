@@ -13,6 +13,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,13 +33,15 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import eu.drus.jpa.unit.api.CleanupStrategy;
 import eu.drus.jpa.unit.api.DataSeedStrategy;
 import eu.drus.jpa.unit.api.ExpectedDataSets;
 import eu.drus.jpa.unit.api.JpaUnitException;
 import eu.drus.jpa.unit.neo4j.dataset.Edge;
+import eu.drus.jpa.unit.neo4j.dataset.EntityUtils;
 import eu.drus.jpa.unit.neo4j.dataset.Node;
 import eu.drus.jpa.unit.neo4j.operation.Neo4JOperation;
 import eu.drus.jpa.unit.spi.CleanupStrategyExecutor;
@@ -46,7 +49,8 @@ import eu.drus.jpa.unit.spi.DbFeature;
 import eu.drus.jpa.unit.spi.DbFeatureException;
 import eu.drus.jpa.unit.spi.FeatureResolver;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(EntityUtils.class)
 public class Neo4JDbFeatureExecutorTest {
 
     @Rule
@@ -86,7 +90,11 @@ public class Neo4JDbFeatureExecutorTest {
         when(connection.prepareStatement(anyString())).thenReturn(ps);
         when(ps.executeQuery()).thenReturn(rs);
 
-        featureExecutor = new Neo4JDbFeatureExecutor(featureResolver);
+        mockStatic(EntityUtils.class);
+        when(EntityUtils.getEntityClassFromNodeLabels(any(List.class), any(List.class))).thenReturn(Neo4JDbFeatureExecutorTest.class);
+        when(EntityUtils.getNamesOfIdProperties(any(Class.class))).thenReturn(Arrays.asList());
+
+        featureExecutor = new Neo4JDbFeatureExecutor(featureResolver, Arrays.asList());
     }
 
     @Test

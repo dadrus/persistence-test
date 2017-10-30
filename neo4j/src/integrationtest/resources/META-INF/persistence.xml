@@ -16,6 +16,7 @@
     
     <class>eu.drus.jpa.unit.test.model.Person</class>
     <class>eu.drus.jpa.unit.test.model.Technology</class>
+    <class>eu.drus.jpa.unit.test.model.CookingRecipe</class>
 
     <shared-cache-mode>NONE</shared-cache-mode>
 

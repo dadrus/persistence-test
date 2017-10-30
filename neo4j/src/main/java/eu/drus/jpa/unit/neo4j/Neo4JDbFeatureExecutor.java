@@ -23,6 +23,7 @@ import eu.drus.jpa.unit.api.ExpectedDataSets;
 import eu.drus.jpa.unit.api.JpaUnitException;
 import eu.drus.jpa.unit.neo4j.dataset.DataSetLoaderProvider;
 import eu.drus.jpa.unit.neo4j.dataset.Edge;
+import eu.drus.jpa.unit.neo4j.dataset.GraphElementFactory;
 import eu.drus.jpa.unit.neo4j.dataset.Node;
 import eu.drus.jpa.unit.neo4j.operation.Neo4JOperation;
 import eu.drus.jpa.unit.spi.AbstractDbFeatureExecutor;
@@ -36,8 +37,11 @@ import eu.drus.jpa.unit.spi.FeatureResolver;
 
 public class Neo4JDbFeatureExecutor extends AbstractDbFeatureExecutor<Graph<Node, Edge>, Connection> {
 
-    protected Neo4JDbFeatureExecutor(final FeatureResolver featureResolver) {
+    private GraphElementFactory graphElementFactory;
+
+    protected Neo4JDbFeatureExecutor(final FeatureResolver featureResolver, final List<Class<?>> entityClasses) {
         super(featureResolver);
+        graphElementFactory = new GraphElementFactory(entityClasses);
     }
 
     private static URI toUri(final String path) throws URISyntaxException {
@@ -55,7 +59,8 @@ public class Neo4JDbFeatureExecutor extends AbstractDbFeatureExecutor<Graph<Node
         try {
             for (final String path : paths) {
                 final File file = new File(toUri(path));
-                final DataSetLoader<Graph<Node, Edge>> loader = DataSetFormat.inferFromFile(file).select(new DataSetLoaderProvider());
+                final DataSetLoader<Graph<Node, Edge>> loader = DataSetFormat.inferFromFile(file)
+                        .select(new DataSetLoaderProvider(graphElementFactory));
                 dataSets.add(loader.load(file));
             }
         } catch (final IOException | URISyntaxException e) {
@@ -68,7 +73,8 @@ public class Neo4JDbFeatureExecutor extends AbstractDbFeatureExecutor<Graph<Node
     protected DbFeature<Connection> createCleanupFeature(final CleanupStrategy cleanupStrategy,
             final List<Graph<Node, Edge>> initialDataSets) {
         return (final Connection connection) -> {
-            final CleanupStrategyExecutor<Connection, Graph<Node, Edge>> executor = cleanupStrategy.provide(new CleanupStrategyProvider());
+            final CleanupStrategyExecutor<Connection, Graph<Node, Edge>> executor = cleanupStrategy
+                    .provide(new CleanupStrategyProvider(graphElementFactory));
             executor.execute(connection, initialDataSets);
         };
     }
@@ -108,7 +114,8 @@ public class Neo4JDbFeatureExecutor extends AbstractDbFeatureExecutor<Graph<Node
         return (final Connection connection) -> {
             final Graph<Node, Edge> mergedGraph = mergeGraphs(loadDataSets(Arrays.asList(expectedDataSets.value())));
 
-            final GraphComparator graphComparator = new GraphComparator(expectedDataSets.excludeColumns(), expectedDataSets.strict());
+            final GraphComparator graphComparator = new GraphComparator(graphElementFactory, expectedDataSets.excludeColumns(),
+                    expectedDataSets.strict());
 
             final AssertionErrorCollector errorCollector = new AssertionErrorCollector();
             graphComparator.compare(connection, mergedGraph, errorCollector);

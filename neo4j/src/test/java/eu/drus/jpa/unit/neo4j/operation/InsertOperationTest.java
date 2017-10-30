@@ -11,8 +11,6 @@ import static org.mockito.Mockito.verify;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
@@ -25,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import eu.drus.jpa.unit.neo4j.dataset.Attribute;
 import eu.drus.jpa.unit.neo4j.dataset.Edge;
 import eu.drus.jpa.unit.neo4j.dataset.Node;
 
@@ -45,16 +44,11 @@ public class InsertOperationTest {
     @Test
     public void testExecute() throws SQLException {
         // GIVEN
+        final Node n1 = new Node("n1", Arrays.asList("Node"), Arrays.asList(new Attribute("id", 1l, true)));
+        final Node n2 = new Node("n2", Arrays.asList("Node"), Arrays.asList(new Attribute("id", 2l, true)));
+        final Edge e1 = new Edge(n1, n2, "e1", Arrays.asList("Edge"), Arrays.asList(new Attribute("id", 3l, true)));
+
         final Graph<Node, Edge> graph = new DefaultDirectedGraph<>(new ClassBasedEdgeFactory<>(Edge.class));
-        final Map<String, Object> n1Attrs = new HashMap<>();
-        n1Attrs.put("id", new Long(1));
-        final Map<String, Object> n2Attrs = new HashMap<>();
-        n2Attrs.put("id", new Long(2));
-        final Map<String, Object> e1Attrs = new HashMap<>();
-        e1Attrs.put("id", new Long(3));
-        final Node n1 = new Node("n1", Arrays.asList("Node"), n1Attrs);
-        final Node n2 = new Node("n2", Arrays.asList("Node"), n2Attrs);
-        final Edge e1 = new Edge(n1, n2, "e1", Arrays.asList("Edge"), e1Attrs);
         graph.addVertex(n1);
         graph.addVertex(n2);
         graph.addEdge(n1, n2, e1);

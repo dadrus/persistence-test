@@ -15,18 +15,25 @@ import eu.drus.jpa.unit.spi.UnsupportedDataSetFormatException;
 
 public class DataSetLoaderProvider implements LoaderProvider<Graph<Node, Edge>> {
 
+    private GraphElementFactory graphElementFactory;
+
+    public DataSetLoaderProvider(final GraphElementFactory graphElementFactory) {
+        this.graphElementFactory = graphElementFactory;
+    }
+
     @Override
     public DataSetLoader<Graph<Node, Edge>> xmlLoader() {
         return (final File path) -> {
             try {
                 final DefaultDirectedGraph<Node, Edge> graph = new DefaultDirectedGraph<>(new ClassBasedEdgeFactory<>(Edge.class));
-                final GraphMLReader<Node, Edge> importer = new GraphMLReader<>(Node::new, Edge::new);
+                final GraphMLReader<Node, Edge> importer = new GraphMLReader<>(graphElementFactory, graphElementFactory);
                 importer.importGraph(graph, path);
                 return graph;
             } catch (final ImportException e) {
                 throw new IOException(e);
             }
         };
+
     }
 
     @Override
@@ -48,4 +55,5 @@ public class DataSetLoaderProvider implements LoaderProvider<Graph<Node, Edge>> 
     public DataSetLoader<Graph<Node, Edge>> xlsLoader() {
         throw new UnsupportedDataSetFormatException("XSL data sets are not supportred for Neo4j");
     }
+
 }

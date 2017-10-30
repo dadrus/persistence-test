@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -28,13 +29,11 @@ public class Person {
     @Column(nullable = false)
     private String surname;
 
-    @OneToMany
-    @Column(name = "friendOf")
-    private Set<Person> friends = new HashSet<>();
+    @ManyToMany
+    private Set<Person> friend = new HashSet<>();
 
     @OneToMany
-    @Column(name = "knowsTechnology")
-    private Set<Technology> knownTechnologies = new HashSet<>();
+    private Set<Technology> expertIn = new HashSet<>();
 
     protected Person() {
         // for JPA
@@ -62,15 +61,15 @@ public class Person {
     }
 
     public boolean addToFriends(final Person p) {
-        return friends.add(p);
+        return friend.add(p);
     }
 
     public boolean removeFromFriends(final Person p) {
-        return friends.remove(p);
+        return friend.remove(p);
     }
 
     public Set<Person> getFriends() {
-        return Collections.unmodifiableSet(friends);
+        return Collections.unmodifiableSet(friend);
     }
 
     @Override

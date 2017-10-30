@@ -124,6 +124,12 @@
       <artifactId>junit-platform-runner</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>com.sun.codemodel</groupId>
+      <artifactId>codemodel</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <!-- INTEGRATION TEST DEPENDENIES -->
     <dependency>

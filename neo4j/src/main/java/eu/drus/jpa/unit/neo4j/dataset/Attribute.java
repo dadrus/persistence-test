@@ -1,34 +1,42 @@
-package eu.drus.jpa.unit.test.model;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
+package eu.drus.jpa.unit.neo4j.dataset;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
-@Entity
-public class Technology {
+public class Attribute {
 
-    @Id
     private String name;
 
-    protected Technology() {
-        // for JPA
-    }
+    private Object value;
 
-    public Technology(final String name) {
+    private boolean isId;
+
+    public Attribute(final String name, final Object value, final boolean isId) {
         this.name = name;
+        this.value = value;
+        this.isId = isId;
     }
 
     public String getName() {
         return name;
     }
 
+    public Object getValue() {
+        return value;
+    }
+
+    public boolean isId() {
+        return isId;
+    }
+
     @Override
     public String toString() {
-        final ToStringBuilder builder = new ToStringBuilder(this);
+        final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
         builder.append("name", name);
+        builder.append("value", value);
+        builder.append("isId", isId);
         return builder.build();
     }
 
@@ -36,6 +44,8 @@ public class Technology {
     public int hashCode() {
         final HashCodeBuilder builder = new HashCodeBuilder();
         builder.append(name);
+        builder.append(value);
+        builder.append(isId);
         return builder.toHashCode();
     }
 
@@ -45,10 +55,12 @@ public class Technology {
             return true;
         }
 
-        if (obj instanceof Technology) {
-            final Technology other = (Technology) obj;
+        if (obj instanceof Attribute) {
+            final Attribute other = (Attribute) obj;
             final EqualsBuilder builder = new EqualsBuilder();
             builder.append(name, other.name);
+            builder.append(value, other.value);
+            builder.append(isId, other.isId);
             return builder.isEquals();
         }
 

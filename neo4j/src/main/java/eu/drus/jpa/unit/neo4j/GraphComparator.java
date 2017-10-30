@@ -1,19 +1,12 @@
 package eu.drus.jpa.unit.neo4j;
 
-import static eu.drus.jpa.unit.neo4j.dataset.Node.toNodeType;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static org.neo4j.cypherdsl.CypherQuery.identifier;
-import static org.neo4j.cypherdsl.CypherQuery.match;
-import static org.neo4j.cypherdsl.CypherQuery.node;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,12 +14,12 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.jgrapht.Graph;
-import org.neo4j.cypherdsl.CypherQuery;
-import org.neo4j.cypherdsl.Path;
-import org.neo4j.cypherdsl.grammar.ReturnNext;
 
 import eu.drus.jpa.unit.api.JpaUnitException;
+import eu.drus.jpa.unit.neo4j.dataset.Attribute;
+import eu.drus.jpa.unit.neo4j.dataset.DatabaseReader;
 import eu.drus.jpa.unit.neo4j.dataset.Edge;
+import eu.drus.jpa.unit.neo4j.dataset.GraphElementFactory;
 import eu.drus.jpa.unit.neo4j.dataset.Node;
 import eu.drus.jpa.unit.spi.AssertionErrorCollector;
 import eu.drus.jpa.unit.spi.ColumnsHolder;
@@ -39,37 +32,34 @@ public class GraphComparator {
 
     private ColumnsHolder toExclude;
     private boolean isStrict;
+    private DatabaseReader dbReader;
 
-    public GraphComparator(final String[] toExclude, final boolean strict) {
+    public GraphComparator(final GraphElementFactory factory, final String[] toExclude, final boolean strict) {
         this.toExclude = new ColumnsHolder(toExclude, ID_MAPPER);
         isStrict = strict;
+        dbReader = new DatabaseReader(factory);
     }
 
     public void compare(final Connection connection, final Graph<Node, Edge> expectedGraph, final AssertionErrorCollector errorCollector) {
+        Graph<Node, Edge> givenGraph;
+        try {
+            givenGraph = dbReader.readGraph(connection);
+        } catch (final SQLException e) {
+            throw new JpaUnitException(FAILED_TO_VERIFY_DATA_BASE_STATE, e);
+        }
+
         if (expectedGraph.vertexSet().isEmpty()) {
-            shouldBeEmpty(connection, errorCollector);
+            shouldBeEmpty(givenGraph, errorCollector);
         } else {
-            compareContent(connection, expectedGraph, errorCollector);
+            compareContent(givenGraph, expectedGraph, errorCollector);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private void shouldBeEmpty(final Connection connection, final AssertionErrorCollector errorCollector) {
+    private void shouldBeEmpty(final Graph<Node, Edge> givenGraph, final AssertionErrorCollector errorCollector) {
         final Map<String, Integer> unexpectedNodesOccurence = new HashMap<>();
 
-        try (final PreparedStatement ps = connection.prepareStatement("MATCH (n) RETURN { id: id(n), labels: labels(n) } as node")) {
-            try (final ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    final Map<String, ?> node = (Map<String, ?>) rs.getObject("node");
-                    final String nodeType = toNodeType((List<String>) node.get("labels"));
-                    final Integer val = unexpectedNodesOccurence.computeIfPresent(nodeType, (k, v) -> v + 1);
-                    if (val == null) {
-                        unexpectedNodesOccurence.put(nodeType, 1);
-                    }
-                }
-            }
-        } catch (final SQLException e) {
-            throw new JpaUnitException(FAILED_TO_VERIFY_DATA_BASE_STATE, e);
+        for (final Node node : givenGraph.vertexSet()) {
+            unexpectedNodesOccurence.compute(node.getType(), (k, v) -> v == null ? 1 : v + 1);
         }
 
         for (final Entry<String, Integer> nodeEntries : unexpectedNodesOccurence.entrySet()) {
@@ -80,77 +70,24 @@ public class GraphComparator {
         }
     }
 
-    private void compareContent(final Connection connection, final Graph<Node, Edge> expectedGraph,
+    private void compareContent(final Graph<Node, Edge> givenGraph, final Graph<Node, Edge> expectedGraph,
             final AssertionErrorCollector errorCollector) {
 
-        final List<String> expectedNodeTypes = expectedGraph.vertexSet().stream().map(Node::getType).collect(toList());
+        final Set<String> expectedNodeTypes = expectedGraph.vertexSet().stream().map(Node::getType).collect(toSet());
 
-        final Set<String> currentNodeTypes = getAvailableNodeTypes(connection);
+        final Set<String> currentNodeTypes = givenGraph.vertexSet().stream().map(Node::getType).collect(toSet());
 
         verifyNodeLabels(currentNodeTypes, expectedNodeTypes, errorCollector,
                 "Nodes with %s labels were expected to be present, but not found");
 
-        checkPresenceOfExpectedNodes(connection, expectedGraph, errorCollector);
-        checkAbsenseOfNotExpectedNodes(connection, expectedGraph, errorCollector);
+        checkPresenceOfExpectedNodes(givenGraph, expectedGraph, errorCollector);
+        checkPresenceOfExpectedReferences(givenGraph, expectedGraph, errorCollector);
+        checkAbsenseOfNotExpectedNodes(givenGraph, expectedGraph, errorCollector);
+        checkAbsenseOfNotExpectedReferences(givenGraph, expectedGraph, errorCollector);
 
         if (isStrict) {
             verifyNodeLabels(expectedNodeTypes, currentNodeTypes, errorCollector,
                     "Nodes with %s labels were not expected, but are present");
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void checkAbsenseOfNotExpectedNodes(final Connection connection, final Graph<Node, Edge> expectedGraph,
-            final AssertionErrorCollector errorCollector) {
-        final List<List<String>> expectedNodeLables = expectedGraph.vertexSet().stream().map(Node::getLabels).distinct().collect(toList());
-
-        for (final List<String> labels : expectedNodeLables) {
-            final List<Node> expectedNodes = expectedGraph.vertexSet().stream().filter(node -> node.getLabels().containsAll(labels))
-                    .collect(toList());
-
-            final List<String> attributesToExclude = labels.stream().map(toExclude::getColumns).flatMap(List::stream).distinct()
-                    .collect(toList());
-
-            final ReturnNext query = match(node("n").labels(labels.stream().map(CypherQuery::label).collect(toList())))
-                    .returns(identifier("n"));
-
-            try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
-                try (final ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        final Map<String, Object> n = (Map<String, Object>) rs.getObject("n");
-                        final boolean nodePresent = expectedNodes.stream().anyMatch(node -> {
-                            final Set<Entry<String, Object>> attributes = node.getAttributes().entrySet().stream()
-                                    .filter(e -> !attributesToExclude.contains(e.getKey())).collect(toSet());
-
-                            return n.entrySet().containsAll(attributes);
-                        });
-                        if (!nodePresent) {
-                            errorCollector.collect("Node " + n + " was not expected, but is present");
-                        }
-                    }
-                }
-            } catch (final SQLException e) {
-                throw new JpaUnitException(FAILED_TO_VERIFY_DATA_BASE_STATE, e);
-            }
-        }
-    }
-
-    private void checkPresenceOfExpectedNodes(final Connection connection, final Graph<Node, Edge> expectedGraph,
-            final AssertionErrorCollector errorCollector) {
-        for (final Node expectedNode : expectedGraph.vertexSet()) {
-            final List<String> attributesToExclude = expectedNode.getLabels().stream().map(toExclude::getColumns).flatMap(List::stream)
-                    .distinct().collect(toList());
-
-            final Path nodePath = expectedNode.toPath().withAllAttributesBut(attributesToExclude).build();
-            final ReturnNext query = match(nodePath).returns(identifier(expectedNode.getId()));
-
-            try (PreparedStatement ps = connection.prepareStatement(query.toString())) {
-                if (!ps.execute()) {
-                    errorCollector.collect("Node " + expectedNode + " was expected, but is not present");
-                }
-            } catch (final SQLException e) {
-                throw new JpaUnitException(FAILED_TO_VERIFY_DATA_BASE_STATE, e);
-            }
         }
     }
 
@@ -163,20 +100,114 @@ public class GraphComparator {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private Set<String> getAvailableNodeTypes(final Connection connection) {
-        final Set<String> currentNodeTypes = new HashSet<>();
+    private void checkPresenceOfExpectedNodes(final Graph<Node, Edge> givenGraph, final Graph<Node, Edge> expectedGraph,
+            final AssertionErrorCollector errorCollector) {
+        for (final Node expectedNode : expectedGraph.vertexSet()) {
 
-        try (final PreparedStatement ps = connection.prepareStatement("MATCH (n) RETURN distinct labels(n) as labels")) {
-            try (final ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    currentNodeTypes.add(toNodeType((List<String>) rs.getObject("labels")));
+            final List<String> attributesToExclude = expectedNode.getLabels().stream().map(toExclude::getColumns).flatMap(List::stream)
+                    .distinct().collect(toList());
+
+            final List<Node> nodesOfExpectedType = givenGraph.vertexSet().stream().filter(n -> n.getType().equals(expectedNode.getType()))
+                    .collect(toList());
+
+            final List<Node> foundNodes = nodesOfExpectedType.stream().filter(n -> n.isSame(expectedNode, attributesToExclude))
+                    .collect(toList());
+
+            if (foundNodes.isEmpty()) {
+                errorCollector.collect("Node " + expectedNode.asString() + " was expected, but is not present");
+            } else if (foundNodes.size() > 1) {
+                errorCollector.collect("Ambiguouty detected for node " + expectedNode.asString() + " for given attribute filter");
+            }
+        }
+    }
+
+    private void checkPresenceOfExpectedReferences(final Graph<Node, Edge> givenGraph, final Graph<Node, Edge> expectedGraph,
+            final AssertionErrorCollector errorCollector) {
+        for (final Edge expectedEdge : expectedGraph.edgeSet()) {
+
+            final List<String> attributesToExclude = expectedEdge.getLabels().stream().map(toExclude::getColumns).flatMap(List::stream)
+                    .distinct().collect(toList());
+
+            final List<Edge> edgesOfExpectedType = givenGraph.edgeSet().stream().filter(e -> e.getType().equals(expectedEdge.getType()))
+                    .collect(toList());
+
+            final List<Edge> foundEdges = edgesOfExpectedType.stream().filter(e -> e.isSame(expectedEdge, attributesToExclude))
+                    .collect(toList());
+
+            if (foundEdges.isEmpty()) {
+                errorCollector.collect("Edge " + expectedEdge.asString() + " was expected, but is not present");
+            } else if (foundEdges.size() > 1) {
+                errorCollector.collect("Ambiguouty detected for edge " + expectedEdge.asString() + " for given attribute filter");
+            }
+        }
+    }
+
+    private void checkAbsenseOfNotExpectedNodes(final Graph<Node, Edge> givenGraph, final Graph<Node, Edge> expectedGraph,
+            final AssertionErrorCollector errorCollector) {
+
+        final List<List<String>> expectedNodeLables = expectedGraph.vertexSet().stream().map(Node::getLabels).distinct().collect(toList());
+
+        for (final List<String> labels : expectedNodeLables) {
+            final List<Node> expectedNodes = expectedGraph.vertexSet().stream().filter(node -> node.getLabels().containsAll(labels))
+                    .collect(toList());
+
+            final List<String> attributesToExclude = labels.stream().map(toExclude::getColumns).flatMap(List::stream).distinct()
+                    .collect(toList());
+
+            for (final Node givenNode : givenGraph.vertexSet()) {
+                if (!givenNode.getLabels().containsAll(labels)) {
+                    continue;
+                }
+
+                final boolean nodePresent = expectedNodes.stream().anyMatch(node -> {
+                    final Set<Attribute> attributesToRetain = node.getAttributes().stream()
+                            .filter(a -> !attributesToExclude.contains(a.getName())).collect(toSet());
+
+                    return givenNode.getAttributes().containsAll(attributesToRetain);
+                });
+
+                if (!nodePresent) {
+                    errorCollector.collect("Node " + givenNode.asString() + " was not expected, but is present");
                 }
             }
-        } catch (final SQLException e) {
-            throw new JpaUnitException(FAILED_TO_VERIFY_DATA_BASE_STATE, e);
         }
+    }
 
-        return currentNodeTypes;
+    private void checkAbsenseOfNotExpectedReferences(final Graph<Node, Edge> givenGraph, final Graph<Node, Edge> expectedGraph,
+            final AssertionErrorCollector errorCollector) {
+        final List<List<String>> expectedEdgeLables = expectedGraph.edgeSet().stream().map(Edge::getLabels).distinct().collect(toList());
+
+        for (final List<String> labels : expectedEdgeLables) {
+            final List<Edge> expectedEdges = expectedGraph.edgeSet().stream().filter(node -> node.getLabels().containsAll(labels))
+                    .collect(toList());
+
+            final List<String> edgeAttributesToExclude = labels.stream().map(toExclude::getColumns).flatMap(List::stream).distinct()
+                    .collect(toList());
+
+            for (final Edge givenEdge : givenGraph.edgeSet()) {
+                if (!givenEdge.getLabels().containsAll(labels)) {
+                    continue;
+                }
+
+                final boolean edgePresent = expectedEdges.stream().anyMatch(edge -> {
+                    final Set<Attribute> attributesToRetain = edge.getAttributes().stream()
+                            .filter(a -> !edgeAttributesToExclude.contains(a.getName())).collect(toSet());
+
+                    final List<String> sourceNodeAttributesToExclude = edge.getSourceNode().getLabels().stream().map(toExclude::getColumns)
+                            .flatMap(List::stream).distinct().collect(toList());
+
+                    final List<String> targetNodeAttributesToExclude = edge.getTargetNode().getLabels().stream().map(toExclude::getColumns)
+                            .flatMap(List::stream).distinct().collect(toList());
+
+                    return givenEdge.getAttributes().containsAll(attributesToRetain)
+                            && givenEdge.getSourceNode().isSame(edge.getSourceNode(), sourceNodeAttributesToExclude)
+                            && givenEdge.getTargetNode().isSame(edge.getTargetNode(), targetNodeAttributesToExclude);
+                });
+
+                if (!edgePresent) {
+                    errorCollector.collect("Edge " + givenEdge.asString() + " was not expected, but is present");
+                }
+            }
+        }
     }
 }
