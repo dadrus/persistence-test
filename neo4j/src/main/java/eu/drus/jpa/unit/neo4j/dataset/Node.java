@@ -68,7 +68,7 @@ public class Node extends GraphElement {
         }
 
         private Attribute findAttribute(final String attributeName) {
-            return getAttributes().stream().filter(a -> a.getName() == attributeName).findFirst().orElse(null);
+            return getAttributes().stream().filter(a -> a.getName().equals(attributeName)).findFirst().orElse(null);
         }
     }
 }

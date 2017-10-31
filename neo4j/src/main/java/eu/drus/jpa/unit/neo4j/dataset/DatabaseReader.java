@@ -47,17 +47,14 @@ public class DatabaseReader {
                     final Map<String, ?> n = (Map<String, ?>) rs.getObject("node");
                     final Map<String, ?> r = (Map<String, ?>) rs.getObject("relation");
                     final Node node = toNode(n);
-                    nodeList.add(node);
                     nodes.put(n.get("id"), node);
                     edges.put(r.get("id"), r);
                 }
             }
         }
 
-        for (final Map<String, ?> edge : edges.values()) {
-            edgeList.add(toEdge(nodes, edge));
-        }
-
+        nodes.values().forEach(nodeList::add);
+        edges.values().forEach(e -> edgeList.add(toEdge(nodes, e)));
     }
 
     @SuppressWarnings("unchecked")

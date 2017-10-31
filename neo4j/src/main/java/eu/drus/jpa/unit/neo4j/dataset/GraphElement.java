@@ -38,7 +38,7 @@ public abstract class GraphElement {
     }
 
     public boolean isSame(final GraphElement other, final List<String> attributesToExclude) {
-        if (!labels.equals(other.labels)) {
+        if (!labels.containsAll(other.labels)) {
             return false;
         }
 
@@ -48,6 +48,6 @@ public abstract class GraphElement {
         final List<Attribute> otherAttributes = other.attributes.stream().filter(a -> !attributesToExclude.contains(a.getName()))
                 .collect(Collectors.toList());
 
-        return ownAttributes.equals(otherAttributes);
+        return ownAttributes.containsAll(otherAttributes);
     }
 }
