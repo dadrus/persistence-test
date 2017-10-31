@@ -25,12 +25,16 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import eu.drus.jpa.unit.neo4j.dataset.Attribute;
+import com.google.common.collect.ImmutableMap;
+
 import eu.drus.jpa.unit.neo4j.dataset.Edge;
+import eu.drus.jpa.unit.neo4j.dataset.GraphElementFactory;
 import eu.drus.jpa.unit.neo4j.dataset.Node;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RefreshOperationTest {
+
+    private GraphElementFactory graphElementFactory;
 
     @Mock
     private Connection connection;
@@ -41,19 +45,24 @@ public class RefreshOperationTest {
     @Before
     public void prepareMocks() throws SQLException {
         doAnswer(i -> null).when(operation).executeQuery(any(Connection.class), anyString());
+
+        graphElementFactory = new GraphElementFactory();
     }
 
     @Test
     public void testExecute() throws SQLException {
         // GIVEN
-        final Node n1 = new Node("n1", Arrays.asList("Node"), Arrays.asList(new Attribute("id", 1l, true)));
-        final Node n2 = new Node("n2", Arrays.asList("Node"), Arrays.asList(new Attribute("id", 2l, true)));
-        final Edge e1 = new Edge(n1, n2, "e1", Arrays.asList("Edge"), Arrays.asList(new Attribute("id", 3l, true)));
+        final Node n1 = graphElementFactory.createNode("n1", Arrays.asList("Node"),
+                ImmutableMap.<String, Object>builder().put("id", 1l).build());
+        final Node n2 = graphElementFactory.createNode("n2", Arrays.asList("Node"),
+                ImmutableMap.<String, Object>builder().put("id", 2l).build());
+        final Edge e1 = graphElementFactory.createEdge(n1, n2, "e1", Arrays.asList("Edge"),
+                ImmutableMap.<String, Object>builder().put("id", 3l).build());
 
         final Graph<Node, Edge> graph = new DefaultDirectedGraph<>(new ClassBasedEdgeFactory<>(Edge.class));
         graph.addVertex(n1);
         graph.addVertex(n2);
-        graph.addEdge(n1, n2, e1);
+        graph.addEdge(e1.getSourceNode(), e1.getTargetNode(), e1);
 
         // WHEN
         operation.execute(connection, graph);

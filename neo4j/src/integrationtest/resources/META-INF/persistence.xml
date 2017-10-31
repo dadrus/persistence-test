@@ -5,14 +5,6 @@
     <provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
 
     <!-- your classes converters, etc -->
-    <class>eu.drus.jpa.unit.test.model.Account</class>
-    <class>eu.drus.jpa.unit.test.model.AccountEntry</class>
-    <class>eu.drus.jpa.unit.test.model.Address</class>
-    <class>eu.drus.jpa.unit.test.model.ContactDetail</class>
-    <class>eu.drus.jpa.unit.test.model.CreditCondition</class>
-    <class>eu.drus.jpa.unit.test.model.Depositor</class>
-    <class>eu.drus.jpa.unit.test.model.GiroAccount</class>
-    <class>eu.drus.jpa.unit.test.model.InstantAccessAccount</class>
     
     <class>eu.drus.jpa.unit.test.model.Person</class>
     <class>eu.drus.jpa.unit.test.model.Technology</class>
@@ -35,14 +27,9 @@
     <provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
 
     <!-- your classes converters, etc -->
-    <class>eu.drus.jpa.unit.test.model.Account</class>
-    <class>eu.drus.jpa.unit.test.model.AccountEntry</class>
-    <class>eu.drus.jpa.unit.test.model.Address</class>
-    <class>eu.drus.jpa.unit.test.model.ContactDetail</class>
-    <class>eu.drus.jpa.unit.test.model.CreditCondition</class>
-    <class>eu.drus.jpa.unit.test.model.Depositor</class>
-    <class>eu.drus.jpa.unit.test.model.GiroAccount</class>
-    <class>eu.drus.jpa.unit.test.model.InstantAccessAccount</class>
+    <class>eu.drus.jpa.unit.test.model.Person</class>
+    <class>eu.drus.jpa.unit.test.model.Technology</class>
+    <class>eu.drus.jpa.unit.test.model.CookingRecipe</class>
 
     <shared-cache-mode>ALL</shared-cache-mode>
 
@@ -63,14 +50,9 @@
     <provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
 
     <!-- your classes converters, etc -->
-    <class>eu.drus.jpa.unit.test.model.Account</class>
-    <class>eu.drus.jpa.unit.test.model.AccountEntry</class>
-    <class>eu.drus.jpa.unit.test.model.Address</class>
-    <class>eu.drus.jpa.unit.test.model.ContactDetail</class>
-    <class>eu.drus.jpa.unit.test.model.CreditCondition</class>
-    <class>eu.drus.jpa.unit.test.model.Depositor</class>
-    <class>eu.drus.jpa.unit.test.model.GiroAccount</class>
-    <class>eu.drus.jpa.unit.test.model.InstantAccessAccount</class>
+    <class>eu.drus.jpa.unit.test.model.Person</class>
+    <class>eu.drus.jpa.unit.test.model.Technology</class>
+    <class>eu.drus.jpa.unit.test.model.CookingRecipe</class>
 
     <shared-cache-mode>NONE</shared-cache-mode>
 

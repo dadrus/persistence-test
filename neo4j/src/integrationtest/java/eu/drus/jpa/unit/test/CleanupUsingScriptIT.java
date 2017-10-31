@@ -1,6 +1,8 @@
 package eu.drus.jpa.unit.test;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import javax.persistence.EntityManager;
@@ -17,12 +19,8 @@ import eu.drus.jpa.unit.api.Cleanup;
 import eu.drus.jpa.unit.api.CleanupPhase;
 import eu.drus.jpa.unit.api.CleanupUsingScripts;
 import eu.drus.jpa.unit.api.JpaUnitRunner;
-import eu.drus.jpa.unit.test.model.Address;
-import eu.drus.jpa.unit.test.model.ContactDetail;
-import eu.drus.jpa.unit.test.model.ContactType;
-import eu.drus.jpa.unit.test.model.Depositor;
-import eu.drus.jpa.unit.test.model.GiroAccount;
-import eu.drus.jpa.unit.test.model.OperationNotSupportedException;
+import eu.drus.jpa.unit.test.model.Person;
+import eu.drus.jpa.unit.test.model.Technology;
 import eu.drus.jpa.unit.util.Neo4jManager;
 
 @RunWith(JpaUnitRunner.class)
@@ -39,56 +37,54 @@ public class CleanupUsingScriptIT {
     private EntityManager manager;
 
     @Test
-    public void test1() throws OperationNotSupportedException {
+    public void test1() {
         // just seed the DB with some data
-        final Depositor depositor = new Depositor("Max", "Payne");
-        depositor.addAddress(new Address("Unknown", "111111", "Unknown", "Unknown"));
-        depositor.addContactDetail(new ContactDetail(ContactType.EMAIL, "max@payne.com"));
-        final GiroAccount account = new GiroAccount(depositor);
-        account.deposit(100000.0f);
+        final Person person = new Person("Max", "Payne");
+        final Technology technology = new Technology("All kinds of weapons");
+        person.addExpertiseIn(technology);
 
         // by default this test is executed in a transaction which is committed on test return. Thus
         // this entity becomes available for further tests thanks to disabled cleanup
-        manager.persist(depositor);
+        manager.persist(person);
     }
 
     @Test
     @CleanupUsingScripts(phase = CleanupPhase.AFTER, value = "scripts/delete-all.script")
     public void test2() {
         // since clean up is disabled we can work with the entity persisted by the previous test
-        final TypedQuery<Depositor> query = manager.createQuery("SELECT d FROM Depositor d WHERE d.name='Max'", Depositor.class);
-        final Depositor entity = query.getSingleResult();
+        final TypedQuery<Person> query = manager.createQuery("SELECT p FROM Person p WHERE p.name='Max'", Person.class);
+        final Person entity = query.getSingleResult();
 
         assertNotNull(entity);
+        assertThat(entity.getExpertiseIn().size(), equalTo(1));
     }
 
     @Test
-    public void test3() throws OperationNotSupportedException {
+    public void test3() {
         // since the entire DB is erased after the execution of the previous test, the query should
         // return an empty result set
-        final TypedQuery<Depositor> query = manager.createQuery("SELECT d FROM Depositor d WHERE d.name='Max'", Depositor.class);
+        final TypedQuery<Person> query = manager.createQuery("SELECT p FROM Person p WHERE p.name='Max'", Person.class);
 
         assertTrue(query.getResultList().isEmpty());
 
         // just seed the DB with some data
-        final Depositor depositor = new Depositor("Max", "Payne");
-        depositor.addAddress(new Address("Unknown", "111111", "Unknown", "Unknown"));
-        depositor.addContactDetail(new ContactDetail(ContactType.EMAIL, "max@payne.com"));
-        final GiroAccount account = new GiroAccount(depositor);
-        account.deposit(100000.0f);
+        final Person person = new Person("Max", "Payne");
+        final Technology technology = new Technology("All kinds of weapons");
+        person.addExpertiseIn(technology);
 
         // by default this test is executed in a transaction which is committed on test return. Thus
         // this entity becomes available for further tests thanks to disabled cleanup
-        manager.persist(depositor);
+        manager.persist(person);
     }
 
     @Test
     public void test4() {
         // since clean up is disabled we can work with the entity persisted by the previous test
-        final TypedQuery<Depositor> query = manager.createQuery("SELECT d FROM Depositor d WHERE d.name='Max'", Depositor.class);
-        final Depositor entity = query.getSingleResult();
+        final TypedQuery<Person> query = manager.createQuery("SELECT p FROM Person p WHERE p.name='Max'", Person.class);
+        final Person entity = query.getSingleResult();
 
         assertNotNull(entity);
+        assertThat(entity.getExpertiseIn().size(), equalTo(1));
     }
 
     @Test
@@ -96,7 +92,7 @@ public class CleanupUsingScriptIT {
     public void test5() {
         // since the entire DB is erased before the execution of the given test, the query should
         // return an empty result set
-        final TypedQuery<Depositor> query = manager.createQuery("SELECT d FROM Depositor d WHERE d.name='Max'", Depositor.class);
+        final TypedQuery<Person> query = manager.createQuery("SELECT p FROM Person p WHERE p.name='Max'", Person.class);
 
         assertTrue(query.getResultList().isEmpty());
     }

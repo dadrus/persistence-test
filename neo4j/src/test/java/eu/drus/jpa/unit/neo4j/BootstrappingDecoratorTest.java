@@ -54,6 +54,9 @@ public class BootstrappingDecoratorTest {
 
     public void nonstaticMethod() {}
 
+    @SuppressWarnings({
+            "unchecked", "rawtypes"
+    })
     @Before
     public void prepareMocks() throws Exception {
         whenNew(MetadataExtractor.class).withAnyArguments().thenReturn(extractor);

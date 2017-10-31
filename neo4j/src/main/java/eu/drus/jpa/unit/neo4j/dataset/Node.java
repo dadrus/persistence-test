@@ -17,20 +17,6 @@ public class Node extends GraphElement {
         super(id, labels, attributes);
     }
 
-    public boolean isSame(final Node other, final List<String> attributesToExclude) {
-        if (!getLabels().equals(other.getLabels())) {
-            return false;
-        }
-
-        for (final Attribute attribute : getAttributes()) {
-            if (!attributesToExclude.contains(attribute.getName()) && !other.getAttributes().contains(attribute)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     public PathBuilder toPath() {
         return new PathBuilder();
     }
@@ -68,12 +54,6 @@ public class Node extends GraphElement {
 
         public PathBuilder withAllAttributes() {
             path = path.values(getAttributes().stream().map(a -> value(a.getName(), a.getValue())).collect(toList()));
-            return this;
-        }
-
-        public PathBuilder withIdAttributes() {
-            path = path
-                    .values(getAttributes().stream().filter(Attribute::isId).map(a -> value(a.getName(), a.getValue())).collect(toList()));
             return this;
         }
 

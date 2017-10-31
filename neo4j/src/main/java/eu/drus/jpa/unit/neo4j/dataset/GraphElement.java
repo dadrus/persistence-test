@@ -36,4 +36,18 @@ public abstract class GraphElement {
     public List<Attribute> getAttributes() {
         return Collections.unmodifiableList(attributes);
     }
+
+    public boolean isSame(final GraphElement other, final List<String> attributesToExclude) {
+        if (!labels.equals(other.labels)) {
+            return false;
+        }
+
+        final List<Attribute> ownAttributes = attributes.stream().filter(a -> !attributesToExclude.contains(a.getName()))
+                .collect(Collectors.toList());
+
+        final List<Attribute> otherAttributes = other.attributes.stream().filter(a -> !attributesToExclude.contains(a.getName()))
+                .collect(Collectors.toList());
+
+        return ownAttributes.equals(otherAttributes);
+    }
 }

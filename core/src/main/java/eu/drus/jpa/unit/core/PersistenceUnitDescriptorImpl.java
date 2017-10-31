@@ -1,15 +1,12 @@
 package eu.drus.jpa.unit.core;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.drus.jpa.unit.api.JpaUnitException;
 import eu.drus.jpa.unit.spi.PersistenceUnitDescriptor;
 
 public class PersistenceUnitDescriptorImpl implements PersistenceUnitDescriptor {
@@ -19,15 +16,12 @@ public class PersistenceUnitDescriptorImpl implements PersistenceUnitDescriptor 
     private static final String ENTRY_PROPERTIES = "properties";
     private static final String ENTRY_PROVIDER = "provider";
     private static final String ENTRY_NAME = "name";
-    private static final String ENTRY_CLASS = "class";
     private String unitName;
     private Map<String, Object> properties;
     private String providerClassName;
-    private List<Class<?>> classList;
 
     public PersistenceUnitDescriptorImpl(final Element element, final Map<String, Object> properties) {
         this.properties = new HashMap<>(properties);
-        classList = new ArrayList<>();
         parse(element);
     }
 
@@ -52,13 +46,6 @@ public class PersistenceUnitDescriptorImpl implements PersistenceUnitDescriptor 
             providerClassName = extractContent(element);
         } else if (tag.equals(ENTRY_PROPERTIES)) {
             parseProperties(element);
-        } else if (tag.equals(ENTRY_CLASS)) {
-            final String className = extractContent(element);
-            try {
-                classList.add(Class.forName(className, false, Thread.currentThread().getContextClassLoader()));
-            } catch (final ClassNotFoundException e) {
-                throw new JpaUnitException("Could not find class: " + className, e);
-            }
         }
     }
 
@@ -104,11 +91,5 @@ public class PersistenceUnitDescriptorImpl implements PersistenceUnitDescriptor 
     @Override
     public Map<String, Object> getProperties() {
         return properties;
-    }
-
-    @Override
-    public List<Class<?>> getClasses() {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

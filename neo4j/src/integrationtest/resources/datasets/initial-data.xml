@@ -55,11 +55,6 @@
       <data key="name">Bootstrap</data>
     </node>
 
-    <node id="r1" labels="ENTITY:Recipe">
-      <data key="labels">ENTITY:Recipe</data>
-      <data key="name">Macarons</data>
-    </node>
-
     <edge id="e1" source="p1" target="t2" label="LIKE">
       <data key="label">like</data>
     </edge>

@@ -42,25 +42,11 @@ public class Edge extends GraphElement {
     }
 
     public boolean isSame(final Edge other, final List<String> attributesToExclude) {
-        if (!getLabels().equals(other.getLabels())) {
+        if (!super.isSame(other, attributesToExclude)) {
             return false;
         }
 
-        if (!from.isSame(other.from, attributesToExclude) || !to.isSame(other.to, attributesToExclude)) {
-            return false;
-        }
-
-        if (getAttributes().isEmpty() && !other.getAttributes().isEmpty()) {
-            return false;
-        }
-
-        for (final Attribute attribute : getAttributes()) {
-            if (!attributesToExclude.contains(attribute.getName()) && !other.getAttributes().contains(attribute)) {
-                return false;
-            }
-        }
-
-        return true;
+        return from.isSame(other.from, attributesToExclude) && to.isSame(other.to, attributesToExclude);
     }
 
     public String asString() {

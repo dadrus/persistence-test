@@ -45,6 +45,9 @@ public class Neo4JDriverDecoratorTest {
 
     private Neo4JDriverDecorator decorator;
 
+    @SuppressWarnings({
+            "rawtypes", "unchecked"
+    })
     @Before
     public void prepareTest() throws Exception {
         whenNew(ConfigurationRegistry.class).withAnyArguments().thenReturn(configRegistry);

@@ -39,9 +39,9 @@ public class Neo4JDbFeatureExecutor extends AbstractDbFeatureExecutor<Graph<Node
 
     private GraphElementFactory graphElementFactory;
 
-    protected Neo4JDbFeatureExecutor(final FeatureResolver featureResolver, final List<Class<?>> entityClasses) {
+    protected Neo4JDbFeatureExecutor(final FeatureResolver featureResolver) {
         super(featureResolver);
-        graphElementFactory = new GraphElementFactory(entityClasses);
+        graphElementFactory = new GraphElementFactory();
     }
 
     private static URI toUri(final String path) throws URISyntaxException {

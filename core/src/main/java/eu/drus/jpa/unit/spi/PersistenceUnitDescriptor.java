@@ -1,6 +1,5 @@
 package eu.drus.jpa.unit.spi;
 
-import java.util.List;
 import java.util.Map;
 
 public interface PersistenceUnitDescriptor {
@@ -9,6 +8,4 @@ public interface PersistenceUnitDescriptor {
     String getProviderClassName();
 
     Map<String, Object> getProperties();
-
-    List<Class<?>> getClasses();
 }

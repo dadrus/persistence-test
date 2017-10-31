@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,7 +33,9 @@ public class Person {
     @ManyToMany
     private Set<Person> friend = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH
+    })
     private Set<Technology> expertIn = new HashSet<>();
 
     protected Person() {
@@ -70,6 +73,18 @@ public class Person {
 
     public Set<Person> getFriends() {
         return Collections.unmodifiableSet(friend);
+    }
+
+    public boolean addExpertiseIn(final Technology t) {
+        return expertIn.add(t);
+    }
+
+    public boolean removeFromExpertiseIn(final Technology t) {
+        return expertIn.remove(t);
+    }
+
+    public Set<Technology> getExpertiseIn() {
+        return Collections.unmodifiableSet(expertIn);
     }
 
     @Override
