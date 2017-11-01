@@ -30,6 +30,8 @@ import com.google.common.collect.ImmutableMap;
 import eu.drus.jpa.unit.neo4j.dataset.Edge;
 import eu.drus.jpa.unit.neo4j.dataset.GraphElementFactory;
 import eu.drus.jpa.unit.neo4j.dataset.Node;
+import eu.drus.jpa.unit.neo4j.test.entities.A;
+import eu.drus.jpa.unit.neo4j.test.entities.B;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteAllOperationTest {
@@ -46,17 +48,17 @@ public class DeleteAllOperationTest {
     public void prepareMocks() throws SQLException {
         doAnswer(i -> null).when(operation).executeQuery(any(Connection.class), anyString());
 
-        graphElementFactory = new GraphElementFactory();
+        graphElementFactory = new GraphElementFactory(Arrays.asList(A.class, B.class));
     }
 
     @Test
     public void testExecute() throws SQLException {
         // GIVEN
-        final Node n1 = graphElementFactory.createNode("n1", Arrays.asList("Node"),
+        final Node n1 = graphElementFactory.createNode("n1", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 1l).build());
-        final Node n2 = graphElementFactory.createNode("n2", Arrays.asList("Node"),
+        final Node n2 = graphElementFactory.createNode("n2", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 2l).build());
-        final Edge e1 = graphElementFactory.createEdge(n1, n2, "e1", Arrays.asList("Edge"), Collections.emptyMap());
+        final Edge e1 = graphElementFactory.createEdge(n1, n2, "e1", Arrays.asList("E"), Collections.emptyMap());
 
         final Graph<Node, Edge> graph = new DefaultDirectedGraph<>(new ClassBasedEdgeFactory<>(Edge.class));
         graph.addVertex(n1);
@@ -70,6 +72,6 @@ public class DeleteAllOperationTest {
         final ArgumentCaptor<String> queryCaptor = ArgumentCaptor.forClass(String.class);
         verify(operation, times(2)).executeQuery(eq(connection), queryCaptor.capture());
         final String query = queryCaptor.getValue();
-        assertThat(query, containsString("MATCH (n:Node) DETACH DELETE n"));
+        assertThat(query, containsString("MATCH (n:A) DETACH DELETE n"));
     }
 }

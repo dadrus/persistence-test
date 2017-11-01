@@ -30,6 +30,8 @@ import com.google.common.collect.ImmutableMap;
 import eu.drus.jpa.unit.neo4j.dataset.Edge;
 import eu.drus.jpa.unit.neo4j.dataset.GraphElementFactory;
 import eu.drus.jpa.unit.neo4j.dataset.Node;
+import eu.drus.jpa.unit.neo4j.test.entities.A;
+import eu.drus.jpa.unit.neo4j.test.entities.B;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteOperationTest {
@@ -46,17 +48,17 @@ public class DeleteOperationTest {
     public void prepareMocks() throws SQLException {
         doAnswer(i -> null).when(operation).executeQuery(any(Connection.class), anyString());
 
-        graphElementFactory = new GraphElementFactory();
+        graphElementFactory = new GraphElementFactory(Arrays.asList(A.class, B.class));
     }
 
     @Test
     public void testExecute() throws SQLException {
         // GIVEN
-        final Node n1 = graphElementFactory.createNode("n1", Arrays.asList("Node"),
+        final Node n1 = graphElementFactory.createNode("n1", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 1l).build());
-        final Node n2 = graphElementFactory.createNode("n2", Arrays.asList("Node"),
+        final Node n2 = graphElementFactory.createNode("n2", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 2l).build());
-        final Edge e1 = graphElementFactory.createEdge(n1, n2, "e1", Arrays.asList("Edge"),
+        final Edge e1 = graphElementFactory.createEdge(n1, n2, "e1", Arrays.asList("E"),
                 ImmutableMap.<String, Object>builder().put("id", 3l).build());
 
         final Graph<Node, Edge> graph = new DefaultDirectedGraph<>(new ClassBasedEdgeFactory<>(Edge.class));
@@ -73,7 +75,7 @@ public class DeleteOperationTest {
         final List<String> queries = queryCaptor.getAllValues();
         final String query1 = queries.get(0);
         final String query2 = queries.get(1);
-        assertThat(query1, containsString("MATCH (n1)-[e1:Edge {id:3}]->(n2) DELETE e1"));
-        assertThat(query2, containsString("MATCH (n1:Node {id:1}),(n2:Node {id:2}) DELETE n1,n2"));
+        assertThat(query1, containsString("MATCH (n1)-[e1:E {id:3}]->(n2) DELETE e1"));
+        assertThat(query2, containsString("MATCH (n1:A {id:1}),(n2:A {id:2}) DELETE n1,n2"));
     }
 }

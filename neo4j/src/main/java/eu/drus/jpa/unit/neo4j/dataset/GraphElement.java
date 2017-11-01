@@ -48,6 +48,6 @@ public abstract class GraphElement {
         final List<Attribute> otherAttributes = other.attributes.stream().filter(a -> !attributesToExclude.contains(a.getName()))
                 .collect(Collectors.toList());
 
-        return ownAttributes.containsAll(otherAttributes);
+        return ownAttributes.size() == otherAttributes.size() && ownAttributes.containsAll(otherAttributes);
     }
 }

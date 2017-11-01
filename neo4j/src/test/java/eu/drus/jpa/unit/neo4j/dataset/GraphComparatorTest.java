@@ -1,8 +1,5 @@
 package eu.drus.jpa.unit.neo4j.dataset;
 
-import static eu.drus.jpa.unit.neo4j.testutils.TestCodeUtils.buildModel;
-import static eu.drus.jpa.unit.neo4j.testutils.TestCodeUtils.compileModel;
-import static eu.drus.jpa.unit.neo4j.testutils.TestCodeUtils.loadClass;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertThat;
@@ -18,80 +15,26 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import org.jgrapht.Graph;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.common.collect.ImmutableMap;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JPackage;
 
-import eu.drus.jpa.unit.neo4j.dataset.DatabaseReader;
-import eu.drus.jpa.unit.neo4j.dataset.Edge;
-import eu.drus.jpa.unit.neo4j.dataset.GraphComparator;
-import eu.drus.jpa.unit.neo4j.dataset.GraphElementFactory;
-import eu.drus.jpa.unit.neo4j.dataset.Node;
+import eu.drus.jpa.unit.neo4j.test.entities.A;
+import eu.drus.jpa.unit.neo4j.test.entities.B;
 import eu.drus.jpa.unit.spi.AssertionErrorCollector;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(GraphComparator.class)
-@PowerMockIgnore({
-        "java.lang.*", "javax.tools.*", "com.sun.tools.*", "javax.persistence.*"
-})
 public class GraphComparatorTest {
-
-    // powermock seems to have an issue with static class rules. Otherwise testFolder would be a
-    // static class rule.
-    private static TemporaryFolder testFolder = new TemporaryFolder();
-
-    private static Class<?> entityAClass;
-    private static Class<?> entityBClass;
-
-    @BeforeClass
-    public static void generateTestModel() throws Exception {
-        testFolder.create();
-
-        final JCodeModel jCodeModel = new JCodeModel();
-
-        final JPackage jp = jCodeModel.rootPackage();
-        final JDefinedClass jAClass = jp._class(JMod.PUBLIC, "A");
-        jAClass.annotate(Entity.class);
-        jAClass.field(JMod.PRIVATE, Long.class, "id").annotate(Id.class);
-        jAClass.field(JMod.PRIVATE, String.class, "value");
-
-        final JDefinedClass jBClass = jp._class(JMod.PUBLIC, "B");
-        jBClass.annotate(Entity.class);
-        jBClass.field(JMod.PRIVATE, Long.class, "id").annotate(Id.class);
-        jBClass.field(JMod.PRIVATE, String.class, "value");
-
-        buildModel(testFolder.getRoot(), jCodeModel);
-
-        compileModel(testFolder.getRoot());
-
-        entityAClass = loadClass(testFolder.getRoot(), jAClass.name());
-        entityBClass = loadClass(testFolder.getRoot(), jBClass.name());
-    }
-
-    @AfterClass
-    public static void deleteTestModel() {
-        testFolder.delete();
-    }
 
     private GraphElementFactory graphElementFactory;
 
@@ -115,7 +58,7 @@ public class GraphComparatorTest {
     public void prepareTest() throws Exception {
         whenNew(DatabaseReader.class).withAnyArguments().thenReturn(dbReader);
 
-        graphElementFactory = new GraphElementFactory(Arrays.asList(entityAClass, entityBClass));
+        graphElementFactory = new GraphElementFactory(Arrays.asList(A.class, B.class));
     }
 
     @Test

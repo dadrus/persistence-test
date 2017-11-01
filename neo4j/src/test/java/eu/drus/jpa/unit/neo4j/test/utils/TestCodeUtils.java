@@ -1,4 +1,4 @@
-package eu.drus.jpa.unit.neo4j.testutils;
+package eu.drus.jpa.unit.neo4j.test.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

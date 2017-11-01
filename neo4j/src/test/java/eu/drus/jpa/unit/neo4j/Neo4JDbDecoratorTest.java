@@ -25,6 +25,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import eu.drus.jpa.unit.neo4j.ext.ConfigurationRegistry;
 import eu.drus.jpa.unit.spi.ExecutionContext;
+import eu.drus.jpa.unit.spi.PersistenceUnitDescriptor;
 import eu.drus.jpa.unit.spi.TestInvocation;
 
 @RunWith(PowerMockRunner.class)
@@ -49,6 +50,9 @@ public class Neo4JDbDecoratorTest {
     @Mock
     private Neo4JDbFeatureExecutor executor;
 
+    @Mock
+    private PersistenceUnitDescriptor descriptor;
+
     private Neo4JDbDecorator decorator;
 
     @Before
@@ -61,6 +65,7 @@ public class Neo4JDbDecoratorTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(ctx.getData(eq(Constants.KEY_DATA_SOURCE))).thenReturn(dataSource);
         when(ctx.getData(eq(Constants.KEY_CONNECTION))).thenReturn(connection);
+        when(ctx.getDescriptor()).thenReturn(descriptor);
 
         decorator = new Neo4JDbDecorator();
     }

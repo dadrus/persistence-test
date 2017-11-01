@@ -1,8 +1,8 @@
 package eu.drus.jpa.unit.neo4j.dataset;
 
-import static eu.drus.jpa.unit.neo4j.testutils.TestCodeUtils.buildModel;
-import static eu.drus.jpa.unit.neo4j.testutils.TestCodeUtils.compileModel;
-import static eu.drus.jpa.unit.neo4j.testutils.TestCodeUtils.loadClass;
+import static eu.drus.jpa.unit.neo4j.test.utils.TestCodeUtils.buildModel;
+import static eu.drus.jpa.unit.neo4j.test.utils.TestCodeUtils.compileModel;
+import static eu.drus.jpa.unit.neo4j.test.utils.TestCodeUtils.loadClass;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
