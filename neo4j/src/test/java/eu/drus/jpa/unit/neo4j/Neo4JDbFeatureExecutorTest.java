@@ -243,11 +243,11 @@ public class Neo4JDbFeatureExecutorTest {
         feature.execute(connection);
 
         // THEN
-        verify(connection).prepareStatement(anyString());
-        verify(ps).executeQuery();
-        verify(rs).next();
-        verify(rs).close();
-        verify(ps).close();
+        verify(connection, times(2)).prepareStatement(anyString());
+        verify(ps, times(2)).executeQuery();
+        verify(rs, times(2)).next();
+        verify(rs, times(2)).close();
+        verify(ps, times(2)).close();
         verifyNoMoreInteractions(connection);
     }
 }

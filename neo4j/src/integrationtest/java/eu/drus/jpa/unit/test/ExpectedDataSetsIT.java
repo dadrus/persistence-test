@@ -3,7 +3,6 @@ package eu.drus.jpa.unit.test;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,21 +28,36 @@ public class ExpectedDataSetsIT {
     public ExpectedException expectedException = ExpectedException.none();
 
     @PersistenceContext(unitName = "my-test-unit")
-    protected EntityManager manager;
+    private EntityManager manager;
 
-    protected Person person;
+    private void createTestData(final EntityManager manager) {
+        final Person orlov = new Person("Alexander", "Orlov");
+        final Person nagarkar = new Person("Rajesh", "Nagarkar");
+        final Person schroeder = new Person("Anna", "Schroeder");
+        final Person herman = new Person("Amanda", "Herman");
+        final Person adamo = new Person("Ludovico", "Adamo");
+        final Person maricela = new Person("Sibylla", "Maricela");
 
-    @Before
-    public void createTestData() {
-        person = new Person("Max", "Doe");
-        person.addExpertiseIn(new Technology("All kinds of weapons"));
-        person.addExpertiseIn(new Technology("Detective work"));
+        final Technology javaEE = new Technology("Java EE");
+        final Technology neo4j = new Technology("Neo4j");
+        final Technology bootstrap = new Technology("Bootstrap");
+
+        orlov.addToFriends(nagarkar);
+        orlov.addToFriends(schroeder);
+        schroeder.addToFriends(herman);
+        herman.addExpertiseIn(neo4j);
+        nagarkar.addToFriends(adamo);
+        adamo.addExpertiseIn(javaEE);
+        nagarkar.addExpertiseIn(bootstrap);
+        orlov.addToFriends(maricela);
+
+        manager.persist(orlov);
     }
 
     @Test
     @ExpectedDataSets(value = "datasets/no-data.xml")
     public void test1() {
-        manager.persist(person);
+        createTestData(manager);
 
         expectedException.expect(AssertionError.class);
     }
@@ -51,13 +65,13 @@ public class ExpectedDataSetsIT {
     @Test
     @ExpectedDataSets(value = "datasets/expected-data.xml", excludeColumns = "id")
     public void test2() {
-        manager.persist(person);
+        createTestData(manager);
     }
 
     @Test
     @ExpectedDataSets(value = "datasets/expected-data.xml", excludeColumns = "id")
     public void test3() {
-        manager.persist(person);
+        createTestData(manager);
 
         // adding a new row to a table which is referenced by the expected data set but not included
         // in it will lead to a comparison error. Thus a AssertionError exception is expected
@@ -69,21 +83,21 @@ public class ExpectedDataSetsIT {
     @Test
     @ExpectedDataSets(value = "datasets/expected-data.xml", excludeColumns = "id")
     public void test4() {
+        createTestData(manager);
+
         // adding a new row to a table which is not referenced by the expected data set will not
         // lead to a comparison error.
-        person.addToFriends(new Person("Alex", "Balder"));
-
         manager.persist(new CookingRecipe("Muffin", "A tasty one"));
     }
 
     @Test
     @ExpectedDataSets(value = "datasets/expected-data.xml", excludeColumns = "id", strict = true)
     public void test5() {
+        createTestData(manager);
+
         // adding a new row to a table which is not referenced by the expected data set will
         // lead to a comparison error in strict mode.
         manager.persist(new CookingRecipe("Muffin", "A tasty one"));
-
-        manager.persist(person);
 
         expectedException.expect(AssertionError.class);
     }

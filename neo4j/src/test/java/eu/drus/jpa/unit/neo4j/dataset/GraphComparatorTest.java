@@ -395,13 +395,16 @@ public class GraphComparatorTest {
 
         // THEN
         final ArgumentCaptor<String> stringCaptor = ArgumentCaptor.forClass(String.class);
-        verify(errorCollector, times(3)).collect(stringCaptor.capture());
+        verify(errorCollector, times(4)).collect(stringCaptor.capture());
 
         final List<String> capturedMessages = stringCaptor.getAllValues();
         assertThat(capturedMessages,
                 hasItems(containsString("Ambiguouty detected for node " + a1.asString()),
                         containsString("Ambiguouty detected for node " + a2.asString()),
-                        containsString("Ambiguouty detected for node " + a3.asString())));
+                        containsString("Ambiguouty detected for node " + a3.asString()),
+                        // this is because we filter the id attribute. Thus source and target nodes
+                        // of f1 and f2 cannot be distinguished
+                        containsString("Ambiguouty detected for edge " + e2.asString())));
     }
 
     @SuppressWarnings("unchecked")

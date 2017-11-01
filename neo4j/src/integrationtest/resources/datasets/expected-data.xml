@@ -60,9 +60,6 @@
       <data key="name">Bootstrap</data>
     </node>
 
-    <edge id="e1" source="p1" target="t2" label="like">
-      <data key="label">like</data>
-    </edge>
     <edge id="e2" source="p1" target="p2" label="friend">
       <data key="label">friend</data>
     </edge>
@@ -77,7 +74,6 @@
     </edge>
     <edge id="e6" source="p2" target="p5" label="friend">
       <data key="label">friend</data>
-      <data key="since">Dec 2017</data>
     </edge>
     <edge id="e7" source="p5" target="t1" label="expertIn">
       <data key="label">expertIn</data>

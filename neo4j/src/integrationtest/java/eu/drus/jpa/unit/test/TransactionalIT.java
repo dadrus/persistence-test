@@ -31,8 +31,8 @@ public class TransactionalIT {
     @PersistenceContext(unitName = "my-test-unit")
     private EntityManager manager;
 
-    // Hibernate OGM always requires an active transaction for dbs supporting transactions
-    // See also https://hibernate.atlassian.net/browse/OGM-1322
+    // Some persistence provider always requiresan active transaction for dbs supporting
+    // transactions E.g. see also https://hibernate.atlassian.net/browse/OGM-1322 for hibernate OGM
 
     @Test
     @InitialDataSets("datasets/initial-data.xml")
@@ -54,9 +54,6 @@ public class TransactionalIT {
 
         assertNotNull(entity);
         entity.setName("Alexander");
-
-        final Person friend = new Person("Sibylla", "Maricela");
-        manager.persist(friend);
-        entity.addToFriends(friend);
+        entity.addToFriends(new Person("Sibylla", "Maricela"));
     }
 }

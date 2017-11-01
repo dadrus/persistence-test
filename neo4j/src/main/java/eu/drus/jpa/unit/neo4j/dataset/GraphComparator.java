@@ -102,10 +102,10 @@ public class GraphComparator {
             final List<String> attributesToExclude = expectedNode.getLabels().stream().map(toExclude::getColumns).flatMap(List::stream)
                     .distinct().collect(toList());
 
-            final List<Node> nodesOfExpectedType = givenGraph.vertexSet().stream().filter(n -> n.getType().equals(expectedNode.getType()))
+            final List<Node> availableNodesOfExpectedType = givenGraph.vertexSet().stream().filter(n -> n.getType().equals(expectedNode.getType()))
                     .collect(toList());
 
-            final List<Node> foundNodes = nodesOfExpectedType.stream().filter(n -> n.isSame(expectedNode, attributesToExclude))
+            final List<Node> foundNodes = availableNodesOfExpectedType.stream().filter(n -> n.isSame(expectedNode, attributesToExclude))
                     .collect(toList());
 
             if (foundNodes.isEmpty()) {
@@ -123,10 +123,10 @@ public class GraphComparator {
             final List<String> attributesToExclude = expectedEdge.getLabels().stream().map(toExclude::getColumns).flatMap(List::stream)
                     .distinct().collect(toList());
 
-            final List<Edge> edgesOfExpectedType = givenGraph.edgeSet().stream().filter(e -> e.getType().equals(expectedEdge.getType()))
+            final List<Edge> availableEdgesOfExpectedType = givenGraph.edgeSet().stream().filter(e -> e.getType().equals(expectedEdge.getType()))
                     .collect(toList());
 
-            final List<Edge> foundEdges = edgesOfExpectedType.stream().filter(e -> e.isSame(expectedEdge, attributesToExclude))
+            final List<Edge> foundEdges = availableEdgesOfExpectedType.stream().filter(e -> e.isSame(expectedEdge, attributesToExclude))
                     .collect(toList());
 
             if (foundEdges.isEmpty()) {

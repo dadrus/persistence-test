@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -30,7 +29,9 @@ public class Person {
     @Column(nullable = false)
     private String surname;
 
-    @ManyToMany
+    @OneToMany(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH
+    })
     private Set<Person> friend = new HashSet<>();
 
     @OneToMany(cascade = {
