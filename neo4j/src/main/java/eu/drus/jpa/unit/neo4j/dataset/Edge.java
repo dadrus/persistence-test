@@ -68,28 +68,13 @@ public class Edge extends GraphElement {
             path = node(from.getId()).out(relationShips.toArray(new Identifier[relationShips.size()])).as(getId());
         }
 
-        public PathBuilder withAttribute(final String attributeName) {
-            path = path.values(value(attributeName, findAttribute(attributeName).getValue()));
-            return this;
-        }
-
         public PathBuilder withAllAttributes() {
             path = path.values(getAttributes().stream().map(a -> value(a.getName(), a.getValue())).collect(toList()));
             return this;
         }
 
-        public PathBuilder withAllAttributesBut(final List<String> toExclude) {
-            path = path.values(getAttributes().stream().filter(a -> !toExclude.contains(a.getName()))
-                    .map(a -> value(a.getName(), a.getValue())).collect(toList()));
-            return this;
-        }
-
         public Path build() {
             return path.node(to.getId());
-        }
-
-        private Attribute findAttribute(final String attributeName) {
-            return getAttributes().stream().filter(a -> a.getName() == attributeName).findFirst().orElse(null);
         }
     }
 }
