@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/dadrus/jpa-unit.svg?branch=master)](https://travis-ci.org/dadrus/jpa-unit) 
-[![Quality Gate](https://sonarqube.com/api/badges/gate?key=com.github.dadrus.jpa-unit:jpa-unit)](https://sonarqube.com/dashboard?id=com.github.dadrus.jpa-unit%3Ajpa-unit) 
-[![Coverage Status](https://sonarqube.com/api/badges/measure?key=com.github.dadrus.jpa-unit:jpa-unit&metric=coverage)](https://sonarqube.com/dashboard?id=com.github.dadrus.jpa-unit%3Ajpa-unit) 
-[![Technical Debt](https://sonarqube.com/api/badges/measure?key=com.github.dadrus.jpa-unit:jpa-unit&metric=sqale_debt_ratio)](https://sonarqube.com/component_measures/?id=com.github.dadrus.jpa-unit%3Ajpa-unit) 
+[![Quality Gate](https://sonarcloud.io/api/badges/gate?key=com.github.dadrus.jpa-unit:jpa-unit)](https://sonarcloud.io/dashboard?id=com.github.dadrus.jpa-unit%3Ajpa-unit) 
+[![Coverage Status](https://sonarcloud.io/api/badges/measure?key=com.github.dadrus.jpa-unit:jpa-unit&metric=coverage)](https://sonarcloud.io/dashboard?id=com.github.dadrus.jpa-unit%3Ajpa-unit) 
+[![Technical Debt](https://sonarcloud.io/api/badges/measure?key=com.github.dadrus.jpa-unit:jpa-unit&metric=sqale_debt_ratio)](https://sonarcloud.io/component_measures/?id=com.github.dadrus.jpa-unit%3Ajpa-unit) 
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.dadrus.jpa-unit/jpa-unit.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.dadrus.jpa-unit%22)
 
 # JPA Unit 
