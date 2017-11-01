@@ -26,7 +26,7 @@ public class UpdateOperation extends AbstractNeo4JOperation {
             final List<SetExpression> attributes = node.getAttributes().stream()
                     .map(a -> property(identifier(node.getId()).property(a.getName()), literal(a.getValue()))).collect(toList());
 
-            final UpdateNext query = match(node.toPath().withAttribute("id").build()).set(attributes);
+            final UpdateNext query = match(node.toPath().withIdAttributes().build()).set(attributes);
 
             executeQuery(connection, query.toString());
         }

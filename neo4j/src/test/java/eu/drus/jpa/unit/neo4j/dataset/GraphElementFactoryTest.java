@@ -1,5 +1,8 @@
 package eu.drus.jpa.unit.neo4j.dataset;
 
+import static eu.drus.jpa.unit.neo4j.testutils.TestCodeUtils.buildModel;
+import static eu.drus.jpa.unit.neo4j.testutils.TestCodeUtils.compileModel;
+import static eu.drus.jpa.unit.neo4j.testutils.TestCodeUtils.loadClass;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -8,16 +11,54 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import com.google.common.collect.ImmutableMap;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JPackage;
 
 import eu.drus.jpa.unit.neo4j.graphml.AttributeType;
 import eu.drus.jpa.unit.neo4j.graphml.DefaultAttribute;
 
 public class GraphElementFactoryTest {
 
-    private GraphElementFactory factory = new GraphElementFactory();
+    @ClassRule
+    public static TemporaryFolder testFolder = new TemporaryFolder();
+
+    private static Class<?> entityAClass;
+
+    @BeforeClass
+    public static void generateTestModel() throws Exception {
+        final JCodeModel jCodeModel = new JCodeModel();
+
+        final JPackage jp = jCodeModel.rootPackage();
+        final JDefinedClass jClass = jp._class(JMod.PUBLIC, "A");
+        jClass.annotate(Entity.class);
+        jClass.field(JMod.PRIVATE, Long.class, "id").annotate(Id.class);
+        jClass.field(JMod.PRIVATE, String.class, "value");
+
+        buildModel(testFolder.getRoot(), jCodeModel);
+
+        compileModel(testFolder.getRoot());
+
+        entityAClass = loadClass(testFolder.getRoot(), jClass.name());
+    }
+
+    private GraphElementFactory factory;
+
+    @Before
+    public void prepareTest() {
+        factory = new GraphElementFactory(Arrays.asList(entityAClass));
+    }
 
     @Test
     public void testCreateNode() {
@@ -38,10 +79,12 @@ public class GraphElementFactoryTest {
         final Attribute idAttribute = node.getAttributes().get(0);
         assertThat(idAttribute.getName(), equalTo("id"));
         assertThat(idAttribute.getValue(), equalTo(1l));
+        assertThat(idAttribute.isId(), equalTo(Boolean.TRUE));
 
         final Attribute valueAttribute = node.getAttributes().get(1);
         assertThat(valueAttribute.getName(), equalTo("value"));
         assertThat(valueAttribute.getValue(), equalTo("foo"));
+        assertThat(valueAttribute.isId(), equalTo(Boolean.FALSE));
     }
 
     @Test
@@ -64,10 +107,12 @@ public class GraphElementFactoryTest {
         final Attribute idAttribute = node.getAttributes().get(0);
         assertThat(idAttribute.getName(), equalTo("id"));
         assertThat(idAttribute.getValue(), equalTo(1l));
+        assertThat(idAttribute.isId(), equalTo(Boolean.TRUE));
 
         final Attribute valueAttribute = node.getAttributes().get(1);
         assertThat(valueAttribute.getName(), equalTo("value"));
         assertThat(valueAttribute.getValue(), equalTo("foo"));
+        assertThat(valueAttribute.isId(), equalTo(Boolean.FALSE));
     }
 
     @Test
@@ -102,6 +147,7 @@ public class GraphElementFactoryTest {
         final Attribute idAttribute = edge.getAttributes().get(0);
         assertThat(idAttribute.getName(), equalTo("value"));
         assertThat(idAttribute.getValue(), equalTo("moo"));
+        assertThat(idAttribute.isId(), equalTo(Boolean.FALSE));
     }
 
     @Test
@@ -137,5 +183,6 @@ public class GraphElementFactoryTest {
         final Attribute idAttribute = edge.getAttributes().get(0);
         assertThat(idAttribute.getName(), equalTo("value"));
         assertThat(idAttribute.getValue(), equalTo("moo"));
+        assertThat(idAttribute.isId(), equalTo(Boolean.FALSE));
     }
 }

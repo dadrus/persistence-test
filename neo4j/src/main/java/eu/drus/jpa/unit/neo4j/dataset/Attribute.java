@@ -11,9 +11,12 @@ public class Attribute {
 
     private Object value;
 
-    public Attribute(final String name, final Object value) {
+    private boolean isId;
+
+    public Attribute(final String name, final Object value, final boolean isId) {
         this.name = name;
         this.value = value;
+        this.isId = isId;
     }
 
     public String getName() {
@@ -24,11 +27,16 @@ public class Attribute {
         return value;
     }
 
+    public boolean isId() {
+        return isId;
+    }
+
     @Override
     public String toString() {
         final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
         builder.append("name", name);
         builder.append("value", value);
+        builder.append("isId", isId);
         return builder.build();
     }
 
@@ -37,6 +45,7 @@ public class Attribute {
         final HashCodeBuilder builder = new HashCodeBuilder();
         builder.append(name);
         builder.append(value);
+        builder.append(isId);
         return builder.toHashCode();
     }
 
@@ -51,6 +60,7 @@ public class Attribute {
             final EqualsBuilder builder = new EqualsBuilder();
             builder.append(name, other.name);
             builder.append(value, other.value);
+            builder.append(isId, other.isId);
             return builder.isEquals();
         }
 

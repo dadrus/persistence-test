@@ -1,4 +1,4 @@
-package eu.drus.jpa.unit.neo4j;
+package eu.drus.jpa.unit.neo4j.dataset;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -16,11 +16,6 @@ import java.util.function.Function;
 import org.jgrapht.Graph;
 
 import eu.drus.jpa.unit.api.JpaUnitException;
-import eu.drus.jpa.unit.neo4j.dataset.Attribute;
-import eu.drus.jpa.unit.neo4j.dataset.DatabaseReader;
-import eu.drus.jpa.unit.neo4j.dataset.Edge;
-import eu.drus.jpa.unit.neo4j.dataset.GraphElementFactory;
-import eu.drus.jpa.unit.neo4j.dataset.Node;
 import eu.drus.jpa.unit.spi.AssertionErrorCollector;
 import eu.drus.jpa.unit.spi.ColumnsHolder;
 

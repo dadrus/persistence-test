@@ -2,21 +2,42 @@ package eu.drus.jpa.unit.neo4j.dataset;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.jgrapht.Graph;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import eu.drus.jpa.unit.spi.DataSetLoader;
 import eu.drus.jpa.unit.spi.UnsupportedDataSetFormatException;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(EntityUtils.class)
 public class DataSetLoaderProviderTest {
 
-    private static final DataSetLoaderProvider LOADER_PROVIDER = new DataSetLoaderProvider(new GraphElementFactory());
+    private static final DataSetLoaderProvider LOADER_PROVIDER = new DataSetLoaderProvider(
+            new GraphElementFactory(Collections.emptyList()));
+
+    @SuppressWarnings("unchecked")
+    @Before
+    public void prepareMocks() {
+        mockStatic(EntityUtils.class);
+        when(EntityUtils.getEntityClassFromNodeLabels(any(List.class), any(List.class))).thenReturn(DataSetLoaderProviderTest.class);
+        when(EntityUtils.getNamesOfIdProperties(any(Class.class))).thenReturn(Arrays.asList());
+    }
 
     private static File getFile(final String path) throws URISyntaxException {
         final URL url = Thread.currentThread().getContextClassLoader().getResource(path);

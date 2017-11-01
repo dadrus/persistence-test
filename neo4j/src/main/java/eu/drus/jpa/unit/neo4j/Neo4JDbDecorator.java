@@ -27,7 +27,8 @@ public class Neo4JDbDecorator implements TestMethodDecorator {
     public void beforeTest(final TestInvocation invocation) throws Exception {
         final ExecutionContext context = invocation.getContext();
 
-        final Neo4JDbFeatureExecutor dbFeatureExecutor = new Neo4JDbFeatureExecutor(invocation.getFeatureResolver());
+        final Neo4JDbFeatureExecutor dbFeatureExecutor = new Neo4JDbFeatureExecutor(invocation.getFeatureResolver(),
+                context.getDescriptor().getClasses());
         final DataSource ds = (DataSource) context.getData(Constants.KEY_DATA_SOURCE);
         final Connection connection = ds.getConnection();
         connection.setAutoCommit(false);
@@ -39,7 +40,8 @@ public class Neo4JDbDecorator implements TestMethodDecorator {
     public void afterTest(final TestInvocation invocation) throws Exception {
         final ExecutionContext context = invocation.getContext();
 
-        final Neo4JDbFeatureExecutor dbFeatureExecutor = new Neo4JDbFeatureExecutor(invocation.getFeatureResolver());
+        final Neo4JDbFeatureExecutor dbFeatureExecutor = new Neo4JDbFeatureExecutor(invocation.getFeatureResolver(),
+                context.getDescriptor().getClasses());
         try (final Connection connection = (Connection) context.getData(Constants.KEY_CONNECTION)) {
             dbFeatureExecutor.executeAfterTest(connection, invocation.getException().isPresent());
         } finally {

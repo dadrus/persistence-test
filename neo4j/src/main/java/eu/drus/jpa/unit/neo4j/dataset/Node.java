@@ -57,6 +57,12 @@ public class Node extends GraphElement {
             return this;
         }
 
+        public PathBuilder withIdAttributes() {
+            path = path
+                    .values(getAttributes().stream().filter(Attribute::isId).map(a -> value(a.getName(), a.getValue())).collect(toList()));
+            return this;
+        }
+
         public PathBuilder withAllAttributesBut(final List<String> toExclude) {
             path = path.values(getAttributes().stream().filter(a -> !toExclude.contains(a.getName()))
                     .map(a -> value(a.getName(), a.getValue())).collect(toList()));

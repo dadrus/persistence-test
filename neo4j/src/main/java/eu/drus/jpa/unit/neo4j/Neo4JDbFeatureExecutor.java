@@ -23,6 +23,7 @@ import eu.drus.jpa.unit.api.ExpectedDataSets;
 import eu.drus.jpa.unit.api.JpaUnitException;
 import eu.drus.jpa.unit.neo4j.dataset.DataSetLoaderProvider;
 import eu.drus.jpa.unit.neo4j.dataset.Edge;
+import eu.drus.jpa.unit.neo4j.dataset.GraphComparator;
 import eu.drus.jpa.unit.neo4j.dataset.GraphElementFactory;
 import eu.drus.jpa.unit.neo4j.dataset.Node;
 import eu.drus.jpa.unit.neo4j.operation.Neo4JOperation;
@@ -39,9 +40,9 @@ public class Neo4JDbFeatureExecutor extends AbstractDbFeatureExecutor<Graph<Node
 
     private GraphElementFactory graphElementFactory;
 
-    protected Neo4JDbFeatureExecutor(final FeatureResolver featureResolver) {
+    protected Neo4JDbFeatureExecutor(final FeatureResolver featureResolver, final List<Class<?>> entityClasses) {
         super(featureResolver);
-        graphElementFactory = new GraphElementFactory();
+        graphElementFactory = new GraphElementFactory(entityClasses);
     }
 
     private static URI toUri(final String path) throws URISyntaxException {
