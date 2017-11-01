@@ -102,14 +102,14 @@ public class GraphComparator {
             final List<String> attributesToExclude = expectedNode.getLabels().stream().map(toExclude::getColumns).flatMap(List::stream)
                     .distinct().collect(toList());
 
-            final List<Node> availableNodesOfExpectedType = givenGraph.vertexSet().stream().filter(n -> n.getType().equals(expectedNode.getType()))
-                    .collect(toList());
+            final List<Node> availableNodesOfExpectedType = givenGraph.vertexSet().stream()
+                    .filter(n -> n.getType().equals(expectedNode.getType())).collect(toList());
 
             final List<Node> foundNodes = availableNodesOfExpectedType.stream().filter(n -> n.isSame(expectedNode, attributesToExclude))
                     .collect(toList());
 
             if (foundNodes.isEmpty()) {
-                errorCollector.collect("Node " + expectedNode.asString() + " was expected, but is not present");
+                errorCollector.collect(expectedNode.asString() + " was expected, but is not present");
             } else if (foundNodes.size() > 1) {
                 errorCollector.collect("Ambiguouty detected for node " + expectedNode.asString() + " for given attribute filter");
             }
@@ -123,14 +123,14 @@ public class GraphComparator {
             final List<String> attributesToExclude = expectedEdge.getLabels().stream().map(toExclude::getColumns).flatMap(List::stream)
                     .distinct().collect(toList());
 
-            final List<Edge> availableEdgesOfExpectedType = givenGraph.edgeSet().stream().filter(e -> e.getType().equals(expectedEdge.getType()))
-                    .collect(toList());
+            final List<Edge> availableEdgesOfExpectedType = givenGraph.edgeSet().stream()
+                    .filter(e -> e.getType().equals(expectedEdge.getType())).collect(toList());
 
             final List<Edge> foundEdges = availableEdgesOfExpectedType.stream().filter(e -> e.isSame(expectedEdge, attributesToExclude))
                     .collect(toList());
 
             if (foundEdges.isEmpty()) {
-                errorCollector.collect("Edge " + expectedEdge.asString() + " was expected, but is not present");
+                errorCollector.collect(expectedEdge.asString() + " was expected, but is not present");
             } else if (foundEdges.size() > 1) {
                 errorCollector.collect("Ambiguouty detected for edge " + expectedEdge.asString() + " for given attribute filter");
             }
@@ -162,7 +162,7 @@ public class GraphComparator {
                 });
 
                 if (!nodePresent) {
-                    errorCollector.collect("Node " + givenNode.asString() + " was not expected, but is present");
+                    errorCollector.collect(givenNode.asString() + " was not expected, but is present");
                 }
             }
         }
@@ -200,7 +200,7 @@ public class GraphComparator {
                 });
 
                 if (!edgePresent) {
-                    errorCollector.collect("Edge " + givenEdge.asString() + " was not expected, but is present");
+                    errorCollector.collect(givenEdge.asString() + " was not expected, but is present");
                 }
             }
         }

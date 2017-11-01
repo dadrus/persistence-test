@@ -2,8 +2,6 @@ package eu.drus.jpa.unit.neo4j.dataset;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class Attribute {
 
@@ -33,11 +31,12 @@ public class Attribute {
 
     @Override
     public String toString() {
-        final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
-        builder.append("name", name);
-        builder.append("value", value);
-        builder.append("isId", isId);
-        return builder.build();
+        final StringBuilder builder = new StringBuilder();
+        builder.append(name).append("=").append(value);
+        if (isId) {
+            builder.append("(").append("id").append(")");
+        }
+        return builder.toString();
     }
 
     @Override

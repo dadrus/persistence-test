@@ -132,9 +132,9 @@ public class GraphComparatorTest {
         assertThat(capturedMessages,
                 hasItems(containsString("Nodes with A labels were expected to be present, but not found"),
                         containsString("Nodes with B labels were expected to be present, but not found"),
-                        containsString("Node " + a.asString() + " was expected, but is not present"),
-                        containsString("Node " + b.asString() + " was expected, but is not present"),
-                        containsString("Edge " + e.asString() + " was expected, but is not present")));
+                        containsString(a.asString() + " was expected, but is not present"),
+                        containsString(b.asString() + " was expected, but is not present"),
+                        containsString(e.asString() + " was expected, but is not present")));
     }
 
     @SuppressWarnings("unchecked")
@@ -169,9 +169,9 @@ public class GraphComparatorTest {
         final List<String> capturedMessages = stringCaptor.getAllValues();
         assertThat(capturedMessages,
                 hasItems(containsString("Nodes with A labels were expected to be present, but not found"),
-                        containsString("Node " + a1.asString() + " was expected, but is not present"),
-                        containsString("Node " + a2.asString() + " was expected, but is not present"),
-                        containsString("Edge " + e1.asString() + " was expected, but is not present")));
+                        containsString(a1.asString() + " was expected, but is not present"),
+                        containsString(a2.asString() + " was expected, but is not present"),
+                        containsString(e1.asString() + " was expected, but is not present")));
     }
 
     @SuppressWarnings("unchecked")
@@ -206,9 +206,9 @@ public class GraphComparatorTest {
         final List<String> capturedMessages = stringCaptor.getAllValues();
         assertThat(capturedMessages,
                 hasItems(containsString("Nodes with A labels were expected to be present, but not found"),
-                        containsString("Node " + a1.asString() + " was expected, but is not present"),
-                        containsString("Node " + a2.asString() + " was expected, but is not present"),
-                        containsString("Edge " + e1.asString() + " was expected, but is not present"),
+                        containsString(a1.asString() + " was expected, but is not present"),
+                        containsString(a2.asString() + " was expected, but is not present"),
+                        containsString(e1.asString() + " was expected, but is not present"),
                         containsString("Nodes with B labels were not expected, but are present")));
     }
 
@@ -238,7 +238,7 @@ public class GraphComparatorTest {
         verify(errorCollector).collect(stringCaptor.capture());
 
         final List<String> capturedMessages = stringCaptor.getAllValues();
-        assertThat(capturedMessages, hasItems(containsString("Node " + a3.asString() + " was expected, but is not present")));
+        assertThat(capturedMessages, hasItems(containsString(a3.asString() + " was expected, but is not present")));
     }
 
     @SuppressWarnings("unchecked")
@@ -268,7 +268,7 @@ public class GraphComparatorTest {
         verify(errorCollector).collect(stringCaptor.capture());
 
         final List<String> capturedMessages = stringCaptor.getAllValues();
-        assertThat(capturedMessages, hasItems(containsString("Edge " + e2.asString() + " was expected, but is not present")));
+        assertThat(capturedMessages, hasItems(containsString(e2.asString() + " was expected, but is not present")));
     }
 
     @SuppressWarnings("unchecked")
@@ -308,10 +308,10 @@ public class GraphComparatorTest {
 
         final List<String> capturedMessages = stringCaptor.getAllValues();
         assertThat(capturedMessages,
-                hasItems(containsString("Node " + a4.asString() + " was not expected, but is present"),
-                        containsString("Node " + a3.asString() + " was expected, but is not present"),
-                        containsString("Edge " + e3.asString() + " was not expected, but is present"),
-                        containsString("Edge " + e2.asString() + " was expected, but is not present")));
+                hasItems(containsString(a4.asString() + " was not expected, but is present"),
+                        containsString(a3.asString() + " was expected, but is not present"),
+                        containsString(e3.asString() + " was not expected, but is present"),
+                        containsString(e2.asString() + " was expected, but is not present")));
     }
 
     @SuppressWarnings("unchecked")
@@ -351,10 +351,10 @@ public class GraphComparatorTest {
 
         final List<String> capturedMessages = stringCaptor.getAllValues();
         assertThat(capturedMessages,
-                hasItems(containsString("Edge " + e2.asString() + " was expected, but is not present"),
-                        containsString("Edge " + e3.asString() + " was not expected, but is present"),
-                        containsString("Node " + a4.asString() + " was not expected, but is present"),
-                        containsString("Node " + a3.asString() + " was expected, but is not present"),
+                hasItems(containsString(e2.asString() + " was expected, but is not present"),
+                        containsString(e3.asString() + " was not expected, but is present"),
+                        containsString(a4.asString() + " was not expected, but is present"),
+                        containsString(a3.asString() + " was expected, but is not present"),
                         containsString("Nodes with B labels were not expected, but are present")));
     }
 
