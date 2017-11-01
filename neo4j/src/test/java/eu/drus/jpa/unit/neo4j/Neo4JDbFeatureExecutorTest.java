@@ -85,8 +85,9 @@ public class Neo4JDbFeatureExecutorTest {
 
     private Neo4JDbFeatureExecutor featureExecutor;
 
+    @SuppressWarnings("unchecked")
     @Before
-    public void setup() throws SQLException {
+    public void setup() throws Exception {
         when(connection.prepareStatement(anyString())).thenReturn(ps);
         when(ps.executeQuery()).thenReturn(rs);
 

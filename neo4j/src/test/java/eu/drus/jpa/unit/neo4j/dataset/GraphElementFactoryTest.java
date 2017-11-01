@@ -61,7 +61,7 @@ public class GraphElementFactoryTest {
     }
 
     @Test
-    public void testCreateNode() {
+    public void testCreateNode() throws NoSuchClassException {
         // GIVEN
         final String nodeId = "a";
         final List<String> nodeLabels = Arrays.asList("A");
@@ -116,7 +116,7 @@ public class GraphElementFactoryTest {
     }
 
     @Test
-    public void testCreateEdge() {
+    public void testCreateEdge() throws NoSuchClassException {
         // GIVEN
         final String nodeAId = "a";
         final List<String> nodeALabels = Arrays.asList("A");
@@ -151,7 +151,7 @@ public class GraphElementFactoryTest {
     }
 
     @Test
-    public void testBuildEdge() {
+    public void testBuildEdge() throws NoSuchClassException {
         // GIVEN
         final String nodeAId = "a";
         final List<String> nodeALabels = Arrays.asList("A");

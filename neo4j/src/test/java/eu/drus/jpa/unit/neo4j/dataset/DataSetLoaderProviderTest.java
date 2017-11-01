@@ -33,7 +33,7 @@ public class DataSetLoaderProviderTest {
 
     @SuppressWarnings("unchecked")
     @Before
-    public void prepareMocks() {
+    public void prepareMocks() throws Exception {
         mockStatic(EntityUtils.class);
         when(EntityUtils.getEntityClassFromNodeLabels(any(List.class), any(List.class))).thenReturn(DataSetLoaderProviderTest.class);
         when(EntityUtils.getNamesOfIdProperties(any(Class.class))).thenReturn(Arrays.asList());

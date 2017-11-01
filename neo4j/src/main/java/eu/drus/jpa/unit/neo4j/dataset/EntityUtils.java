@@ -13,8 +13,6 @@ import javax.persistence.Table;
 
 import com.google.common.base.CaseFormat;
 
-import eu.drus.jpa.unit.api.JpaUnitException;
-
 public final class EntityUtils {
 
     private EntityUtils() {}
@@ -75,7 +73,8 @@ public final class EntityUtils {
         }
     }
 
-    public static Class<?> getEntityClassFromNodeLabels(final List<String> labels, final List<Class<?>> classes) {
+    public static Class<?> getEntityClassFromNodeLabels(final List<String> labels, final List<Class<?>> classes)
+            throws NoSuchClassException {
         for (final String label : labels) {
             final Optional<Class<?>> classHit = classes.stream().filter(c -> {
                 // try to find the class based on its name
@@ -93,6 +92,6 @@ public final class EntityUtils {
             }
         }
 
-        throw new JpaUnitException("could not find class for a node with " + labels + " labels.");
+        throw new NoSuchClassException("could not find class for a node with " + labels + " labels.");
     }
 }

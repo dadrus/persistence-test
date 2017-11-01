@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import eu.drus.jpa.unit.api.JpaUnitException;
 import eu.drus.jpa.unit.neo4j.graphml.Attribute;
 import eu.drus.jpa.unit.neo4j.graphml.EdgeProvider;
 import eu.drus.jpa.unit.neo4j.graphml.VertexProvider;
@@ -36,9 +37,14 @@ public class GraphElementFactory implements VertexProvider<Node>, EdgeProvider<N
     }
 
     private List<eu.drus.jpa.unit.neo4j.dataset.Attribute> toNodeAttributes(final List<String> labels,
-            final Map<String, Object> propertiesMap) {
-        final Class<?> nodeEntity = nodeLabelsEntityClassMap.computeIfAbsent(labels,
-                k -> EntityUtils.getEntityClassFromNodeLabels(k, entityClasses));
+            final Map<String, Object> propertiesMap) throws NoSuchClassException {
+
+        Class<?> nodeEntity = nodeLabelsEntityClassMap.get(labels);
+
+        if (nodeEntity == null) {
+            nodeEntity = EntityUtils.getEntityClassFromNodeLabels(labels, entityClasses);
+            nodeLabelsEntityClassMap.put(labels, nodeEntity);
+        }
 
         final List<String> entityIdList = entityClassIdPropertiesMap.computeIfAbsent(nodeEntity, EntityUtils::getNamesOfIdProperties);
 
@@ -64,10 +70,15 @@ public class GraphElementFactory implements VertexProvider<Node>, EdgeProvider<N
 
     @Override
     public Node buildVertex(final String name, final Map<String, Attribute> nodeAttributes) {
-        return createNode(name, extractLabels(nodeAttributes), convertAttributes(nodeAttributes));
+        try {
+            return createNode(name, extractLabels(nodeAttributes), convertAttributes(nodeAttributes));
+        } catch (final NoSuchClassException e) {
+            throw new JpaUnitException(e);
+        }
     }
 
-    public Node createNode(final String name, final List<String> labels, final Map<String, Object> attributesMap) {
+    public Node createNode(final String name, final List<String> labels, final Map<String, Object> attributesMap)
+            throws NoSuchClassException {
         return new Node(name, labels, toNodeAttributes(labels, attributesMap));
     }
 }

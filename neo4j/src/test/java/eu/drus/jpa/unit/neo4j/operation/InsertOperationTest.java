@@ -50,7 +50,7 @@ public class InsertOperationTest {
     }
 
     @Test
-    public void testExecute() throws SQLException {
+    public void testExecute() throws Exception {
         // GIVEN
         final Node n1 = graphElementFactory.createNode("n1", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 1l).build());

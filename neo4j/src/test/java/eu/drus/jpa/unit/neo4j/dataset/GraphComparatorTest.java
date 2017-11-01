@@ -79,7 +79,7 @@ public class GraphComparatorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testCompareGraphsForEmptyExpectedGraphAndNotEmptyGivenGraph() throws SQLException {
+    public void testCompareGraphsForEmptyExpectedGraphAndNotEmptyGivenGraph() throws Exception {
         // GIVEN
         final Node a = graphElementFactory.createNode("a", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 1l).build());
@@ -107,7 +107,7 @@ public class GraphComparatorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testCompareGraphsForNotEmptyExpectedGraphButEmptyGivenGraph() throws SQLException {
+    public void testCompareGraphsForNotEmptyExpectedGraphButEmptyGivenGraph() throws Exception {
         // GIVEN
         final Node a = graphElementFactory.createNode("a", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 1l).build());
@@ -139,7 +139,7 @@ public class GraphComparatorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testCompareFullyDistinctGraphsInNotStrictMode() throws SQLException {
+    public void testCompareFullyDistinctGraphsInNotStrictMode() throws Exception {
         // GIVEN
         final Node a1 = graphElementFactory.createNode("a1", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 1l).build());
@@ -176,7 +176,7 @@ public class GraphComparatorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testCompareFullyDistinctGraphsInStrictMode() throws SQLException {
+    public void testCompareFullyDistinctGraphsInStrictMode() throws Exception {
         // GIVEN
         final Node a1 = graphElementFactory.createNode("a1", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 1l).build());
@@ -214,7 +214,7 @@ public class GraphComparatorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testCompareGivenGraphIsASubsetOfExpectedGraphOnNodeLevel() throws SQLException {
+    public void testCompareGivenGraphIsASubsetOfExpectedGraphOnNodeLevel() throws Exception {
         // GIVEN
         final Node a1 = graphElementFactory.createNode("a1", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 1l).build());
@@ -243,7 +243,7 @@ public class GraphComparatorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testCompareGivenGraphIsASubsetOfExpectedGraphOnEdgeLevel() throws SQLException {
+    public void testCompareGivenGraphIsASubsetOfExpectedGraphOnEdgeLevel() throws Exception {
         // GIVEN
         final Node a1 = graphElementFactory.createNode("a1", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 1l).build());
@@ -273,7 +273,7 @@ public class GraphComparatorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testCompareGivenGraphBuildsIntersectionWithTheExpectedGraphInNotStrictMode() throws SQLException {
+    public void testCompareGivenGraphBuildsIntersectionWithTheExpectedGraphInNotStrictMode() throws Exception {
         // GIVEN
         final Node a1 = graphElementFactory.createNode("a1", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 1l).build());
@@ -316,7 +316,7 @@ public class GraphComparatorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testCompareGivenGraphBuildsIntersectionWithTheExpectedGraphInStrictMode() throws SQLException {
+    public void testCompareGivenGraphBuildsIntersectionWithTheExpectedGraphInStrictMode() throws Exception {
         // GIVEN
         final Node a1 = graphElementFactory.createNode("a1", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 1l).build());
@@ -360,7 +360,7 @@ public class GraphComparatorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testCompareGraphsWithAmbiguitiesOnNodeLevelGivenByFieldsToBeExcluded() throws SQLException {
+    public void testCompareGraphsWithAmbiguitiesOnNodeLevelGivenByFieldsToBeExcluded() throws Exception {
         // GIVEN
         final Node a1 = graphElementFactory.createNode("a1", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 1l).build());
@@ -406,7 +406,7 @@ public class GraphComparatorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testCompareGraphsWithAmbiguitiesOnEdgeLevelGivenByFieldsToBeExcluded() throws SQLException {
+    public void testCompareGraphsWithAmbiguitiesOnEdgeLevelGivenByFieldsToBeExcluded() throws Exception {
         // GIVEN
         final Node a1 = graphElementFactory.createNode("a1", Arrays.asList("A"),
                 ImmutableMap.<String, Object>builder().put("id", 1l).build());
