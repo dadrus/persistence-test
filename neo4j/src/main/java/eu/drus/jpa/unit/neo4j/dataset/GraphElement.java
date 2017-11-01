@@ -10,7 +10,7 @@ public abstract class GraphElement {
     private List<Attribute> attributes;
     private List<String> labels;
 
-    public GraphElement(final String id, final List<String> labels, final List<Attribute> attributes) {
+    protected GraphElement(final String id, final List<String> labels, final List<Attribute> attributes) {
         this.id = id;
         this.labels = labels;
         this.attributes = attributes;
