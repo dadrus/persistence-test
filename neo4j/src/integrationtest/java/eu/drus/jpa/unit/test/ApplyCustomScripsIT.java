@@ -22,7 +22,6 @@ import eu.drus.jpa.unit.api.CleanupPhase;
 import eu.drus.jpa.unit.api.JpaUnitRunner;
 import eu.drus.jpa.unit.test.model.Person;
 import eu.drus.jpa.unit.test.model.Technology;
-import eu.drus.jpa.unit.util.Neo4jManager;
 
 @RunWith(JpaUnitRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -31,7 +30,7 @@ public class ApplyCustomScripsIT {
 
     @BeforeClass
     public static void startNeo4j() {
-        Neo4jManager.startServer();
+        // Neo4jManager.startServer();
     }
 
     @PersistenceContext(unitName = "my-test-unit")
@@ -48,7 +47,7 @@ public class ApplyCustomScripsIT {
         assertThat(entity.getName(), equalTo("Max"));
         assertThat(entity.getSurname(), equalTo("Payne"));
 
-        assertThat(entity.getExpertiseIn(), hasItems(new Technology("Weapons of all kinds"), new Technology("Detective work")));
+        assertThat(entity.getExpertiseIn(), hasItems(new Technology("All kinds of weapons"), new Technology("Detective work")));
         assertThat(entity.getFriends().isEmpty(), equalTo(Boolean.TRUE));
     }
 
@@ -62,7 +61,7 @@ public class ApplyCustomScripsIT {
         assertThat(entity.getName(), equalTo("Max"));
         assertThat(entity.getSurname(), equalTo("Payne"));
 
-        assertThat(entity.getExpertiseIn(), hasItems(new Technology("Weapons of all kinds"), new Technology("Detective work")));
+        assertThat(entity.getExpertiseIn(), hasItems(new Technology("All kinds of weapons"), new Technology("Detective work")));
         assertThat(entity.getFriends(), hasItems(new Person("Alex", "Balder")));
     }
 
