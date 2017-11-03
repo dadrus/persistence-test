@@ -29,6 +29,8 @@ public class UpdateOperation extends AbstractNeo4JOperation {
             final UpdateNext query = match(node.toPath().withIdAttributes().build()).set(attributes);
 
             executeQuery(connection, query.toString());
+
+            // TODO: Edges have to be considered as well
         }
     }
 }
