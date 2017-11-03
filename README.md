@@ -692,7 +692,7 @@ possible (Neo4J does not allow opening multiple driver connections to the embedd
 Since JPA does not address NoSQL databases, each JPA provider defines its own properties. These properties are also the only dependencies to a specific JPA provider implementation. As of todays JPA Unit Node4j
 extension can use the properties of the following JPA provider:
 
-- [Hibernate OGM (with MongoDB extension)](https://docs.jboss.org/hibernate/ogm/5.2/reference/en-US/html_single/#ogm-neo4j).
+- [Hibernate OGM (with Neo4j extension)](https://docs.jboss.org/hibernate/ogm/5.2/reference/en-US/html_single/#ogm-neo4j).
 
 [DataNucleus](http://www.datanucleus.org/products/datanucleus/jpa/samples/tutorial_neo4j.html) and [Kundera](https://github.com/impetus-opensource/Kundera/wiki/Neo4J-Specific-Configuration) both support Node4j
 in an embedded mode only and thus cannot be used with JPA-Unit today.
@@ -704,39 +704,46 @@ Thanks to [jgrapht](https://github.com/jgrapht/jgrapht), which is used internall
 - [GraphML](http://graphml.graphdrawing.org/primer/graphml-primer.html). an XML-based file format for graphs.
 
 If you want to generate/export data out of an existing Neo4j instance [APOC](https://neo4j-contrib.github.io/neo4j-apoc-procedures/) can be really helpful.
+Be however aware, that the data exported by APOC does not fully comply with GraphML. APOC generated file does not include `key` elements definitions for
+`label` and `labels` `data` elements for `edge`, respectively `edge` elements. It also adds additional attributes (`label` and `labels`) to `node` and `edge`
+elements, which are not defined by GraphML. The first one needs to be addressed by adding the missing `<key id="labels" for="node" attr.name="labels" attr.type="string"/>`
+and `<key id="label" for="edge" attr.name="label" attr.type="string"/>` to the `graph` element. The second one can be ignored - schema compliance is not enforced by
+JPA-Unit's neo4j extension.
 
-Here some examples:
+Here's an example:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
-	<key id="name" for="node" attr.name="name" attr.type="string"/>
-	<key id="id" for="node" attr.name="id" attr.type="long"/>
-	<key id="labels" for="node" attr.name="labels" attr.type="string"/>
-	<key id="label" for="edge" attr.name="label" attr.type="string"/>
-	<graph id="G" edgedefault="directed">
-		<node id="n1399" labels=":Person:ENTITY">
-			<data key="labels">:Person:ENTITY</data>
-			<data key="name">Dimitrij</data>
-			<data key="id">1</data>
-		</node>
-		<node id="n1400" labels=":Person:ENTITY">
-			<data key="labels">:Person:ENTITY</data>
-			<data key="name">Milana</data>
-			<data key="id">2</data>
-		</node>
-		<node id="n1401" labels=":Person:ENTITY">
-			<data key="labels">:Person:ENTITY</data>
-			<data key="name">Daliah</data>
-			<data key="id">3</data>
-		</node>
-		<edge id="e1036" source="n1399" target="n1400" label="daughter">
-			<data key="label">daughter</data>
-		</edge>
-		<edge id="e1037" source="n1399" target="n1401" label="daughter">
-			<data key="label">daughter</data>
-		</edge>
-	</graph>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="name" for="node" attr.name="name" attr.type="string"/>
+  <key id="id" for="node" attr.name="id" attr.type="long"/>
+  <key id="labels" for="node" attr.name="labels" attr.type="string"/>
+  <key id="label" for="edge" attr.name="label" attr.type="string"/>
+  <graph id="G" edgedefault="directed">
+    <node id="n1399" labels=":Person:ENTITY">
+      <data key="labels">:Person:ENTITY</data>
+      <data key="name">Dimitrij</data>
+      <data key="id">1</data>
+    </node>
+    <node id="n1400" labels=":Person:ENTITY">
+      <data key="labels">:Person:ENTITY</data>
+      <data key="name">Milana</data>
+      <data key="id">2</data>
+    </node>
+    <node id="n1401" labels=":Person:ENTITY">
+      <data key="labels">:Person:ENTITY</data>
+      <data key="name">Daliah</data>
+      <data key="id">3</data>
+    </node>
+    <edge id="e1036" source="n1399" target="n1400" label="daughter">
+      <data key="label">daughter</data>
+    </edge>
+    <edge id="e1037" source="n1399" target="n1401" label="daughter">
+      <data key="label">daughter</data>
+    </edge>
+  </graph>
 </graphml>
 ```
 
