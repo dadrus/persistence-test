@@ -61,20 +61,33 @@ public class Edge extends GraphElement {
 
     public class PathBuilder {
 
-        private PathRelationship path;
+        private boolean includeAllAttributes = false;
+        private boolean includeNodeIdAttributes = false;
 
-        private PathBuilder() {
-            final List<Identifier> relationShips = getLabels().stream().map(CypherQuery::identifier).collect(toList());
-            path = node(from.getId()).out(relationShips.toArray(new Identifier[relationShips.size()])).as(getId());
-        }
+        private PathBuilder() {}
 
         public PathBuilder withAllAttributes() {
-            path = path.values(getAttributes().stream().map(a -> value(a.getName(), a.getValue())).collect(toList()));
+            includeAllAttributes = true;
+            return this;
+        }
+
+        public PathBuilder withNodeIdAttributes() {
+            includeNodeIdAttributes = true;
             return this;
         }
 
         public Path build() {
-            return path.node(to.getId());
+            final List<Identifier> relationShips = getLabels().stream().map(CypherQuery::identifier).collect(toList());
+            final Path fromPath = includeNodeIdAttributes ? from.toPath().withIdAttributes().build() : node(from.getId());
+            final Path toPath = includeNodeIdAttributes ? to.toPath().withIdAttributes().build() : node(to.getId());
+            PathRelationship path = fromPath.out(relationShips.toArray(new Identifier[relationShips.size()])).as(getId());
+            if (includeAllAttributes) {
+                path = path.values(getAttributes().stream().map(a -> value(a.getName(), a.getValue())).collect(toList()));
+            }
+
+            final String nodeAsString = toPath.toString();
+            // need to remove () around the expression. they are added again by the node() call
+            return path.node(nodeAsString.substring(1, nodeAsString.length() - 1));
         }
     }
 }

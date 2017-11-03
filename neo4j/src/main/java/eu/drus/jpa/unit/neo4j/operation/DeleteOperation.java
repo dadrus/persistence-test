@@ -23,7 +23,8 @@ public class DeleteOperation extends AbstractNeo4JOperation {
         final List<Path> nodes = graph.vertexSet().stream().map(n -> n.toPath().withAllAttributes().build()).collect(toList());
         final List<ReferenceExpression> nodeIds = graph.vertexSet().stream().map(n -> identifier(n.getId())).collect(toList());
 
-        final List<Path> edges = graph.edgeSet().stream().map(e -> e.toPath().withAllAttributes().build()).collect(toList());
+        final List<Path> edges = graph.edgeSet().stream().map(e -> e.toPath().withAllAttributes().withNodeIdAttributes().build())
+                .collect(toList());
         final List<ReferenceExpression> edgeIds = graph.edgeSet().stream().map(e -> identifier(e.getId())).collect(toList());
 
         final UpdateNext deleteEdgesQuery = match(edges.toArray(new Path[edges.size()])).delete(edgeIds);

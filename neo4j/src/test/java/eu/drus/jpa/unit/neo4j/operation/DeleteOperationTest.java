@@ -75,7 +75,7 @@ public class DeleteOperationTest {
         final List<String> queries = queryCaptor.getAllValues();
         final String query1 = queries.get(0);
         final String query2 = queries.get(1);
-        assertThat(query1, containsString("MATCH (n1)-[e1:E {id:3}]->(n2) DELETE e1"));
+        assertThat(query1, containsString("MATCH (n1:A {id:1})-[e1:E {id:3}]->(`n2:A {id:2}`) DELETE e1"));
         assertThat(query2, containsString("MATCH (n1:A {id:1}),(n2:A {id:2}) DELETE n1,n2"));
     }
 }
