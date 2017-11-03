@@ -22,6 +22,7 @@ import eu.drus.jpa.unit.api.CleanupPhase;
 import eu.drus.jpa.unit.api.JpaUnitRunner;
 import eu.drus.jpa.unit.test.model.Person;
 import eu.drus.jpa.unit.test.model.Technology;
+import eu.drus.jpa.unit.util.Neo4jManager;
 
 @RunWith(JpaUnitRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -30,7 +31,7 @@ public class ApplyCustomScripsIT {
 
     @BeforeClass
     public static void startNeo4j() {
-        // Neo4jManager.startServer();
+        Neo4jManager.startServer();
     }
 
     @PersistenceContext(unitName = "my-test-unit")
