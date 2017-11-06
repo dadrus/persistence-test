@@ -62,33 +62,30 @@
     </node>
 
     <node id="r1" labels="ENTITY:Recipe">
-      <data key="labels">ENTITY:Recipe</data>
+      <data key="labels">:ENTITY:CookingRecipe</data>
       <data key="name">Macarons</data>
     </node>
 
-    <edge id="e1" source="p1" target="t2" label="LIKE">
-      <data key="label">like</data>
-    </edge>
-    <edge id="e2" source="p1" target="p2" label="FRIEND">
+    <edge id="e2" source="p1" target="p2" label="friend">
       <data key="label">friend</data>
     </edge>
-    <edge id="e3" source="p1" target="p3" label="FRIEND">
+    <edge id="e3" source="p1" target="p3" label="friend">
       <data key="label">friend</data>
     </edge>
-    <edge id="e4" source="p3" target="p4" label="FRIEND">
+    <edge id="e4" source="p3" target="p4" label="friend">
       <data key="label">friend</data>
     </edge>
-    <edge id="e5" source="p4" target="t2" label="EXPERT_IN">
+    <edge id="e5" source="p4" target="t2" label="expertIn">
       <data key="label">expertIn</data>
     </edge>
-    <edge id="e6" source="p2" target="p5" label="FRIEND">
+    <edge id="e6" source="p2" target="p5" label="friend">
       <data key="label">friend</data>
       <data key="since">Dec 2017</data>
     </edge>
-    <edge id="e7" source="p5" target="t1" label="EXPERT_IN">
+    <edge id="e7" source="p5" target="t1" label="expertIn">
       <data key="label">expertIn</data>
     </edge>
-    <edge id="e8" source="p2" target="t3" label="EXPERT_IN">
+    <edge id="e8" source="p2" target="t3" label="expertIn">
       <data key="label">expertIn</data>
     </edge>
   </graph>

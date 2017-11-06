@@ -5,7 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -78,7 +80,7 @@ public class InitialDataSetsIT {
 
         assertThat(persons.size(), equalTo(5));
 
-        // insert a new depositor and update e.g a name of the previously stored depositor and let's
+        // insert a new person and update e.g a name of the previously stored person and let's
         // see what REFRESH DataSeedStrategy will do (see next test methods)
         manager.persist(someGuy);
 
@@ -94,6 +96,12 @@ public class InitialDataSetsIT {
         assertNotNull(entity);
         assertThat(entity.getName(), equalTo("Foo"));
         assertThat(entity.getSurname(), equalTo("Orlov"));
+
+        // and to remove all the friends from Orlov. All of them will be connected thanks to REFRESH
+        // in the next test
+        final Set<Person> friends = new HashSet<>(entity.getFriends());
+        assertThat(friends.size(), equalTo(2));
+        friends.forEach(entity::removeFromFriends);
     }
 
     @Test
@@ -107,7 +115,12 @@ public class InitialDataSetsIT {
         TypedQuery<Person> query = manager.createQuery("SELECT p FROM Person p WHERE p.surname='Orlov'", Person.class);
         Person entity = query.getSingleResult();
         assertThat(entity.getName(), equalTo("Bronislav")); // not Foo!!!
+        assertThat(entity.getFriends().size(), equalTo(2)); // all are here again
         entity.setName("Foo"); // change it to Foo for the next test again
+
+        // remove the links to friends for the next test case
+        final Set<Person> friends = new HashSet<>(entity.getFriends());
+        friends.forEach(entity::removeFromFriends);
 
         query = manager.createQuery("SELECT p FROM Person p WHERE p.name='Max'", Person.class);
         entity = query.getSingleResult();
@@ -133,6 +146,7 @@ public class InitialDataSetsIT {
         TypedQuery<Person> query = manager.createQuery("SELECT p FROM Person p WHERE p.surname='Orlov'", Person.class);
         Person entity = query.getSingleResult();
         assertThat(entity.getName(), equalTo("Bronislav")); // not Foo!!!
+        assertThat(entity.getFriends().size(), equalTo(2)); // all are here again
 
         query = manager.createQuery("SELECT p FROM Person p WHERE p.name='Max'", Person.class);
         entity = query.getSingleResult();

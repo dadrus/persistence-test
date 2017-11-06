@@ -26,9 +26,13 @@ public class UpdateOperation extends AbstractNeo4JOperation {
             final List<SetExpression> attributes = node.getAttributes().stream().filter(a -> !a.isId())
                     .map(a -> property(identifier(node.getId()).property(a.getName()), literal(a.getValue()))).collect(toList());
 
-            final UpdateNext query = match(node.toPath().withIdAttributes().build()).set(attributes);
+            if (!attributes.isEmpty()) {
+                // it is only empty if the node itself contains only the id attribute, which is not
+                // going to be set
+                final UpdateNext query = match(node.toPath().withIdAttributes().build()).set(attributes);
 
-            executeQuery(connection, query.toString());
+                executeQuery(connection, query.toString());
+            }
         }
 
         for (final Edge edge : graph.edgeSet()) {
@@ -39,7 +43,7 @@ public class UpdateOperation extends AbstractNeo4JOperation {
                     .map(a -> property(identifier(edge.getId()).property(a.getName()), literal(a.getValue()))).collect(toList());
 
             final UpdateNext query = match(sourceNode.toPath().withIdAttributes().build(), targetNode.toPath().withIdAttributes().build())
-                    .match(edge.toPath().build()).set(attributes);
+                    .merge(edge.toPath().build()).set(attributes);
 
             executeQuery(connection, query.toString());
         }
