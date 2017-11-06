@@ -19,8 +19,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <sonar.jacoco.reportPaths>${project.build.directory}/coverage.exec</sonar.jacoco.reportPaths>
-
     <skipUnitTests>${skipTests}</skipUnitTests>
     <skipIntegrationTests>${skipTests}</skipIntegrationTests>
     <integrationSourceDirectory>src/integrationtest</integrationSourceDirectory>
@@ -176,9 +174,6 @@
               <exclude>**/*ManualTest.java</exclude>
               <exclude>**/*IntegrationTest.java</exclude>
             </excludes>
-            <systemPropertyVariables>
-              <jacoco-agent.destfile>${project.build.directory}/coverage.exec</jacoco-agent.destfile>
-            </systemPropertyVariables>
           </configuration>
         </plugin>
 
@@ -331,9 +326,6 @@
               <goals>
                 <goal>report</goal>
               </goals>
-              <configuration>
-                <dataFile>${project.build.directory}/coverage.exec</dataFile>
-              </configuration>
             </execution>
             
             <!-- for integration tests. -->
