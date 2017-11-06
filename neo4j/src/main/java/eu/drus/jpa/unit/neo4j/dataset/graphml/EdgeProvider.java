@@ -15,7 +15,7 @@
  * (b) the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation.
  */
-package eu.drus.jpa.unit.neo4j.graphml;
+package eu.drus.jpa.unit.neo4j.dataset.graphml;
 
 import java.util.Map;
 

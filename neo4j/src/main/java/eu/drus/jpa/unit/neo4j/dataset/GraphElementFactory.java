@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import eu.drus.jpa.unit.api.JpaUnitException;
-import eu.drus.jpa.unit.neo4j.graphml.Attribute;
-import eu.drus.jpa.unit.neo4j.graphml.EdgeProvider;
-import eu.drus.jpa.unit.neo4j.graphml.VertexProvider;
+import eu.drus.jpa.unit.neo4j.dataset.graphml.Attribute;
+import eu.drus.jpa.unit.neo4j.dataset.graphml.EdgeProvider;
+import eu.drus.jpa.unit.neo4j.dataset.graphml.VertexProvider;
 
 public class GraphElementFactory implements VertexProvider<Node>, EdgeProvider<Node, Edge> {
 
@@ -26,12 +26,12 @@ public class GraphElementFactory implements VertexProvider<Node>, EdgeProvider<N
         this.entityClasses = entityClasses;
     }
 
-    private static Map<String, Object> convertAttributes(final Map<String, eu.drus.jpa.unit.neo4j.graphml.Attribute> attributes) {
+    private static Map<String, Object> convertAttributes(final Map<String, eu.drus.jpa.unit.neo4j.dataset.graphml.Attribute> attributes) {
         return attributes.entrySet().stream().filter(e -> !e.getKey().equals("labels") && !e.getKey().equals("label"))
                 .collect(toMap(Entry::getKey, e -> AttributeTypeConverter.convert(e.getValue())));
     }
 
-    private static List<String> extractLabels(final Map<String, eu.drus.jpa.unit.neo4j.graphml.Attribute> attributes) {
+    private static List<String> extractLabels(final Map<String, eu.drus.jpa.unit.neo4j.dataset.graphml.Attribute> attributes) {
         return attributes.entrySet().stream().filter(e -> e.getKey().equals("labels") || e.getKey().equals("label"))
                 .map(v -> v.getValue().getValue().split(":")).flatMap(Arrays::stream).filter(v -> !v.isEmpty()).sorted().collect(toList());
     }

@@ -8,8 +8,8 @@ import org.jgrapht.ext.ImportException;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
-import eu.drus.jpa.unit.neo4j.graphml.GraphMLReader;
 import eu.drus.jpa.unit.spi.DataSetFormat.LoaderProvider;
+import eu.drus.jpa.unit.neo4j.dataset.graphml.GraphMLReader;
 import eu.drus.jpa.unit.spi.DataSetLoader;
 import eu.drus.jpa.unit.spi.UnsupportedDataSetFormatException;
 

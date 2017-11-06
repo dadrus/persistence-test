@@ -15,27 +15,25 @@
  * (b) the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation.
  */
-package eu.drus.jpa.unit.neo4j.graphml;
+package eu.drus.jpa.unit.neo4j.dataset.graphml;
 
-import java.util.Map;
+public class DefaultAttribute<T> implements Attribute {
 
-/**
- * Creates a Vertex of type V
- *
- * @param <V>
- *            the vertex type
- */
-public interface VertexProvider<V> {
+    private AttributeType type;
+    private T value;
 
-    /**
-     * Create a vertex
-     *
-     * @param label
-     *            the label of the vertex
-     * @param attributes
-     *            any other attributes of the vertex
-     *
-     * @return the vertex
-     */
-    V buildVertex(String label, Map<String, Attribute> attributes);
+    public DefaultAttribute(final T value, final AttributeType type) {
+        this.type = type;
+        this.value = value;
+    }
+
+    @Override
+    public String getValue() {
+        return value.toString();
+    }
+
+    @Override
+    public AttributeType getType() {
+        return type;
+    }
 }

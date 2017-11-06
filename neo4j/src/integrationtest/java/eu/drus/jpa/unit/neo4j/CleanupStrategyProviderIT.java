@@ -27,7 +27,7 @@ import org.neo4j.harness.TestServerBuilders;
 import eu.drus.jpa.unit.neo4j.dataset.Edge;
 import eu.drus.jpa.unit.neo4j.dataset.GraphElementFactory;
 import eu.drus.jpa.unit.neo4j.dataset.Node;
-import eu.drus.jpa.unit.neo4j.graphml.GraphMLReader;
+import eu.drus.jpa.unit.neo4j.dataset.graphml.GraphMLReader;
 import eu.drus.jpa.unit.spi.DbFeatureException;
 import eu.drus.jpa.unit.test.model.CookingRecipe;
 import eu.drus.jpa.unit.test.model.Person;

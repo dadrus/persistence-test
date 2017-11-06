@@ -26,8 +26,8 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 
-import eu.drus.jpa.unit.neo4j.graphml.AttributeType;
-import eu.drus.jpa.unit.neo4j.graphml.DefaultAttribute;
+import eu.drus.jpa.unit.neo4j.dataset.graphml.AttributeType;
+import eu.drus.jpa.unit.neo4j.dataset.graphml.DefaultAttribute;
 
 public class GraphElementFactoryTest {
 
@@ -91,7 +91,7 @@ public class GraphElementFactoryTest {
     public void testBuildVertex() {
         // GIVEN
         final String nodeId = "a";
-        final Map<String, eu.drus.jpa.unit.neo4j.graphml.Attribute> nodeAttributes = ImmutableMap.<String, eu.drus.jpa.unit.neo4j.graphml.Attribute>builder()
+        final Map<String, eu.drus.jpa.unit.neo4j.dataset.graphml.Attribute> nodeAttributes = ImmutableMap.<String, eu.drus.jpa.unit.neo4j.dataset.graphml.Attribute>builder()
                 .put("id", new DefaultAttribute<>(1L, AttributeType.LONG)).put("value", new DefaultAttribute<>("foo", AttributeType.STRING))
                 .put("labels", new DefaultAttribute<>("A", AttributeType.STRING)).build();
 
@@ -162,7 +162,7 @@ public class GraphElementFactoryTest {
         final Map<String, Object> nodeBAttributes = ImmutableMap.<String, Object>builder().put("id", 2l).put("value", "boo").build();
 
         final String edgeId = "e";
-        final Map<String, eu.drus.jpa.unit.neo4j.graphml.Attribute> edgeAttributes = ImmutableMap.<String, eu.drus.jpa.unit.neo4j.graphml.Attribute>builder()
+        final Map<String, eu.drus.jpa.unit.neo4j.dataset.graphml.Attribute> edgeAttributes = ImmutableMap.<String, eu.drus.jpa.unit.neo4j.dataset.graphml.Attribute>builder()
                 .put("value", new DefaultAttribute<>("moo", AttributeType.STRING))
                 .put("label", new DefaultAttribute<>("edge", AttributeType.STRING)).build();
 

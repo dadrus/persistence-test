@@ -6,8 +6,8 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import eu.drus.jpa.unit.neo4j.graphml.AttributeType;
-import eu.drus.jpa.unit.neo4j.graphml.DefaultAttribute;
+import eu.drus.jpa.unit.neo4j.dataset.graphml.AttributeType;
+import eu.drus.jpa.unit.neo4j.dataset.graphml.DefaultAttribute;
 
 public class AttributeTypeConverterTest {
 

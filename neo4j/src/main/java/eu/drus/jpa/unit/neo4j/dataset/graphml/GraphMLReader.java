@@ -16,7 +16,7 @@
  * the Eclipse Foundation.
  */
 
-package eu.drus.jpa.unit.neo4j.graphml;
+package eu.drus.jpa.unit.neo4j.dataset.graphml;
 
 import static com.google.common.base.Preconditions.checkArgument;
 

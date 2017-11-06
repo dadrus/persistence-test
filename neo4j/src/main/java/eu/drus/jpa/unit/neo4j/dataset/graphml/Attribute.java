@@ -15,25 +15,27 @@
  * (b) the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation.
  */
-package eu.drus.jpa.unit.neo4j.graphml;
+package eu.drus.jpa.unit.neo4j.dataset.graphml;
 
-public class DefaultAttribute<T> implements Attribute {
+/**
+ * An attribute
+ * 
+ * @author Dimitrios Michail
+ */
+public interface Attribute
+{
+    /**
+     * Get the value of the attribute
+     * 
+     * @return the value of the attribute
+     */
+    String getValue();
 
-    private AttributeType type;
-    private T value;
+    /**
+     * Get the type of the attribute
+     * 
+     * @return the type of the attribute
+     */
+    AttributeType getType();
 
-    public DefaultAttribute(final T value, final AttributeType type) {
-        this.type = type;
-        this.value = value;
-    }
-
-    @Override
-    public String getValue() {
-        return value.toString();
-    }
-
-    @Override
-    public AttributeType getType() {
-        return type;
-    }
 }

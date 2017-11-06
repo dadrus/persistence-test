@@ -1,7 +1,7 @@
 package eu.drus.jpa.unit.neo4j.dataset;
 
 import eu.drus.jpa.unit.api.JpaUnitException;
-import eu.drus.jpa.unit.neo4j.graphml.Attribute;
+import eu.drus.jpa.unit.neo4j.dataset.graphml.Attribute;
 
 public final class AttributeTypeConverter {
 

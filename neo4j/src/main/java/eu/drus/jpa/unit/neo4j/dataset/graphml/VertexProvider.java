@@ -15,27 +15,27 @@
  * (b) the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation.
  */
-package eu.drus.jpa.unit.neo4j.graphml;
+package eu.drus.jpa.unit.neo4j.dataset.graphml;
+
+import java.util.Map;
 
 /**
- * An attribute
- * 
- * @author Dimitrios Michail
+ * Creates a Vertex of type V
+ *
+ * @param <V>
+ *            the vertex type
  */
-public interface Attribute
-{
-    /**
-     * Get the value of the attribute
-     * 
-     * @return the value of the attribute
-     */
-    String getValue();
+public interface VertexProvider<V> {
 
     /**
-     * Get the type of the attribute
-     * 
-     * @return the type of the attribute
+     * Create a vertex
+     *
+     * @param label
+     *            the label of the vertex
+     * @param attributes
+     *            any other attributes of the vertex
+     *
+     * @return the vertex
      */
-    AttributeType getType();
-
+    V buildVertex(String label, Map<String, Attribute> attributes);
 }
