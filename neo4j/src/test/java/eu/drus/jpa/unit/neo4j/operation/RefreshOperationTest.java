@@ -55,11 +55,11 @@ public class RefreshOperationTest {
     public void testExecute() throws Exception {
         // GIVEN
         final Node n1 = graphElementFactory.createNode("n1", Arrays.asList("A"),
-                ImmutableMap.<String, Object>builder().put("id", 1l).build());
+                ImmutableMap.<String, Object>builder().put("id", 1l).put("value", "A").build());
         final Node n2 = graphElementFactory.createNode("n2", Arrays.asList("A"),
-                ImmutableMap.<String, Object>builder().put("id", 2l).build());
+                ImmutableMap.<String, Object>builder().put("id", 2l).put("value", "B").build());
         final Edge e1 = graphElementFactory.createEdge(n1, n2, "e1", Arrays.asList("E"),
-                ImmutableMap.<String, Object>builder().put("id", 3l).build());
+                ImmutableMap.<String, Object>builder().put("id", 3l).put("value", "C").build());
 
         final Graph<Node, Edge> graph = new DefaultDirectedGraph<>(new ClassBasedEdgeFactory<>(Edge.class));
         graph.addVertex(n1);
@@ -71,11 +71,10 @@ public class RefreshOperationTest {
 
         // THEN
         final ArgumentCaptor<String> queryCaptor = ArgumentCaptor.forClass(String.class);
-        verify(operation, times(2)).executeQuery(eq(connection), queryCaptor.capture());
+        verify(operation, times(3)).executeQuery(eq(connection), queryCaptor.capture());
         final List<String> queries = queryCaptor.getAllValues();
-        final String query1 = queries.get(0);
-        final String query2 = queries.get(1);
-        assertThat(query1, containsString("MERGE (n1:A {id:1}) SET n1.id=1"));
-        assertThat(query2, containsString("MERGE (n2:A {id:2}) SET n2.id=2"));
+        assertThat(queries.get(0), containsString("MERGE (n1:A {id:1}) SET n1.value=\"A\""));
+        assertThat(queries.get(1), containsString("MERGE (n2:A {id:2}) SET n2.value=\"B\""));
+        assertThat(queries.get(2), containsString("MATCH (n1:A {id:1}),(n2:A {id:2}) MERGE (n1)-[e1:E]->(n2) SET e1.id=3,e1.value=\"C\""));
     }
 }
