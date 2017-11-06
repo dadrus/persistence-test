@@ -312,6 +312,7 @@
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${plugin.version.jacoco}</version>
           <executions>
+            <!-- because of powermock usage we cannot just use the on the fly instrumentation to measure coverage of unit test -->
             <execution>
               <id>default-instrument</id>
               <goals>
@@ -333,6 +334,21 @@
               <configuration>
                 <dataFile>${project.build.directory}/coverage.exec</dataFile>
               </configuration>
+            </execution>
+            
+            <!-- for integration tests. -->
+            <execution>
+              <id>prepare-integration-test-agent</id>
+              <goals>
+                <goal>prepare-agent-integration</goal>
+              </goals>
+            </execution>
+
+            <execution>
+              <id>generate-integration-test-report</id>
+              <goals>
+                <goal>report-integration</goal>
+              </goals>
             </execution>
           </executions>
         </plugin>
