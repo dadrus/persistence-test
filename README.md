@@ -682,8 +682,10 @@ For [Neo4j](https://www.neo4j.com), the `jpa-unit-neo4j` dependency needs to be 
 </dependency>
 ```
 
-JPA Unit needs to connect to a running Neo4j instance. This is done using [Neo4j JDBC Driver](http://neo4j-contrib.github.io/neo4j-jdbc/). Usage of an in-process, in-memory Neo4j implementation is unfortunately not 
-possible (Neo4J does not allow opening multiple driver connections to the embedded DB). To overcome this limitation, or made it at least less painful, one can use e.g.
+JPA Unit needs to connect to a running Neo4j instance. This is done using [Neo4j JDBC Driver](http://neo4j-contrib.github.io/neo4j-jdbc/), which as a neat side effect makes bootstrapping 
+(see [Bootstrapping of DB Schema & Contents](#bootstrapping-of-db-schema--contents)) of the DB possible e.g. using [LIQUIGRAPH](http://www.liquigraph.org/). Usage of an in-process, 
+in-memory Neo4j implementation is unfortunately not possible (Neo4J does not allow opening multiple driver connections to the embedded DB). To overcome this limitation, or made it at least less painful,
+one can use e.g.
 
 - [Neo4J Harness](https://neo4j.com/docs/java-reference/current/) for the lifecycle management of a Neo4j instance from code, e.g. by using a `Neo4jRule`. You can find working example as part of integration tests of JPA-Unit's neo4j project.
 
@@ -693,9 +695,16 @@ Since JPA does not address NoSQL databases, each JPA provider defines its own pr
 extension can use the properties of the following JPA provider:
 
 - [Hibernate OGM (with Neo4j extension)](https://docs.jboss.org/hibernate/ogm/5.2/reference/en-US/html_single/#ogm-neo4j).
+- [DataNucleus](http://www.datanucleus.org/products/datanucleus/jpa/samples/tutorial_neo4j.html)
+- [Kundera](https://github.com/impetus-opensource/Kundera/wiki/Neo4J-Specific-Configuration) 
 
-[DataNucleus](http://www.datanucleus.org/products/datanucleus/jpa/samples/tutorial_neo4j.html) and [Kundera](https://github.com/impetus-opensource/Kundera/wiki/Neo4J-Specific-Configuration) both support Node4j
-in an embedded mode only and thus cannot be used with JPA-Unit today.
+Even the last two support Neo4j in an embedded mode only, both can be used if the embedded Neo4j database exposes HTTP or BOLT interfaces (like available with Neo4j Harness). Since there is no possibility to define the corresponding
+interfaces (bolt or http) in a standard way (by the means of the regular `persistence.xml`), JPA-Unit makes use of a `jpa-unit.properties` file, which has to be made available on the class path and which has to define the following
+properties:
+
+- `connection.url`, which defines the url to the available interface. E.g. `jdbc:neo4j:bolt://localhost:7687`. This property is mandatory.
+- `user.name`, which defines the user name to be used during connection establishment. This property is optional.
+- `user.password`, which defines the password of the user to be used during connection establishment. This property is optional as well.
 
 ### Data Set Format
 
@@ -705,8 +714,8 @@ Thanks to [jgrapht](https://github.com/jgrapht/jgrapht), which is used internall
 
 If you want to generate/export data out of an existing Neo4j instance [APOC](https://neo4j-contrib.github.io/neo4j-apoc-procedures/) can be really helpful.
 Be however aware, that the data exported by APOC does not fully comply with GraphML. APOC generated file does not include `key` elements definitions for
-`label` and `labels` `data` elements for `edge`, respectively `edge` elements. It also adds additional attributes (`label` and `labels`) to `node` and `edge`
-elements, which are not defined by GraphML. The first one needs to be addressed by adding the missing `<key id="labels" for="node" attr.name="labels" attr.type="string"/>`
+`label` and `labels` `data` elements for `edge`, respectively `node` elements. It also adds additional attributes (`label` and `labels`) to `node` and `edge`
+elements which are not defined by GraphML. The first one needs to be addressed by adding the missing `<key id="labels" for="node" attr.name="labels" attr.type="string"/>`
 and `<key id="label" for="edge" attr.name="label" attr.type="string"/>` to the `graph` element. The second one can be ignored - schema compliance is not enforced by
 JPA-Unit's neo4j extension.
 
@@ -722,31 +731,22 @@ Here's an example:
   <key id="labels" for="node" attr.name="labels" attr.type="string"/>
   <key id="label" for="edge" attr.name="label" attr.type="string"/>
   <graph id="G" edgedefault="directed">
-    <node id="n1399" labels=":Person:ENTITY">
-      <data key="labels">:Person:ENTITY</data>
-      <data key="name">Dimitrij</data>
+    <node id="1" labels=":Person">
+      <data key="labels">:Person</data>
+      <data key="name">Tom</data>
       <data key="id">1</data>
     </node>
-    <node id="n1400" labels=":Person:ENTITY">
-      <data key="labels">:Person:ENTITY</data>
-      <data key="name">Milana</data>
+    <node id="2" labels=":Person">
+      <data key="labels">:Person</data>
+      <data key="name">Jerry</data>
       <data key="id">2</data>
     </node>
-    <node id="n1401" labels=":Person:ENTITY">
-      <data key="labels">:Person:ENTITY</data>
-      <data key="name">Daliah</data>
-      <data key="id">3</data>
-    </node>
-    <edge id="e1036" source="n1399" target="n1400" label="daughter">
-      <data key="label">daughter</data>
-    </edge>
-    <edge id="e1037" source="n1399" target="n1401" label="daughter">
-      <data key="label">daughter</data>
+    <edge id="3" source="1" target="2" label="friend">
+      <data key="label">friend</data>
     </edge>
   </graph>
 </graphml>
 ```
-
 
 # CDI Integration
 
