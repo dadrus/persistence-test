@@ -695,8 +695,8 @@ Since JPA does not address NoSQL databases, each JPA provider defines its own pr
 extension can use the properties of the following JPA provider:
 
 - [Hibernate OGM (with Neo4j extension)](https://docs.jboss.org/hibernate/ogm/5.2/reference/en-US/html_single/#ogm-neo4j).
-- [DataNucleus](http://www.datanucleus.org/products/datanucleus/jpa/samples/tutorial_neo4j.html)
-- [Kundera](https://github.com/impetus-opensource/Kundera/wiki/Neo4J-Specific-Configuration) 
+- [DataNucleus (with Neo4j extension)](http://www.datanucleus.org/products/datanucleus/jpa/samples/tutorial_neo4j.html)
+- [Kundera (with Neo4j extension)](https://github.com/impetus-opensource/Kundera/wiki/Neo4J-Specific-Configuration)
 
 Even the last two support Neo4j in an embedded mode only, both can be used if the embedded Neo4j database exposes HTTP or BOLT interfaces (like available with Neo4j Harness). Since there is no possibility to define the corresponding
 interfaces (bolt or http) in a standard way (by the means of the regular `persistence.xml`), JPA-Unit makes use of a `jpa-unit.properties` file, which has to be made available on the class path and which has to define the following
@@ -705,6 +705,11 @@ properties:
 - `connection.url`, which defines the url to the available interface. E.g. `jdbc:neo4j:bolt://localhost:7687`. This property is mandatory.
 - `user.name`, which defines the user name to be used during connection establishment. This property is optional.
 - `user.password`, which defines the password of the user to be used during connection establishment. This property is optional as well.
+
+Same approach can be used if Hibernate OGM Neo4j extension is used in embedded mode.
+
+A special note on Kundera: It still depends on a pretty old Neo4j (1.8.1) version. So even JPA-Unit's neo4j extension understands the configuration dialect of Kundera, I didn't find a version of Noe4j Harness, which can expose BOLT or 
+HTTP protocols and is binary compatible with the version used by Kundera. With other words, as long as Kundera is not updated to use a more recent version of Neo4j, the usage of this JPA provider will most probably be not possible. 
 
 ### Data Set Format
 
