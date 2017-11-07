@@ -12,33 +12,6 @@
   <artifactId>jpa-unit-neo4j</artifactId>
   <name>JPA Unit - Neo4J Extension</name>
 
-  <repositories>
-    <repository>
-      <id>neo4j</id>
-      <name>neo4j-repository</name>
-      <url>https://m2.neo4j.org/content/repositories/releases</url>
-    </repository>
-  </repositories>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.hibernate.ogm</groupId>
-        <artifactId>hibernate-ogm-bom</artifactId>
-        <version>${verions.hibernate-ogm}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.shrinkwrap</groupId>
-        <artifactId>shrinkwrap-bom</artifactId>
-        <version>1.2.6</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -48,22 +21,18 @@
     <dependency>
       <groupId>org.neo4j</groupId>
       <artifactId>neo4j-jdbc-driver</artifactId>
-      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.neo4j</groupId>
       <artifactId>neo4j-cypher-dsl</artifactId>
-      <version>2.3.1</version>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-      <version>2.7.1</version>
     </dependency>
     <dependency>
       <groupId>org.jgrapht</groupId>
       <artifactId>jgrapht-ext</artifactId>
-      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -135,7 +104,6 @@
       <artifactId>junit-platform-runner</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>com.sun.codemodel</groupId>
       <artifactId>codemodel</artifactId>
@@ -189,16 +157,13 @@
     <dependency>
       <groupId>org.liquigraph</groupId>
       <artifactId>liquigraph-core</artifactId>
-      <version>3.0.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.neo4j.test</groupId>
       <artifactId>neo4j-harness</artifactId>
-      <version>3.2.3</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.jboss.shrinkwrap</groupId>
       <artifactId>shrinkwrap-impl-base</artifactId>

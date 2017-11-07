@@ -52,6 +52,13 @@
     <version.flapdoodle.embed.mongo>2.0.0</version.flapdoodle.embed.mongo>
     <version.cglib>3.2.5</version.cglib>
     <verions.concordion>2.1.1</verions.concordion>
+    <verions.shrinkwrap>1.2.6</verions.shrinkwrap>
+    <version.neo4j-jdbc-driver>3.1.0</version.neo4j-jdbc-driver>
+    <version.neo4j-cypher-dsl>2.3.1</version.neo4j-cypher-dsl>
+    <version.HikariCP>2.7.1</version.HikariCP>
+    <version.jgrapht>1.0.1</version.jgrapht>
+    <version.liquigraph>3.0.1</version.liquigraph>
+    <version.neo4j-harness>3.2.3</version.neo4j-harness>
 
     <version.powermock>1.7.3</version.powermock>
     <version.junit>4.12</version.junit>
@@ -137,6 +144,14 @@
     <module>integration-test</module>
     <module>bom</module>
   </modules>
+  
+  <repositories>
+    <repository>
+      <id>neo4j</id>
+      <name>neo4j-repository</name>
+      <url>https://m2.neo4j.org/content/repositories/releases</url>
+    </repository>
+  </repositories>
 
   <build>
     <pluginManagement>
@@ -310,7 +325,8 @@
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${plugin.version.jacoco}</version>
           <executions>
-            <!-- because of powermock usage we cannot just use the on the fly instrumentation to measure coverage of unit test -->
+            <!-- because of powermock usage we cannot just use the on the fly instrumentation to measure coverage of unit 
+              test -->
             <execution>
               <id>default-instrument</id>
               <goals>
@@ -330,7 +346,7 @@
                 <goal>report</goal>
               </goals>
             </execution>
-            
+
             <!-- for integration tests. -->
             <execution>
               <id>prepare-integration-test-agent</id>
@@ -696,6 +712,50 @@
         <groupId>org.concordion</groupId>
         <artifactId>concordion</artifactId>
         <version>${verions.concordion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-bom</artifactId>
+        <version>${verions.shrinkwrap}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate.ogm</groupId>
+        <artifactId>hibernate-ogm-bom</artifactId>
+        <version>${verions.hibernate-ogm}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.neo4j</groupId>
+        <artifactId>neo4j-jdbc-driver</artifactId>
+        <version>${version.neo4j-jdbc-driver}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.neo4j</groupId>
+        <artifactId>neo4j-cypher-dsl</artifactId>
+        <version>${version.neo4j-cypher-dsl}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.zaxxer</groupId>
+        <artifactId>HikariCP</artifactId>
+        <version>${version.HikariCP}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jgrapht</groupId>
+        <artifactId>jgrapht-ext</artifactId>
+        <version>${version.jgrapht}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.liquigraph</groupId>
+        <artifactId>liquigraph-core</artifactId>
+        <version>${version.liquigraph}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.neo4j.test</groupId>
+        <artifactId>neo4j-harness</artifactId>
+        <version>${version.neo4j-harness}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
