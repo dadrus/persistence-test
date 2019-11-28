@@ -85,6 +85,7 @@ public class JpaUnitTest {
         when(context.getTestMethod()).thenReturn(Optional.of(getClass().getMethod("prepareMocks")));
         when(context.getExecutionException()).thenReturn(Optional.empty());
         when(context.getTestInstance()).thenReturn(Optional.of(new Object()));
+        when(context.getParent()).thenReturn(Optional.empty());
     }
 
     @Test
@@ -130,12 +131,12 @@ public class JpaUnitTest {
     }
 
     @Test
-    public void testBeforeEachTestDecoratorExecutionOrder() throws Exception {
+    public void testPostProcessTestInstanceTestDecoratorExecutionOrder() throws Exception {
         // GIVEN
         final JpaUnit unit = new JpaUnit();
 
         // WHEN
-        unit.beforeEach(context);
+        unit.postProcessTestInstance(context.getTestInstance(), context);
 
         // THEN
         final InOrder order = inOrder(firstMethodDecorator, secondMethodDecorator);
@@ -160,13 +161,13 @@ public class JpaUnitTest {
     }
 
     @Test
-    public void testBeforeEachInvocationArguments() throws Exception {
+    public void testPostProcessTestInstanceInvocationArguments() throws Exception {
         // GIVEN
         when(DecoratorRegistrar.getMethodDecorators()).thenReturn(Arrays.asList(firstMethodDecorator));
         final JpaUnit unit = new JpaUnit();
 
         // WHEN
-        unit.beforeEach(context);
+        unit.postProcessTestInstance(context.getTestInstance(), context);
 
         // THEN
         final ArgumentCaptor<TestInvocation> invocationCaptor = ArgumentCaptor.forClass(TestInvocation.class);

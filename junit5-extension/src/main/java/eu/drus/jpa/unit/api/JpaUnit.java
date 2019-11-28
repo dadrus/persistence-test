@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 
 import eu.drus.jpa.unit.core.JpaUnitContext;
 import eu.drus.jpa.unit.spi.DecoratorExecutor;
@@ -15,7 +15,7 @@ import eu.drus.jpa.unit.spi.ExecutionContext;
 import eu.drus.jpa.unit.spi.FeatureResolver;
 import eu.drus.jpa.unit.spi.TestInvocation;
 
-public class JpaUnit implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
+public class JpaUnit implements BeforeAllCallback, AfterAllCallback, TestInstancePostProcessor, AfterEachCallback {
 
     private final DecoratorExecutor executor = new DecoratorExecutor();
 
@@ -30,8 +30,8 @@ public class JpaUnit implements BeforeAllCallback, AfterAllCallback, BeforeEachC
     }
 
     @Override
-    public void beforeEach(final ExtensionContext context) throws Exception {
-        executor.processBefore(createTestMethodInvocation(context, true));
+    public void postProcessTestInstance(final Object testInstance, final ExtensionContext context) throws Exception {
+        executor.processBefore(createTestMethodInvocation(context, Optional.of(testInstance), true));
     }
 
     @Override
@@ -40,6 +40,10 @@ public class JpaUnit implements BeforeAllCallback, AfterAllCallback, BeforeEachC
     }
 
     private TestInvocation createTestMethodInvocation(final ExtensionContext context, final boolean considerExceptions) {
+        return createTestMethodInvocation(context, context.getTestInstance(), considerExceptions);
+    }
+
+    private TestInvocation createTestMethodInvocation(final ExtensionContext context, final Optional<Object> testInstance, final boolean considerExceptions) {
         final JpaUnitContext ctx = JpaUnitContext.getInstance(context.getTestClass().get());
 
         return new TestInvocation() {
@@ -76,7 +80,7 @@ public class JpaUnit implements BeforeAllCallback, AfterAllCallback, BeforeEachC
 
             @Override
             public Optional<Object> getTestInstance() {
-                return context.getTestInstance();
+                return testInstance;
             }
         };
     }

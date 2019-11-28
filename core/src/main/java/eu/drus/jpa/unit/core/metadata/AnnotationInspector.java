@@ -38,6 +38,11 @@ public class AnnotationInspector<T extends Annotation> {
             results.add(current);
             current = current.getSuperclass();
         }
+        current = testClass.getDeclaringClass();
+        while (current != null) {
+            results.add(current);
+            current = current.getDeclaringClass();
+        }
         return results;
     }
 

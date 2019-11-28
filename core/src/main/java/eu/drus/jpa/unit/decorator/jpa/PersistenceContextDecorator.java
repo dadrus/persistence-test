@@ -28,10 +28,11 @@ public class PersistenceContextDecorator implements TestMethodDecorator {
         final EntityManagerFactory emf = (EntityManagerFactory) context.getData(Constants.KEY_ENTITY_MANAGER_FACTORY);
 
         final Field field = context.getPersistenceField();
-        if (field.getType().equals(EntityManager.class)) {
+        final Object testInstance = invocation.getTestInstance().get();
+        if (field.getType().equals(EntityManager.class) && field.getDeclaringClass().isAssignableFrom(testInstance.getClass())) {
             final EntityManager em = getEntityManager(context, emf);
             context.storeData(Constants.KEY_ENTITY_MANAGER, em);
-            injectValue(invocation.getTestInstance().get(), field, em);
+            injectValue(testInstance, field, em);
         }
     }
 
