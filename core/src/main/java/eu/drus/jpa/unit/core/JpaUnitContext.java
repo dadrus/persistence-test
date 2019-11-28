@@ -28,6 +28,7 @@ public class JpaUnitContext implements ExecutionContext {
 
     private static final Map<Class<?>, JpaUnitContext> CTX_MAP = new HashMap<>();
     private static final Pattern PROPERTY_PATTERN = Pattern.compile("\\$\\{([^}]*)\\}");
+    private static final String NULL = "null";
 
     private Field persistenceField;
 
@@ -97,13 +98,19 @@ public class JpaUnitContext implements ExecutionContext {
     private static Map<String, Object> getPersistenceContextProperties(final PersistenceContext persistenceContext) {
         final Map<String, Object> properties = new HashMap<>();
         for (final PersistenceProperty property : persistenceContext.properties()) {
-            String propertyValue = property.value();
-            Matcher matcher = PROPERTY_PATTERN.matcher(propertyValue);
+            Object propertyValue = property.value();
+            Matcher matcher = PROPERTY_PATTERN.matcher(propertyValue.toString());
 
-            while(matcher.find()) {
+            while(propertyValue != null && matcher.find()) {
                 String p = matcher.group();
                 String systemProperty = p.substring(2, p.length() - 1);
-                propertyValue = propertyValue.replace(p, System.getProperty(systemProperty, p));
+                if (propertyValue.equals(p)) {
+                	if (System.getProperties().containsKey(systemProperty) || NULL.equals(systemProperty)) {
+                		propertyValue = System.getProperty(systemProperty);
+                	}
+                } else {
+                	propertyValue = propertyValue.toString().replace(p, System.getProperty(systemProperty, p));
+                }
             }
 
             properties.put(property.name(), propertyValue);
