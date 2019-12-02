@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 
@@ -15,7 +16,7 @@ import eu.drus.jpa.unit.spi.ExecutionContext;
 import eu.drus.jpa.unit.spi.FeatureResolver;
 import eu.drus.jpa.unit.spi.TestInvocation;
 
-public class JpaUnit implements BeforeAllCallback, AfterAllCallback, TestInstancePostProcessor, AfterEachCallback {
+public class JpaUnit implements BeforeAllCallback, AfterAllCallback, TestInstancePostProcessor, BeforeEachCallback, AfterEachCallback {
 
     private final DecoratorExecutor executor = new DecoratorExecutor();
 
@@ -32,6 +33,10 @@ public class JpaUnit implements BeforeAllCallback, AfterAllCallback, TestInstanc
     @Override
     public void postProcessTestInstance(final Object testInstance, final ExtensionContext context) throws Exception {
         executor.processBefore(createTestMethodInvocation(context, Optional.of(testInstance), true));
+    }
+
+    public void beforeEach(final ExtensionContext context) throws Exception {
+        executor.processBefore(createTestMethodInvocation(context, true));
     }
 
     @Override
