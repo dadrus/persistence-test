@@ -20,6 +20,7 @@ public class PersistenceUnitDescriptorImpl implements PersistenceUnitDescriptor 
     private static final String ENTRY_PROVIDER = "provider";
     private static final String ENTRY_NAME = "name";
     private static final String ENTRY_CLASS = "class";
+    private static final String PROPERTY_JTA_DATA_SOURCE = "javax.persistence.jtaDataSource";
     private String unitName;
     private Map<String, Object> properties;
     private String providerClassName;
@@ -29,6 +30,11 @@ public class PersistenceUnitDescriptorImpl implements PersistenceUnitDescriptor 
         this.properties = new HashMap<>(properties);
         classList = new ArrayList<>();
         parse(element);
+
+        // cannot use JTA
+        if ("".equals(this.properties.get(PROPERTY_JTA_DATA_SOURCE))) {
+            this.properties.put(PROPERTY_JTA_DATA_SOURCE, null);
+        }
     }
 
     private void parse(final Element persistenceUnitElement) {
