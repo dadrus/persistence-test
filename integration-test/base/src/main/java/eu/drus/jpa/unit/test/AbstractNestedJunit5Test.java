@@ -50,7 +50,7 @@ public abstract class AbstractNestedJunit5Test {
                 final List<Depositor> list = entityManager
                         .createQuery("select d from Depositor d", Depositor.class)
                         .getResultList();
-                assertEquals(list.size(), 0);
+                assertEquals(list.size(), 1);
             }
         }
     }
